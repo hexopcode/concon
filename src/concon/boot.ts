@@ -1,15 +1,17 @@
-import {Opcodes, Result, System} from "../core";
+import {assemble} from '../asm';
+import {Result, System} from '../core';
 
 const sys = new System();
 sys.reset();
-sys.loadProgram(new Uint8Array([
-  Opcodes.NOP,
-  Opcodes.NOP,
-  Opcodes.VSYNC,
-  Opcodes.NOP,
-  Opcodes.VSYNC,
-  Opcodes.END,
-]));
+sys.loadProgram(assemble(`
+// dummy
+NOP
+NOP
+VSYNC
+NOP
+VSYNC
+END
+`));
 sys.boot();
 
 function cycle() {
