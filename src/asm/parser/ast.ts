@@ -1,4 +1,4 @@
-import {Opcodes} from '../../core';
+import {Opcodes, Registers} from '../../core';
 
 export type NopInstr = {
   type: 'NopInstr',
@@ -15,9 +15,17 @@ export type VsyncInstr = {
   opcode: Opcodes.VSYNC,
 };
 
+export type MoviInstr = {
+  type: 'MoviInstr',
+  opcode: Opcodes.MOVI,
+  register: Registers,
+  immediate: number,
+}
+
 export type Instr =
     NopInstr |
     EndInstr |
-    VsyncInstr;
+    VsyncInstr |
+    MoviInstr;
 
 export type Stmt = Instr;

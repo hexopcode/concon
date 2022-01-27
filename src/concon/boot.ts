@@ -10,6 +10,7 @@ NOP
 VSYNC
 NOP
 VSYNC
+MOVI R0, 0x1234
 END
 `));
 sys.boot();
@@ -20,6 +21,8 @@ function cycle() {
     console.log('vsync');
     // TODO: render to screen
     requestAnimationFrame(cycle);
+  } else if (result == Result.END) {
+    console.log('registers', sys.debugRegisters());
   }
 }
 

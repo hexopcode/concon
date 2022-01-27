@@ -1,3 +1,4 @@
+import {Registers} from '../../core';
 import {AsmErrorCollector} from '../base';
 
 export enum TokenType {
@@ -5,12 +6,15 @@ export enum TokenType {
   COLON,
 
   IDENTIFIER,
+  REGISTER,
   STRING,
   NUMBER,
 
   NOP,
   END,
   VSYNC,
+
+  MOVI,
 
   EOF,
 }
@@ -19,6 +23,7 @@ const Keywords: Map<string, TokenType> = new Map(Object.entries({
   'NOP': TokenType.NOP,
   'END': TokenType.END,
   'VSYNC': TokenType.VSYNC,
+  'MOVI': TokenType.MOVI,
 }));
 
 export type Token = {
@@ -68,8 +73,8 @@ class Tokenizer {
     return this.tokens;
   }
 
-  private isAtEnd(): boolean {
-    return this.current >= this.source.length;
+  private isAtEnd(ahead: number = 0): boolean {
+    return this.current + ahead >= this.source.length;
   }
 
   private scanToken() {
@@ -121,7 +126,11 @@ class Tokenizer {
         if (this.isDigit(c)) {
           this.number();
         } else if (this.isAlpha(c)) {
-          this.identifier();
+          if (this.isRegister(c)) {
+            this.register();
+          } else {
+            this.identifier();
+          }
         } else {
           this.collectError({
             line: this.line,
@@ -159,7 +168,7 @@ class Tokenizer {
   }
 
   private peek(ahead: number = 0): string {
-    if (this.isAtEnd()) {
+    if (this.isAtEnd(ahead)) {
       return '\0';
     }
     return this.source.charAt(this.current + ahead);
@@ -189,34 +198,37 @@ class Tokenizer {
     return c.charCodeAt(0) >= '0'.charCodeAt(0) && c.charCodeAt(0) <= '9'.charCodeAt(0);
   }
 
+  private isOneOf(c: string, search: string): boolean {
+    return search.includes(c);
+  }
+
   private number() {
     let radix = 10;
-    if (this.peek() == '0') {
-      switch (this.peek(1)) {
-        case 'b':
-        case 'B':
-          radix = 2;
-          this.advance();
-          this.advance();
-          break;
-        case 'o':
-        case 'O':
-          radix = 8;
-          this.advance();
-          this.advance();
-          break;
-        case 'x':
-        case 'X':
-          radix = 16;
-          this.advance();
-          this.advance();
-          break;
-        default:
-          break;
-      }
+    let digits = '0123456789';
+    switch (this.peek()) {
+      case 'b':
+      case 'B':
+        radix = 2;
+        digits = '01';
+        this.advance();
+        break;
+      case 'o':
+      case 'O':
+        radix = 8;
+        digits = '01234567';
+        this.advance();
+        break;
+      case 'x':
+      case 'X':
+        radix = 16;
+        digits = '0123456789aAbBcCdDeEfF';
+        this.advance();
+        break;
+      default:
+        break;
     }
 
-    while (this.isDigit(this.peek())) {
+    while (this.isOneOf(this.peek(), digits)) {
       this.advance();
     }
 
@@ -244,6 +256,35 @@ class Tokenizer {
       this.addToken(Keywords.get(text)!);
     } else {
       this.addToken(TokenType.IDENTIFIER);
+    }
+  }
+
+  private isRegister(c: string): boolean {
+    if (c != 'R') {
+      return false;
+    }
+
+    const c1 = this.peek();
+    const c2 = this.peek(1);
+
+    // TODO: parse all other registers
+    return (c1 >= '0' && c1 <= '9') ||
+        (c1 == '1' && c2 >= '0' && c2 <= '5');
+  }
+
+  private register() {
+    const c1 = this.advance();
+    const c2 = this.peek();
+    
+    if (c1 == '0' || (c1 >= '2' && c1 <= '9')) {
+      this.addToken(TokenType.REGISTER, Number.parseInt(c1, 10) as Registers);
+    } else if (c1 == '1') {
+      if (c2 >= '0' && c2 <= '5') {
+        this.advance();
+        this.addToken(TokenType.REGISTER, Number.parseInt(c1 + c2, 10) as Registers);
+      } else {
+        this.addToken(TokenType.REGISTER, Registers.R1);
+      }
     }
   }
 }

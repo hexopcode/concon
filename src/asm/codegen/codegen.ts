@@ -22,11 +22,20 @@ class Codegen {
         case 'VsyncInstr':
           bytes.push(stmt.opcode);
           break;
+        case 'MoviInstr':
+          bytes.push(stmt.opcode);
+          bytes.push(stmt.register);
+          bytes.push(...this.word(stmt.immediate));
+          break;
         default:
           unreachable(`Unsupported statement: ${stmt}`);
       }
     }
 
     return new Uint8Array(bytes);
+  }
+
+  word(n: number): number[] {
+    return [n >> 8, n & 0xff];
   }
 }

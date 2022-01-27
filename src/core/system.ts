@@ -33,6 +33,10 @@ export class System {
     this.memory.set(program, MEMORY_PROGRAM_OFFSET);
   }
 
+  debugRegisters(): Uint16Array {
+    return this.registers;
+  }
+
   boot() {
     // TODO: run OS
     this.registers[Registers.RIP] = MEMORY_PROGRAM_OFFSET;
@@ -48,6 +52,9 @@ export class System {
           return Result.END;
         case Opcodes.VSYNC:
           return Result.VSYNC;
+        case Opcodes.MOVI:
+          this.movi();
+          continue next;
         default:
           unreachable(`Unimplemented opcode: ${opcode}`);
       }
@@ -55,13 +62,29 @@ export class System {
   }
 
   private instruction(): Opcodes {
-    const rip = this.registers[Registers.RIP];
-    const opcode = this.memory[rip] as Opcodes;
-    this.registers[Registers.RIP] = rip + 1;
-    return opcode;
+    return this.byte() as Opcodes;
   }
 
-  private isResult(opcode: Opcodes): boolean {
-    return opcode == Opcodes.VSYNC || opcode == Opcodes.END;
+  private register(): Registers {
+    return this.byte() as Registers;
+  }
+
+  private immediate(): number {
+    const hi = this.byte();
+    const lo = this.byte();
+    return hi << 8 | lo;
+  }
+
+  private byte(): number {
+    const rip = this.registers[Registers.RIP];
+    const byte = this.memory[rip];
+    this.registers[Registers.RIP] = rip + 1;
+    return byte;
+  }
+
+  private movi() {
+    const register = this.register();
+    const immediate = this.immediate();
+    this.registers[register] = immediate;
   }
 }
