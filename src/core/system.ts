@@ -33,6 +33,10 @@ export class System {
     this.memory.set(program, MEMORY_PROGRAM_OFFSET);
   }
 
+  debug(query: Registers): number {
+    return this.registers[query];
+  }
+
   debugRegisters(): Uint16Array {
     return this.registers;
   }
@@ -44,7 +48,6 @@ export class System {
 
   cycle(): Result {
     next: for (let opcode: Opcodes = this.instruction();; opcode = this.instruction()) {
-      console.log(opcode);
       switch (opcode) {
         case Opcodes.NOP:
           continue next;

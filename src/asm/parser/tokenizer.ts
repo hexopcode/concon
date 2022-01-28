@@ -232,7 +232,8 @@ class Tokenizer {
       this.advance();
     }
 
-    const value = Number.parseInt(this.source.substring(this.start, this.current), radix);
+    const shift = radix == 10 ? 0 : 2;
+    const value = Number.parseInt(this.source.substring(this.start + shift, this.current), radix);
     this.addToken(TokenType.NUMBER, value);
   }
 
