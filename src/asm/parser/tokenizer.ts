@@ -195,7 +195,7 @@ class Tokenizer {
   }
 
   private isDigit(c: string): boolean {
-    return c.charCodeAt(0) >= '0'.charCodeAt(0) && c.charCodeAt(0) <= '9'.charCodeAt(0);
+    return c >= '0' && c <= '9';
   }
 
   private isOneOf(c: string, search: string): boolean {
@@ -237,9 +237,7 @@ class Tokenizer {
   }
 
   private isAlpha(c: string): boolean {
-    return (c.charCodeAt(0) >= 'a'.charCodeAt(0) && c.charCodeAt(0) <= 'z'.charCodeAt(0)) ||
-    (c.charCodeAt(0) >= 'A'.charCodeAt(0) && c.charCodeAt(0) <= 'Z'.charCodeAt(0)) ||
-    (c == '_');
+    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c == '_');
   }
 
   private isAlphaNumeric(c: string): boolean {
