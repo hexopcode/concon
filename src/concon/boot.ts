@@ -1,4 +1,4 @@
 import {runTests} from '../lib';
-import {JumpTests, MemoryTests} from '../tests';
+import {ALL_TESTS} from '../tests';
 
-console.log(runTests(JumpTests, MemoryTests));
+console.log(runTests(...ALL_TESTS));

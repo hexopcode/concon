@@ -1,2 +1,4 @@
-export * from './jump';
-export * from './memory';
+import {JumpTests} from './jump';
+import {MemoryTests} from './memory';
+
+export const ALL_TESTS = [JumpTests, MemoryTests];
