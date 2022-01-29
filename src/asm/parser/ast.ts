@@ -1,35 +1,26 @@
 import {Opcodes, Registers} from '../../core';
 
-export type NopInstr = {
-  type: 'NopInstr',
-  opcode: Opcodes.NOP,
+type AstNode<Type extends string> = {
+  type: Type,
   line: number,
 };
 
-export type EndInstr = {
-  type: 'EndInstr',
-  opcode: Opcodes.END,
-  line: number,
+type AstInstr<Type extends string, Op extends Opcodes> = AstNode<Type> & {
+  opcode: Op,
 };
 
-export type VsyncInstr = {
-  type: 'VsyncInstr',
-  opcode: Opcodes.VSYNC,
-  line: number,
-};
+export type NopInstr = AstInstr<'NopInstr', Opcodes.NOP>;
 
-export type MoviInstr = {
-  type: 'MoviInstr',
-  opcode: Opcodes.MOVI,
-  line: number,
+export type EndInstr = AstInstr<'EndInstr', Opcodes.END>;
+
+export type VsyncInstr = AstInstr<'VsyncInstr', Opcodes.VSYNC>;
+
+export type MoviInstr = AstInstr<'MoviInstr', Opcodes.MOVI> & {
   register: Registers,
   immediate: number,
 };
 
-export type JmpiInstr = {
-  type: 'JmpiInstr',
-  opcode: Opcodes.JMPI,
-  line: number,
+export type JmpiInstr = AstInstr<'JmpiInstr', Opcodes.JMPI> & {
   address: number,
 };
 
