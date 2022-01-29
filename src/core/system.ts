@@ -1,5 +1,7 @@
 import {assert, unreachable} from '../lib';
+import {create_os_image} from '../os';
 import {
+  MEMORY_OS_OFFSET,
   MEMORY_PROGRAM_OFFSET,
   MEMORY_PROGRAM_SIZE,
   MEMORY_SIZE,
@@ -25,7 +27,11 @@ export class System {
   reset() {
     this.memory.fill(0x00);
     this.registers.fill(0x00);
-    // TODO: burn OS
+    this.loadOperatingSystem();
+  }
+
+  loadOperatingSystem() {
+    this.memory.set(create_os_image(), MEMORY_OS_OFFSET);
   }
 
   loadProgram(program: Uint8Array) {
@@ -42,8 +48,8 @@ export class System {
   }
 
   boot() {
-    // TODO: run OS
-    this.registers[Registers.RIP] = MEMORY_PROGRAM_OFFSET;
+    this.registers[Registers.RIP] = MEMORY_OS_OFFSET;
+    this.cycle();
   }
 
   cycle(): Result {

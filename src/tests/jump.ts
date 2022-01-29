@@ -10,7 +10,7 @@ export const JumpTests: TestSpec = (t: TestRunner) => {
     sys.boot();
   }
 
-  t.after(() => {
+  t.before(() => {
     sys.reset();
   });
 
