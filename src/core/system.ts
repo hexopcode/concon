@@ -47,9 +47,9 @@ export class System {
     return this.memory.slice(start, start + length);
   }
 
-  boot() {
+  boot(): Result {
     this.registers[Registers.RIP] = MEMORY_OS_OFFSET;
-    this.cycle();
+    return this.cycle();
   }
 
   cycle(): Result {
@@ -87,8 +87,16 @@ export class System {
     return hi << 8 | lo;
   }
 
+  private checkMemoryBoundary(addr: number) {
+    if (addr >= this.memory.length) {
+      throw new Error('Invalid memory access: reached past the end of memory area.');
+    }
+  }
+
   private byte(): number {
     const rip = this.registers[Registers.RIP];
+    // FIXME: automate this with a proxy around the memory object
+    this.checkMemoryBoundary(rip);
     const byte = this.memory[rip];
     this.registers[Registers.RIP] = rip + 1;
     return byte;
@@ -102,7 +110,6 @@ export class System {
 
   private jmpi() {
     const addr = this.immediate();
-    // TODO: check for boundaries
     this.registers[Registers.RIP] = addr;
   }
 }

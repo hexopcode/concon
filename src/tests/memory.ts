@@ -1,28 +1,24 @@
-import {assemble, assembleCheck} from '../asm';
+import {assembleCheck} from '../asm';
 import {Registers, Result, System} from '../core';
 import {TestRunner, TestSpec} from '../lib';
+import {assembleAndBoot} from './helpers';
 
 export const MemoryTests: TestSpec = (t: TestRunner) => {
   const sys = new System();
-
-  function assembleAndRun(source: string) {
-    sys.loadProgram(assemble(source));
-    sys.boot();
-  }
 
   t.before(() => {
     sys.reset();
   });
 
   t.test('MOVI instruction sets general registers', () => {
-    assembleAndRun(`
+    const result = assembleAndBoot(sys, `
         MOVI R0, 1234
         MOVI R1, 0b1111
         MOVI R2, 0o777
         MOVI R3, 0x1234
         END
     `);
-    t.assert(sys.cycle() == Result.END, 'Program runs');
+    t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 1234, 'R0 is set to decimal value');
     t.assert(sys.debug(Registers.R1) == 0b1111, 'R1 is set to binary value');
@@ -31,7 +27,7 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
   });
 
   t.test('registers R10..R15 parsed correctly', () => {
-    assembleAndRun(`
+    const result = assembleAndBoot(sys, `
         MOVI R10, 10
         MOVI R11, 11
         MOVI R12, 12
@@ -40,7 +36,7 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
         MOVI R15, 15
         END
     `);
-    t.assert(sys.cycle() == Result.END, 'Program runs');
+    t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R10) == 10, 'R10 set');
     t.assert(sys.debug(Registers.R11) == 11, 'R11 set');
@@ -51,11 +47,11 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
   });
 
   t.test('MOVI instruction sets register RSP', () => {
-    assembleAndRun(`
+    const result = assembleAndBoot(sys, `
         MOVI RSP, 1234
         END
     `);
-    t.assert(sys.cycle() == Result.END, 'Program runs');
+    t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.RSP) == 1234, 'RSP set');
   });

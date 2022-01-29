@@ -49,6 +49,7 @@ export class TestRunner {
 
   assert(cond: boolean, message: string) {
     if (!cond) {
+      console.error(message);
       throw new Error(message);
     }
   }
@@ -66,6 +67,7 @@ export class TestRunner {
           result: TestResultEnum.PASSED,
         });
       } catch (e) {
+        console.error(e);
         this.allTestResults.add({
           description: testCase.description,
           result: TestResultEnum.FAILED,
