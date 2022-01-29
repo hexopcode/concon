@@ -266,9 +266,12 @@ class Tokenizer {
     const c1 = this.peek();
     const c2 = this.peek(1);
 
-    // TODO: parse all other registers
     return (c1 >= '0' && c1 <= '9') ||
-        (c1 == '1' && c2 >= '0' && c2 <= '5');
+        (c1 == '1' && c2 >= '0' && c2 <= '5') ||
+        (c1 == 'I' && c2 == 'P') ||
+        (c1 == 'S' && c2 == 'P') ||
+        (c1 == 'F' && c2 == 'L') ||
+        (c1 == 'I' && c2 == 'N');
   }
 
   private register() {
@@ -284,6 +287,18 @@ class Tokenizer {
       } else {
         this.addToken(TokenType.REGISTER, Registers.R1);
       }
+    } else if (c1 == 'I' && c2 == 'P') {
+      this.advance();
+      this.addToken(TokenType.REGISTER, Registers.RIP);
+    } else if (c1 == 'S' && c2 == 'P') {
+      this.advance();
+      this.addToken(TokenType.REGISTER, Registers.RSP);
+    } else if (c1 == 'F' && c2 == 'L') {
+      this.advance();
+      this.addToken(TokenType.REGISTER, Registers.RFL);
+    } else if (c1 == 'I' && c2 == 'N') {
+      this.advance();
+      this.addToken(TokenType.REGISTER, Registers.RIN);
     }
   }
 }

@@ -16,9 +16,11 @@ type TestResult = {
   error?: Error,
 }
 
-export function runTests(testSpec: TestSpec): Set<TestResult> {
+export function runTests(...specs: TestSpec[]): Set<TestResult> {
   const runner = new TestRunner();
-  testSpec(runner);
+  for (const spec of specs) {
+    spec(runner);
+  }
   return runner.run();
 }
 

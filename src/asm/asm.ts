@@ -12,15 +12,26 @@ function logErrors(errors: AsmError[]) {
 
 export function assemble(source: string): Uint8Array {
   const errors: AsmError[] = [];
-  const tokens = tokenize(source, errors.push);
+  const collectErrors = errors.push.bind(errors);
+  const tokens = tokenize(source, collectErrors);
   logErrors(errors);
-  const ast = parse(tokens, errors.push);
+  const ast = parse(tokens, collectErrors);
   logErrors(errors);
-  const bytes = codegen(ast);
+  const bytes = codegen(ast, collectErrors);
+  logErrors(errors);
   
   console.log(tokens.map(tokenString));
   console.log(ast);
   console.log(bytes);
   
   return bytes;
+}
+
+export function assembleCheck(source: string): AsmError[] {
+  const errors: AsmError[] = [];
+  const collectErrors = errors.push.bind(errors);
+  const tokens = tokenize(source, collectErrors);
+  const ast = parse(tokens, collectErrors);
+  const bytes = codegen(ast, collectErrors);
+  return errors;
 }

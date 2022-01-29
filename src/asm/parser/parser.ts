@@ -78,19 +78,20 @@ class Parser {
   }
 
   private statement(): Stmt {
+    const line = this.peek()?.line || -1;
     if (this.match(TokenType.NOP)) {
-      return {type: 'NopInstr', opcode: Opcodes.NOP};
+      return {type: 'NopInstr', opcode: Opcodes.NOP, line};
     } else if (this.match(TokenType.END)) {
-      return {type: 'EndInstr', opcode: Opcodes.END};
+      return {type: 'EndInstr', opcode: Opcodes.END, line};
     } else if (this.match(TokenType.VSYNC)) {
-      return {type: 'VsyncInstr', opcode: Opcodes.VSYNC};
+      return {type: 'VsyncInstr', opcode: Opcodes.VSYNC, line};
     } else if (this.match(TokenType.MOVI)) {
-      return this.moviInstr();
+      return this.moviInstr(line);
     }
     unreachable(`Invalid token: ${TokenType[this.peek()?.type!]}`);
   }
 
-  private moviInstr(): MoviInstr {
+  private moviInstr(line: number): MoviInstr {
     const reg = this.consume(TokenType.REGISTER, 'Expected register');
     this.consume(TokenType.COMMA, `Expected ',`);
     const imm = this.consume(TokenType.NUMBER, 'Expected number');
@@ -99,6 +100,7 @@ class Parser {
       opcode: Opcodes.MOVI,
       register: (reg.literal!) as Registers,
       immediate: (imm.literal!) as number,
+      line,
     };
   }
 }
