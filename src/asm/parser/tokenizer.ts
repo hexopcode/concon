@@ -16,6 +16,8 @@ export enum TokenType {
 
   MOVI,
 
+  JMPI,
+
   EOF,
 }
 
@@ -23,7 +25,10 @@ const Keywords: Map<string, TokenType> = new Map(Object.entries({
   'NOP': TokenType.NOP,
   'END': TokenType.END,
   'VSYNC': TokenType.VSYNC,
+  
   'MOVI': TokenType.MOVI,
+
+  'JMPI': TokenType.JMPI,
 }));
 
 export type Token = {

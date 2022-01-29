@@ -24,12 +24,20 @@ export type MoviInstr = {
   line: number,
   register: Registers,
   immediate: number,
-}
+};
+
+export type JmpiInstr = {
+  type: 'JmpiInstr',
+  opcode: Opcodes.JMPI,
+  line: number,
+  address: number,
+};
 
 export type Instr =
     NopInstr |
     EndInstr |
     VsyncInstr |
-    MoviInstr;
+    MoviInstr |
+    JmpiInstr;
 
 export type Stmt = Instr;

@@ -6,4 +6,7 @@ export enum Opcodes {
 
   // Memory
   MOVI = 0x10,
+
+  // Jump
+  JMPI = 0x50,
 }

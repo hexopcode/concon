@@ -37,8 +37,8 @@ export class System {
     return this.registers[query];
   }
 
-  debugRegisters(): Uint16Array {
-    return this.registers;
+  debugMem(start: number, length: number = 1): Uint8Array {
+    return this.memory.slice(start, start + length);
   }
 
   boot() {
@@ -57,6 +57,9 @@ export class System {
           return Result.VSYNC;
         case Opcodes.MOVI:
           this.movi();
+          continue next;
+        case Opcodes.JMPI:
+          this.jmpi();
           continue next;
         default:
           unreachable(`Unimplemented opcode: ${opcode}`);
@@ -89,5 +92,11 @@ export class System {
     const register = this.register();
     const immediate = this.immediate();
     this.registers[register] = immediate;
+  }
+
+  private jmpi() {
+    const addr = this.immediate();
+    // TODO: check for boundaries
+    this.registers[Registers.RIP] = addr;
   }
 }

@@ -1,5 +1,5 @@
 import {Token, TokenType} from './tokenizer';
-import {Stmt, MoviInstr} from './ast';
+import {Stmt, MoviInstr, JmpiInstr} from './ast';
 import {Opcodes, Registers} from '../../core';
 import {unreachable} from '../../lib';
 import {AsmErrorCollector} from '../base';
@@ -87,6 +87,8 @@ class Parser {
       return {type: 'VsyncInstr', opcode: Opcodes.VSYNC, line};
     } else if (this.match(TokenType.MOVI)) {
       return this.moviInstr(line);
+    } else if (this.match(TokenType.JMPI)) {
+      return this.jmpiInstr(line);
     }
     unreachable(`Invalid token: ${TokenType[this.peek()?.type!]}`);
   }
@@ -98,9 +100,20 @@ class Parser {
     return {
       type: 'MoviInstr',
       opcode: Opcodes.MOVI,
+      line,
       register: (reg.literal!) as Registers,
       immediate: (imm.literal!) as number,
+    };
+  }
+
+  private jmpiInstr(line: number): JmpiInstr {
+    // TODO: add support for labels
+    const addr = this.consume(TokenType.NUMBER, 'Expected immediate address');
+    return {
+      type: 'JmpiInstr',
+      opcode: Opcodes.JMPI,
       line,
+      address: (addr.literal!) as number,
     };
   }
 }

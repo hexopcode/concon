@@ -30,6 +30,9 @@ class Codegen {
           case 'MoviInstr':
             bytes.push(...this.movi(stmt.register, stmt.immediate));
             break;
+          case 'JmpiInstr':
+            bytes.push(...this.jmpi(stmt.address));
+            break;
           default:
             unreachable(`Unsupported statement: ${stmt}`);
         }
@@ -57,5 +60,10 @@ class Codegen {
       default:
         return [Opcodes.MOVI, register, ...this.word(immediate)];
     }
+  }
+
+  jmpi(address: number): number[] {
+    // TODO: add support for labels
+    return [Opcodes.JMPI, ...this.word(address)];
   }
 }
