@@ -30,6 +30,39 @@ class Codegen {
           case 'MoviInstr':
             bytes.push(...this.movi(stmt.register, stmt.immediate));
             break;
+          case 'MovrInstr':
+            bytes.push(Opcodes.MOVR, stmt.register1, stmt.register2);
+            break;
+          case 'StoiInstr':
+            bytes.push(Opcodes.STOI, ...this.word(stmt.address), ...this.word(stmt.immediate));
+            break;
+          case 'StoibInstr':
+            bytes.push(Opcodes.STOIB, ...this.word(stmt.address), ...this.word(stmt.immediate));
+            break;
+          case 'StoriInstr':
+            bytes.push(Opcodes.STORI, stmt.register, ...this.word(stmt.immediate));
+            break;
+          case 'StoribInstr':
+            bytes.push(Opcodes.STORIB, stmt.register, ...this.word(stmt.immediate));
+            break;
+          case 'StorInstr':
+            bytes.push(Opcodes.STOR, ...this.word(stmt.address), stmt.register);
+            break;
+          case 'StorbInstr':
+            bytes.push(Opcodes.STORB, ...this.word(stmt.address), stmt.register);
+            break;
+          case 'StorrInstr':
+            bytes.push(Opcodes.STORR, stmt.register1, stmt.register2);
+            break;
+          case 'StorrbInstr':
+            bytes.push(Opcodes.STORRB, stmt.register1, stmt.register2);
+            break;
+          case 'LodrInstr':
+            bytes.push(Opcodes.LODR, stmt.register, ...this.word(stmt.address));
+            break;
+          case 'LodrbInstr':
+            bytes.push(Opcodes.LODRB, stmt.register, ...this.word(stmt.address));
+            break;
           case 'JmpiInstr':
             bytes.push(...this.jmpi(stmt.address));
             break;

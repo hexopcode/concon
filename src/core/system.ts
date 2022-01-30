@@ -64,6 +64,39 @@ export class System {
         case Opcodes.MOVI:
           this.movi();
           continue next;
+        case Opcodes.MOVR:
+          this.movr();
+          continue next;
+        case Opcodes.STOI:
+          this.stoi();
+          continue next;
+        case Opcodes.STOIB:
+          this.stoib();
+          continue next;
+        case Opcodes.STORI:
+          this.stori();
+          continue next;
+        case Opcodes.STORIB:
+          this.storib();
+          continue next;
+        case Opcodes.STOR:
+          this.stor();
+          continue next;
+        case Opcodes.STORB:
+          this.storb();
+          continue next;
+        case Opcodes.STORR:
+          this.storr();
+          continue next;
+        case Opcodes.STORRB:
+          this.storrb();
+          continue next;
+        case Opcodes.LODR:
+          this.lodr();
+          continue next;
+        case Opcodes.LODRB:
+          this.lodrb();
+          continue next;
         case Opcodes.JMPI:
           this.jmpi();
           continue next;
@@ -87,6 +120,10 @@ export class System {
     return hi << 8 | lo;
   }
 
+  private address(): number {
+    return this.immediate();
+  }
+
   private checkMemoryBoundary(addr: number) {
     if (addr >= this.memory.length) {
       throw new Error('Invalid memory access: reached past the end of memory area.');
@@ -108,8 +145,98 @@ export class System {
     this.registers[register] = immediate;
   }
 
+  private movr() {
+    const reg1 = this.register();
+    const reg2 = this.register();
+    this.registers[reg1] = this.registers[reg2];
+  }
+
+  private stoi() {
+    const addr = this.address();
+    const imm = this.immediate();
+    this.checkMemoryBoundary(addr + 1);
+    this.memory[addr] = imm >> 8;
+    this.memory[addr + 1] = imm & 0xff;
+  }
+
+  private stoib() {
+    const addr = this.address();
+    const imm = this.immediate();
+    this.checkMemoryBoundary(addr);
+    this.memory[addr] = imm & 0xff;
+  }
+
+  private stori() {
+    const reg = this.register();
+    const addr  = this.registers[reg];
+    const imm = this.immediate();
+    this.checkMemoryBoundary(addr + 1);
+    this.memory[addr] = imm >> 8;
+    this.memory[addr + 1] = imm & 0xff;
+  }
+
+  private storib() {
+    const reg = this.register();
+    const addr  = this.registers[reg];
+    const imm = this.immediate();
+    this.checkMemoryBoundary(addr);
+    this.memory[addr] = imm & 0xff;
+  }
+
+  private stor() {
+    const addr = this.address();
+    const reg = this.register();
+    const imm = this.registers[reg];
+    this.checkMemoryBoundary(addr + 1);
+    this.memory[addr] = imm >> 8;
+    this.memory[addr + 1] = imm & 0xff;
+  }
+
+  private storb() {
+    const addr = this.address();
+    const reg = this.register();
+    const imm = this.registers[reg];
+    this.checkMemoryBoundary(addr);
+    this.memory[addr] = imm & 0xff;
+  }
+
+  private storr() {
+    const reg1 = this.register();
+    const addr = this.registers[reg1];
+    const reg2 = this.register();
+    const imm = this.registers[reg2];
+    this.checkMemoryBoundary(addr + 1);
+    this.memory[addr] = imm >> 8;
+    this.memory[addr + 1] = imm & 0xff;
+  }
+
+  private storrb() {
+    const reg1 = this.register();
+    const addr = this.registers[reg1];
+    const reg2 = this.register();
+    const imm = this.registers[reg2];
+    this.checkMemoryBoundary(addr);
+    this.memory[addr] = imm & 0xff;
+  }
+
+  private lodr() {
+    const reg = this.register();
+    const addr = this.address();
+    this.checkMemoryBoundary(addr);
+    const imm = this.memory[addr] << 8 | this.memory[addr + 1];
+    this.registers[reg] = imm;
+  }
+
+  private lodrb() {
+    const reg = this.register();
+    const addr = this.address();
+    this.checkMemoryBoundary(addr);
+    const imm = this.memory[addr];
+    this.registers[reg] = imm;
+  }
+
   private jmpi() {
-    const addr = this.immediate();
+    const addr = this.address();
     this.registers[Registers.RIP] = addr;
   }
 }

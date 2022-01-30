@@ -15,6 +15,17 @@ export enum TokenType {
   VSYNC,
 
   MOVI,
+  MOVR,
+  STOI,
+  STOIB,
+  STORI,
+  STORIB,
+  STOR,
+  STORB,
+  STORR,
+  STORRB,
+  LODR,
+  LODRB,
 
   JMPI,
 
@@ -27,6 +38,17 @@ const Keywords: Map<string, TokenType> = new Map(Object.entries({
   'VSYNC': TokenType.VSYNC,
   
   'MOVI': TokenType.MOVI,
+  'MOVR': TokenType.MOVR,
+  'STOI': TokenType.STOI,
+  'STOIB': TokenType.STOIB,
+  'STORI': TokenType.STORI,
+  'STORIB': TokenType.STORIB,
+  'STOR': TokenType.STOR,
+  'STORB': TokenType.STORB,
+  'STORR': TokenType.STORR,
+  'STORRB': TokenType.STORRB,
+  'LODR': TokenType.LODR,
+  'LODRB': TokenType.LODRB,
 
   'JMPI': TokenType.JMPI,
 }));
