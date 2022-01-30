@@ -30,7 +30,7 @@ export class System {
     this.loadOperatingSystem();
   }
 
-  loadOperatingSystem() {
+  private loadOperatingSystem() {
     this.memory.set(create_os_image(), MEMORY_OS_OFFSET);
   }
 
@@ -44,6 +44,7 @@ export class System {
   }
 
   debugMem(start: number, length: number = 1): Uint8Array {
+    // FIXME: use an ArrayBuffer to prevent copy
     return this.memory.slice(start, start + length);
   }
 
