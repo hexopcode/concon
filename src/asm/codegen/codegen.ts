@@ -63,6 +63,12 @@ class Codegen {
           case 'LodrbInstr':
             bytes.push(Opcodes.LODRB, stmt.register, ...this.word(stmt.address));
             break;
+          case 'LodrrInstr':
+            bytes.push(Opcodes.LODRR, stmt.register1, stmt.register2);
+            break;
+          case 'LodrrbInstr':
+            bytes.push(Opcodes.LODRRB, stmt.register1, stmt.register2);
+            break;
           case 'JmpiInstr':
             bytes.push(...this.jmpi(stmt.address));
             break;

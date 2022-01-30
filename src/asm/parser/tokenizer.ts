@@ -26,6 +26,8 @@ export enum TokenType {
   STORRB,
   LODR,
   LODRB,
+  LODRR,
+  LODRRB,
 
   JMPI,
 
@@ -49,6 +51,8 @@ const Keywords: Map<string, TokenType> = new Map(Object.entries({
   'STORRB': TokenType.STORRB,
   'LODR': TokenType.LODR,
   'LODRB': TokenType.LODRB,
+  'LODRR': TokenType.LODRR,
+  'LODRRB': TokenType.LODRRB,
 
   'JMPI': TokenType.JMPI,
 }));

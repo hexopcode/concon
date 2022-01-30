@@ -5,6 +5,8 @@ import {
   MovrInstr,
   LodrInstr,
   LodrbInstr,
+  LodrrInstr,
+  LodrrbInstr,
   StoiInstr,
   StoibInstr,
   StoriInstr,
@@ -139,6 +141,10 @@ class Parser {
       return this.lodrInstr();
     } else if (this.match(TokenType.LODRB)) {
       return this.lodrbInstr();
+    } else if (this.match(TokenType.LODRR)) {
+      return this.lodrrInstr();
+    } else if (this.match(TokenType.LODRRB)) {
+      return this.lodrrbInstr();
     } else if (this.match(TokenType.JMPI)) {
       return this.jmpiInstr();
     }
@@ -314,6 +320,32 @@ class Parser {
       line: this.line,
       register: (reg.literal!) as Registers,
       address: (addr.literal!) as number,
+    };
+  }
+
+  private lodrrInstr(): LodrrInstr {
+    const reg1 = this.reg();
+    this.comma();
+    const reg2 = this.reg();
+    return {
+      type: 'LodrrInstr',
+      opcode: Opcodes.LODRR,
+      line: this.line,
+      register1: (reg1.literal!) as Registers,
+      register2: (reg2.literal!) as Registers,
+    };
+  }
+
+  private lodrrbInstr(): LodrrbInstr {
+    const reg1 = this.reg();
+    this.comma();
+    const reg2 = this.reg();
+    return {
+      type: 'LodrrbInstr',
+      opcode: Opcodes.LODRRB,
+      line: this.line,
+      register1: (reg1.literal!) as Registers,
+      register2: (reg2.literal!) as Registers,
     };
   }
 

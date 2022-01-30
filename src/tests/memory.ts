@@ -209,4 +209,28 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
 
     t.assert(sys.debug(Registers.R1) == 0x12, 'Register is set');
   });
+
+  t.test('LODRR reads memory at address from register into register', () => {
+    const result = assembleAndBoot(sys, `
+        STOI 0x3000, 0x1234
+        MOVI R0, 0x3000
+        LODRR R1, R0
+        END
+    `);
+    t.assert(result == Result.END, 'Program runs');
+
+    t.assert(sys.debug(Registers.R1) == 0x1234, 'Register is set');
+  });
+
+  t.test('LODRRB reads memory at address from register into register', () => {
+    const result = assembleAndBoot(sys, `
+        STOI 0x3000, 0x1234
+        MOVI R0, 0x3000
+        LODRRB R1, R0
+        END
+    `);
+    t.assert(result == Result.END, 'Program runs');
+
+    t.assert(sys.debug(Registers.R1) == 0x12, 'Register is set');
+  });
 };

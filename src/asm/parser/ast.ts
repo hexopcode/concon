@@ -75,6 +75,16 @@ export type LodrbInstr = AstInstr<'LodrbInstr', Opcodes.LODRB> & {
   address: number,
 };
 
+export type LodrrInstr = AstInstr<'LodrrInstr', Opcodes.LODRR> & {
+  register1: Registers,
+  register2: Registers,
+};
+
+export type LodrrbInstr = AstInstr<'LodrrbInstr', Opcodes.LODRRB> & {
+  register1: Registers,
+  register2: Registers,
+};
+
 export type JmpiInstr = AstInstr<'JmpiInstr', Opcodes.JMPI> & {
   address: number,
 };
@@ -95,6 +105,8 @@ export type Instr =
     StorrbInstr |
     LodrInstr |
     LodrbInstr |
+    LodrrInstr |
+    LodrrbInstr |
     JmpiInstr;
 
 export type Stmt = Instr;

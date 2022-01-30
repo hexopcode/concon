@@ -17,6 +17,8 @@ export enum Opcodes {
   STORRB = 0x19,
   LODR = 0x1A,
   LODRB = 0x1B,
+  LODRR = 0x1C,
+  LODRRB = 0x1D,
 
   // Jump
   JMPI = 0x50,

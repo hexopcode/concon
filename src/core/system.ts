@@ -97,6 +97,12 @@ export class System {
         case Opcodes.LODRB:
           this.lodrb();
           continue next;
+        case Opcodes.LODRR:
+          this.lodrr();
+          continue next;
+        case Opcodes.LODRRB:
+          this.lodrrb();
+          continue next;
         case Opcodes.JMPI:
           this.jmpi();
           continue next;
@@ -222,7 +228,7 @@ export class System {
   private lodr() {
     const reg = this.register();
     const addr = this.address();
-    this.checkMemoryBoundary(addr);
+    this.checkMemoryBoundary(addr + 1);
     const imm = this.memory[addr] << 8 | this.memory[addr + 1];
     this.registers[reg] = imm;
   }
@@ -233,6 +239,24 @@ export class System {
     this.checkMemoryBoundary(addr);
     const imm = this.memory[addr];
     this.registers[reg] = imm;
+  }
+
+  private lodrr() {
+    const reg1 = this.register();
+    const reg2 = this.register();
+    const addr = this.registers[reg2];
+    this.checkMemoryBoundary(addr + 1);
+    const imm = this.memory[addr] << 8 | this.memory[addr + 1];
+    this.registers[reg1] = imm;
+  }
+
+  private lodrrb() {
+    const reg1 = this.register();
+    const reg2 = this.register();
+    const addr = this.registers[reg2];
+    this.checkMemoryBoundary(addr);
+    const imm = this.memory[addr];
+    this.registers[reg1] = imm;
   }
 
   private jmpi() {
