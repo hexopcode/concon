@@ -1,3 +1,4 @@
+import { MEMORY_OS_SIZE, MEMORY_SCREEN_OFFSET, MEMORY_SCREEN_SIZE } from '.';
 import {assert, unreachable} from '../lib';
 import {create_os_image} from '../os';
 import {
@@ -6,6 +7,7 @@ import {
   MEMORY_PROGRAM_SIZE,
   MEMORY_SIZE,
   REGISTER_COUNT,
+  MemoryArea,
   Registers,
 } from './arch';
 import {Opcodes} from './opcodes';
@@ -16,11 +18,19 @@ export enum Result {
 }
 
 export class System {
+  private readonly buffer: ArrayBuffer;
   private readonly memory: Uint8Array;
+  private readonly memoryAreas: Map<MemoryArea, Uint8Array>;
   private readonly registers: Uint16Array;
 
   constructor() {
-    this.memory = new Uint8Array(MEMORY_SIZE);
+    this.buffer = new ArrayBuffer(MEMORY_SIZE);
+    this.memory = new Uint8Array(this.buffer);
+    this.memoryAreas = new Map([
+      [MemoryArea.OS, new Uint8Array(this.buffer, MEMORY_OS_OFFSET, MEMORY_OS_SIZE)],
+      [MemoryArea.SCREEN, new Uint8Array(this.buffer, MEMORY_SCREEN_OFFSET, MEMORY_SCREEN_SIZE)],
+      [MemoryArea.PROGRAM, new Uint8Array(this.buffer, MEMORY_PROGRAM_OFFSET, MEMORY_PROGRAM_SIZE)],
+    ]);
     this.registers = new Uint16Array(REGISTER_COUNT);
   }
 
@@ -39,12 +49,15 @@ export class System {
     this.memory.set(program, MEMORY_PROGRAM_OFFSET);
   }
 
+  memoryArea(area: MemoryArea): Uint8Array {
+    return this.memoryAreas.get(area)!;
+  }
+
   debug(query: Registers): number {
     return this.registers[query];
   }
 
   debugMem(start: number, length: number = 1): Uint8Array {
-    // FIXME: use an ArrayBuffer to prevent copy
     return this.memory.slice(start, start + length);
   }
 

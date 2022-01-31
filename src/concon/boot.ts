@@ -1,5 +1,5 @@
 import {assemble} from '../asm';
-import {MEMORY_SCREEN_OFFSET, MEMORY_SCREEN_SIZE, Result, System} from '../core';
+import {MemoryArea, MEMORY_SCREEN_OFFSET, MEMORY_SCREEN_SIZE, Result, System} from '../core';
 import {runTests} from '../lib';
 import {ALL_TESTS} from '../tests';
 import {ConconScreen} from './components';
@@ -24,8 +24,7 @@ if (sys.boot() == Result.VSYNC) {
 }
 
 function cycle() {
-  const buffer: Uint8Array = sys.debugMem(MEMORY_SCREEN_OFFSET, MEMORY_SCREEN_SIZE);
-  screen.render(buffer);
+  screen.render(sys.memoryArea(MemoryArea.SCREEN));
 
   const result = sys.cycle();
   if (result == Result.VSYNC) {

@@ -46,6 +46,12 @@ export enum Inputs {
 
 export const REGISTER_COUNT = 20;
 
+export enum MemoryArea {
+  OS,
+  SCREEN,
+  PROGRAM,
+}
+
 export const MEMORY_OS_OFFSET = 0x0000;
 export const MEMORY_SCREEN_OFFSET = 0x1000;
 export const MEMORY_PROGRAM_OFFSET = 0x2000;
