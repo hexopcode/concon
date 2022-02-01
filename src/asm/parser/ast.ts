@@ -110,3 +110,5 @@ export type Instr =
     JmpiInstr;
 
 export type Stmt = Instr;
+
+export type Ast = Stmt[];

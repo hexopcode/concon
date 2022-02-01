@@ -1,5 +1,6 @@
 import {Token, TokenType} from './tokenizer';
 import {
+  Ast,
   Stmt,
   MoviInstr,
   MovrInstr,
@@ -20,9 +21,8 @@ import {
 import {Opcodes, Registers} from '../../core';
 import {unreachable} from '../../lib';
 import {AsmErrorCollector} from '../base';
-import {  } from '.';
 
-export function parse(tokens: Token[], collectError: AsmErrorCollector) {
+export function parse(tokens: Token[], collectError: AsmErrorCollector): Ast {
   return new Parser(tokens, collectError).parse();
 }
 
@@ -39,7 +39,7 @@ class Parser {
     this.line = 1;
   }
 
-  parse(): Stmt[] {
+  parse(): Ast {
     const statements: Stmt[] = [];
     while (!this.isAtEnd()) {
       try {

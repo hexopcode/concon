@@ -1,4 +1,4 @@
-import {Opcodes, Registers} from '../../core';
+import {Opcodes} from '../../core';
 import {unreachable} from '../../lib';
 import {AsmErrorCollector} from '../base';
 import {Stmt} from '../parser';
@@ -28,7 +28,7 @@ class Codegen {
             bytes.push(stmt.opcode);
             break;
           case 'MoviInstr':
-            bytes.push(...this.movi(stmt.register, stmt.immediate));
+            bytes.push(Opcodes.MOVI, stmt.register, ...this.word(stmt.immediate));
             break;
           case 'MovrInstr':
             bytes.push(Opcodes.MOVR, stmt.register1, stmt.register2);
@@ -70,7 +70,8 @@ class Codegen {
             bytes.push(Opcodes.LODRRB, stmt.register1, stmt.register2);
             break;
           case 'JmpiInstr':
-            bytes.push(...this.jmpi(stmt.address));
+            // TODO: add support for labels
+            bytes.push(Opcodes.JMPI, ...this.word(stmt.address));
             break;
           default:
             unreachable(`Unsupported statement: ${stmt}`);
@@ -88,21 +89,5 @@ class Codegen {
 
   word(n: number): number[] {
     return [n >> 8, n & 0xff];
-  }
-
-  movi(register: Registers, immediate: number): number[] {
-    switch (register) {
-      case Registers.RIP:
-      case Registers.RFL:
-      case Registers.RIN:
-        throw new Error(`Cannot set value for register ${Registers[register]}`);
-      default:
-        return [Opcodes.MOVI, register, ...this.word(immediate)];
-    }
-  }
-
-  jmpi(address: number): number[] {
-    // TODO: add support for labels
-    return [Opcodes.JMPI, ...this.word(address)];
   }
 }
