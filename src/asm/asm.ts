@@ -45,9 +45,9 @@ export function assemble(source: string): Uint8Array {
     return END_PROGRAM;
   }
   
-  console.log(tokens.map(tokenString));
-  console.log(ast);
-  console.log(bytes);
+  // console.log(tokens.map(tokenString));
+  // console.log(ast);
+  // console.log(bytes);
   
   return bytes;
 }

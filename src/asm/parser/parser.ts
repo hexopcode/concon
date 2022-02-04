@@ -16,6 +16,18 @@ import {
   StorbInstr,
   StorrInstr,
   StorrbInstr,
+  AddiInstr,
+  AddrInstr,
+  SubiInstr,
+  SubrInstr,
+  MuliInstr,
+  MulrInstr,
+  DiviInstr,
+  DivrInstr,
+  ModiInstr,
+  ModrInstr,
+  IncInstr,
+  DecInstr,
   JmpiInstr,
 } from './ast';
 import {Opcodes, Registers} from '../../core';
@@ -145,6 +157,30 @@ class Parser {
       return this.lodrrInstr();
     } else if (this.match(TokenType.LODRRB)) {
       return this.lodrrbInstr();
+    } else if (this.match(TokenType.ADDI)) {
+      return this.addiInstr();
+    } else if (this.match(TokenType.ADDR)) {
+      return this.addrInstr();
+    } else if (this.match(TokenType.SUBI)) {
+      return this.subiInstr();
+    } else if (this.match(TokenType.SUBR)) {
+      return this.subrInstr();
+    } else if (this.match(TokenType.MULI)) {
+      return this.muliInstr();
+    } else if (this.match(TokenType.MULR)) {
+      return this.mulrInstr();
+    } else if (this.match(TokenType.DIVI)) {
+      return this.diviInstr();
+    } else if (this.match(TokenType.DIVR)) {
+      return this.divrInstr();
+    } else if (this.match(TokenType.MODI)) {
+      return this.modiInstr();
+    } else if (this.match(TokenType.MODR)) {
+      return this.modrInstr();
+    } else if (this.match(TokenType.INC)) {
+      return this.incInstr();
+    } else if (this.match(TokenType.DEC)) {
+      return this.decInstr();
     } else if (this.match(TokenType.JMPI)) {
       return this.jmpiInstr();
     }
@@ -346,6 +382,156 @@ class Parser {
       line: this.line,
       register1: (reg1.literal!) as Registers,
       register2: (reg2.literal!) as Registers,
+    };
+  }
+
+  private addiInstr(): AddiInstr {
+    const reg = this.reg();
+    this.comma();
+    const imm = this.imm();
+    return {
+      type: 'AddiInstr',
+      opcode: Opcodes.ADDI,
+      line: this.line,
+      register: (reg.literal!) as Registers,
+      immediate: (imm.literal!) as number,
+    };
+  }
+
+  private addrInstr(): AddrInstr {
+    const reg1 = this.reg();
+    this.comma();
+    const reg2 = this.reg();
+    return {
+      type: 'AddrInstr',
+      opcode: Opcodes.ADDR,
+      line: this.line,
+      register1: (reg1.literal!) as Registers,
+      register2: (reg2.literal!) as Registers,
+    };
+  }
+
+  private subiInstr(): SubiInstr {
+    const reg = this.reg();
+    this.comma();
+    const imm = this.imm();
+    return {
+      type: 'SubiInstr',
+      opcode: Opcodes.SUBI,
+      line: this.line,
+      register: (reg.literal!) as Registers,
+      immediate: (imm.literal!) as number,
+    };
+  }
+
+  private subrInstr(): SubrInstr {
+    const reg1 = this.reg();
+    this.comma();
+    const reg2 = this.reg();
+    return {
+      type: 'SubrInstr',
+      opcode: Opcodes.SUBR,
+      line: this.line,
+      register1: (reg1.literal!) as Registers,
+      register2: (reg2.literal!) as Registers,
+    };
+  }
+
+  private muliInstr(): MuliInstr {
+    const reg = this.reg();
+    this.comma();
+    const imm = this.imm();
+    return {
+      type: 'MuliInstr',
+      opcode: Opcodes.MULI,
+      line: this.line,
+      register: (reg.literal!) as Registers,
+      immediate: (imm.literal!) as number,
+    };
+  }
+
+  private mulrInstr(): MulrInstr {
+    const reg1 = this.reg();
+    this.comma();
+    const reg2 = this.reg();
+    return {
+      type: 'MulrInstr',
+      opcode: Opcodes.MULR,
+      line: this.line,
+      register1: (reg1.literal!) as Registers,
+      register2: (reg2.literal!) as Registers,
+    };
+  }
+
+  private diviInstr(): DiviInstr {
+    const reg = this.reg();
+    this.comma();
+    const imm = this.imm();
+    return {
+      type: 'DiviInstr',
+      opcode: Opcodes.DIVI,
+      line: this.line,
+      register: (reg.literal!) as Registers,
+      immediate: (imm.literal!) as number,
+    };
+  }
+
+  private divrInstr(): DivrInstr {
+    const reg1 = this.reg();
+    this.comma();
+    const reg2 = this.reg();
+    return {
+      type: 'DivrInstr',
+      opcode: Opcodes.DIVR,
+      line: this.line,
+      register1: (reg1.literal!) as Registers,
+      register2: (reg2.literal!) as Registers,
+    };
+  }
+
+  private modiInstr(): ModiInstr {
+    const reg = this.reg();
+    this.comma();
+    const imm = this.imm();
+    return {
+      type: 'ModiInstr',
+      opcode: Opcodes.MODI,
+      line: this.line,
+      register: (reg.literal!) as Registers,
+      immediate: (imm.literal!) as number,
+    };
+  }
+
+  private modrInstr(): ModrInstr {
+    const reg1 = this.reg();
+    this.comma();
+    const reg2 = this.reg();
+    return {
+      type: 'ModrInstr',
+      opcode: Opcodes.MODR,
+      line: this.line,
+      register1: (reg1.literal!) as Registers,
+      register2: (reg2.literal!) as Registers,
+    };
+  }
+
+  private incInstr(): IncInstr {
+    const reg = this.reg();
+    return {
+      type: 'IncInstr',
+      opcode: Opcodes.INC,
+      line: this.line,
+      register: (reg.literal!) as Registers,
+    };
+  }
+
+  private decInstr(): DecInstr {
+    const reg = this.reg();
+    return {
+      type: 'DecInstr',
+      opcode: Opcodes.DEC,
+      line: this.line,
+      register: (reg.literal!) as Registers,
     };
   }
 

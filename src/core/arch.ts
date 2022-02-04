@@ -27,10 +27,14 @@ export enum Registers {
   RIN = 0x13,
 }
 
+export const MAX_VALUE = 0xFFFF;
+export const MIN_VALUE = 0x0000;
+
 export enum Flags {
   ZERO = 0x00,
   NEGATIVE = 0x01,
   OVERFLOW = 0x02,
+  DIVBYZERO = 0x03,
 }
 
 export enum Inputs {

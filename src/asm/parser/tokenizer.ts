@@ -29,6 +29,19 @@ export enum TokenType {
   LODRR,
   LODRRB,
 
+  ADDI,
+  ADDR,
+  SUBI,
+  SUBR,
+  MULI,
+  MULR,
+  DIVI,
+  DIVR,
+  MODI,
+  MODR,
+  INC,
+  DEC,
+
   JMPI,
 
   EOF,
@@ -53,6 +66,19 @@ const Keywords: Map<string, TokenType> = new Map(Object.entries({
   'LODRB': TokenType.LODRB,
   'LODRR': TokenType.LODRR,
   'LODRRB': TokenType.LODRRB,
+
+  'ADDI': TokenType.ADDI,
+  'ADDR': TokenType.ADDR,
+  'SUBI': TokenType.SUBI,
+  'SUBR': TokenType.SUBR,
+  'MULI': TokenType.MULI,
+  'MULR': TokenType.MULR,
+  'DIVI': TokenType.DIVI,
+  'DIVR': TokenType.DIVR,
+  'MODI': TokenType.MODI,
+  'MODR': TokenType.MODR,
+  'INC': TokenType.INC,
+  'DEC': TokenType.DEC,
 
   'JMPI': TokenType.JMPI,
 }));

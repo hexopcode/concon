@@ -1,12 +1,17 @@
-import { MEMORY_OS_SIZE, MEMORY_SCREEN_OFFSET, MEMORY_SCREEN_SIZE } from '.';
 import {assert, unreachable} from '../lib';
 import {create_os_image} from '../os';
 import {
+  MAX_VALUE,
+  MIN_VALUE,
+  MEMORY_OS_SIZE,
   MEMORY_OS_OFFSET,
   MEMORY_PROGRAM_OFFSET,
   MEMORY_PROGRAM_SIZE,
+  MEMORY_SCREEN_OFFSET,
+  MEMORY_SCREEN_SIZE,
   MEMORY_SIZE,
   REGISTER_COUNT,
+  Flags,
   MemoryArea,
   Registers,
 } from './arch';
@@ -58,7 +63,7 @@ export class System {
   }
 
   debugMem(start: number, length: number = 1): Uint8Array {
-    return this.memory.slice(start, start + length);
+    return new Uint8Array(this.buffer, start, length);
   }
 
   boot(): Result {
@@ -117,6 +122,42 @@ export class System {
         case Opcodes.LODRRB:
           this.lodrrb();
           continue next;
+        case Opcodes.ADDI:
+          this.addi();
+          continue next;
+        case Opcodes.ADDR:
+          this.addr();
+          continue next;
+        case Opcodes.SUBI:
+          this.subi();
+          continue next;
+        case Opcodes.SUBR:
+          this.subr();
+          continue next;
+        case Opcodes.MULI:
+          this.muli();
+          continue next;
+        case Opcodes.MULR:
+          this.mulr();
+          continue next;
+        case Opcodes.DIVI:
+          this.divi();
+          continue next;
+        case Opcodes.DIVR:
+          this.divr();
+          continue next;
+        case Opcodes.MODI:
+          this.modi();
+          continue next;
+        case Opcodes.MODR:
+          this.modr();
+          continue next;
+        case Opcodes.INC:
+          this.inc();
+          continue next;
+        case Opcodes.DEC:
+          this.dec();
+          continue next;
         case Opcodes.JMPI:
           this.jmpi();
           continue next;
@@ -147,6 +188,23 @@ export class System {
   private checkMemoryBoundary(addr: number) {
     if (addr >= this.memory.length) {
       throw new Error('Invalid memory access: reached past the end of memory area.');
+    }
+  }
+
+  private setRegisterAndFlags(reg: Registers, value: number) {
+    this.registers[Registers.RFL] = 0;
+
+    if (value > MAX_VALUE) {
+      this.registers[reg] = MAX_VALUE;
+      this.registers[Registers.RFL] = 1 << Flags.OVERFLOW;
+    } else if (value == 0) {
+      this.registers[reg] = 0;
+      this.registers[Registers.RFL] = 1 << Flags.ZERO;
+    } else if (value < MIN_VALUE) {
+      this.registers[reg] = MIN_VALUE;
+      this.registers[Registers.RFL] = 1 << Flags.NEGATIVE;
+    } else {
+      this.registers[reg] = value;
     }
   }
 
@@ -271,6 +329,106 @@ export class System {
     this.checkMemoryBoundary(addr);
     const imm = this.memory[addr];
     this.registers[reg1] = imm;
+  }
+
+  private addi() {
+    const reg = this.register();
+    const imm = this.immediate();
+    const value = this.registers[reg] + imm;
+    this.setRegisterAndFlags(reg, value);
+  }
+
+  private addr() {
+    const reg1 = this.register();
+    const reg2 = this.register();
+    const value = this.registers[reg1] + this.registers[reg2];
+    this.setRegisterAndFlags(reg1, value);
+  }
+
+  private subi() {
+    const reg = this.register();
+    const imm = this.immediate();
+    const value = this.registers[reg] - imm;
+    this.setRegisterAndFlags(reg, value);
+  }
+
+  private subr() {
+    const reg1 = this.register();
+    const reg2 = this.register();
+    const value = this.registers[reg1] - this.registers[reg2];
+    this.setRegisterAndFlags(reg1, value);
+  }
+
+  private muli() {
+    const reg = this.register();
+    const imm = this.immediate();
+    const value = this.registers[reg] * imm;
+    this.setRegisterAndFlags(reg, value);
+  }
+
+  private mulr() {
+    const reg1 = this.register();
+    const reg2 = this.register();
+    const value = this.registers[reg1] * this.registers[reg2];
+    this.setRegisterAndFlags(reg1, value);
+  }
+
+  private divi() {
+    const reg = this.register();
+    const imm = this.immediate();
+    if (imm == 0) {
+      this.registers[Registers.RFL] = 1 << Flags.DIVBYZERO;
+    } else {
+      const value = this.registers[reg] / imm | 0;
+      this.setRegisterAndFlags(reg, value);
+    }
+  }
+
+  private divr() {
+    const reg1 = this.register();
+    const reg2 = this.register();
+    const imm = this.registers[reg2];
+    if (imm == 0) {
+      this.registers[Registers.RFL] = 1 << Flags.DIVBYZERO;
+    } else {
+      const value = this.registers[reg1] / imm | 0;
+      this.setRegisterAndFlags(reg1, value);
+    }
+  }
+
+  private modi() {
+    const reg = this.register();
+    const imm = this.immediate();
+    if (imm == 0) {
+      this.registers[Registers.RFL] = 1 << Flags.DIVBYZERO;
+    } else {
+      const value = this.registers[reg] % imm;
+      this.setRegisterAndFlags(reg, value);
+    }
+  }
+
+  private modr() {
+    const reg1 = this.register();
+    const reg2 = this.register();
+    const imm = this.registers[reg2];
+    if (imm == 0) {
+      this.registers[Registers.RFL] = 1 << Flags.DIVBYZERO;
+    } else {
+      const value = this.registers[reg1] % imm;
+      this.setRegisterAndFlags(reg1, value);
+    }
+  }
+
+  private inc() {
+    const reg = this.register();
+    const imm = this.registers[reg];
+    this.setRegisterAndFlags(reg, imm + 1);
+  }
+
+  private dec() {
+    const reg = this.register();
+    const imm = this.registers[reg];
+    this.setRegisterAndFlags(reg, imm - 1);
   }
 
   private jmpi() {

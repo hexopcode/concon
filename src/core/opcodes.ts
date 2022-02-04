@@ -20,6 +20,20 @@ export enum Opcodes {
   LODRR = 0x1C,
   LODRRB = 0x1D,
 
+  // Arithmetic
+  ADDI = 0x20,
+  ADDR = 0x21,
+  SUBI = 0x22,
+  SUBR = 0x23,
+  MULI = 0x24,
+  MULR = 0x25,
+  DIVI = 0x26,
+  DIVR = 0x27,
+  MODI = 0x28,
+  MODR = 0x29,
+  INC = 0x2A,
+  DEC = 0x2B,
+
   // Jump
   JMPI = 0x50,
 }

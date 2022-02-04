@@ -69,6 +69,42 @@ class Codegen {
           case 'LodrrbInstr':
             bytes.push(Opcodes.LODRRB, stmt.register1, stmt.register2);
             break;
+          case 'AddiInstr':
+            bytes.push(Opcodes.ADDI, stmt.register, ...this.word(stmt.immediate));
+            break;
+          case 'AddrInstr':
+            bytes.push(Opcodes.ADDR, stmt.register1, stmt.register2);
+            break;
+          case 'SubiInstr':
+            bytes.push(Opcodes.SUBI, stmt.register, ...this.word(stmt.immediate));
+            break;
+          case 'SubrInstr':
+            bytes.push(Opcodes.SUBR, stmt.register1, stmt.register2);
+            break;
+          case 'MuliInstr':
+            bytes.push(Opcodes.MULI, stmt.register, ...this.word(stmt.immediate));
+            break;
+          case 'MulrInstr':
+            bytes.push(Opcodes.MULR, stmt.register1, stmt.register2);
+            break;
+          case 'DiviInstr':
+            bytes.push(Opcodes.DIVI, stmt.register, ...this.word(stmt.immediate));
+            break;
+          case 'DivrInstr':
+            bytes.push(Opcodes.DIVR, stmt.register1, stmt.register2);
+            break;
+          case 'ModiInstr':
+            bytes.push(Opcodes.MODI, stmt.register, ...this.word(stmt.immediate));
+            break;
+          case 'ModrInstr':
+            bytes.push(Opcodes.MODR, stmt.register1, stmt.register2);
+            break;
+          case 'IncInstr':
+            bytes.push(Opcodes.INC, stmt.register);
+            break;
+          case 'DecInstr':
+            bytes.push(Opcodes.DEC, stmt.register);
+            break;
           case 'JmpiInstr':
             // TODO: add support for labels
             bytes.push(Opcodes.JMPI, ...this.word(stmt.address));

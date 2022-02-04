@@ -17,11 +17,15 @@ type TestResult = {
 }
 
 export function runTests(...specs: TestSpec[]): Set<TestResult> {
-  const runner = new TestRunner();
+  const allResults: TestResult[] = [];
+
   for (const spec of specs) {
+    const runner = new TestRunner();
     spec(runner);
+    allResults.push(...runner.run());
   }
-  return runner.run();
+
+  return new Set(allResults);
 }
 
 export class TestRunner {
