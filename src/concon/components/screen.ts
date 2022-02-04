@@ -3,10 +3,10 @@ const SCALE = 3;
 const PIXELS = SIZE * SCALE;
 
 const GB_PALETTE: Uint8ClampedArray[] = [
-  new Uint8ClampedArray([0x0f, 0x38, 0x0f, 0xff]),  // dark green
-  new Uint8ClampedArray([0x30, 0x62, 0x30, 0xff]),  // medium dark green
-  new Uint8ClampedArray([0x8b, 0xac, 0x0f, 0xff]),  // medium light green
   new Uint8ClampedArray([0x9b, 0xbc, 0x0f, 0xff]),  // light green
+  new Uint8ClampedArray([0x8b, 0xac, 0x0f, 0xff]),  // medium light green
+  new Uint8ClampedArray([0x30, 0x62, 0x30, 0xff]),  // medium dark green
+  new Uint8ClampedArray([0x0f, 0x38, 0x0f, 0xff]),  // dark green
 ];
 
 const DEBUG_PALETTE: Uint8ClampedArray[] = [
