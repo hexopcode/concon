@@ -180,7 +180,9 @@ class Tokenizer {
               this.line++;
             }
           }
-          if (this.isAtEnd()) {
+          if (this.match('*') && this.peek() == '/') {
+            this.advance();
+          } else if (this.isAtEnd()) {
             this.collectError({
               line,
               message: `Could not find closing comment section`,
