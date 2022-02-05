@@ -29,7 +29,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0, 'Register R0 contains result');
-    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO) == 1, 'Zero flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
   t.test('ADDI overflows', () => {
@@ -41,7 +41,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program run');
 
     t.assert(sys.debug(Registers.R0) == MAX_VALUE, 'Register R0 is MAX_VALUE');
-    t.assert((sys.debug(Registers.RFL) >> Flags.OVERFLOW) == 1, 'Overflow flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.OVERFLOW & 1) == 1, 'Overflow flag set');
   });
 
   t.test('ADDR does addition', () => {
@@ -66,7 +66,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0, 'Register R0 contains result');
-    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO) == 1, 'Zero flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
   t.test('ADDR overflows', () => {
@@ -79,7 +79,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == MAX_VALUE, 'Register R0 is MAX_VALUE');
-    t.assert((sys.debug(Registers.RFL) >> Flags.OVERFLOW) == 1, 'Overflow flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.OVERFLOW & 1) == 1, 'Overflow flag set');
   });
 
   t.test('SUBI does subtraction', () => {
@@ -102,7 +102,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0, 'Register R0 contains result');
-    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO) == 1, 'Zero flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
   t.test('SUBI sets negative flag', () => {
@@ -114,7 +114,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0, 'Register R0 contains result');
-    t.assert((sys.debug(Registers.RFL) >> Flags.NEGATIVE) == 1, 'Negative flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.NEGATIVE & 1) == 1, 'Negative flag set');
   });
 
   t.test('SUBR does subtraction', () => {
@@ -139,7 +139,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0, 'Register R0 contains result');
-    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO) == 1, 'Zero flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
   t.test('SUBR sets negative flag', () => {
@@ -152,7 +152,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0, 'Register R0 contains result');
-    t.assert((sys.debug(Registers.RFL) >> Flags.NEGATIVE) == 1, 'Negative flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.NEGATIVE & 1) == 1, 'Negative flag set');
   });
 
   t.test('MULI multiplies', () => {
@@ -175,7 +175,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0, 'Register R0 contains result');
-    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO) == 1, 'Zero flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
   t.test('MULI sets overflow flag', () => {
@@ -187,7 +187,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == MAX_VALUE, 'Register R0 is MAX_VALUE');
-    t.assert((sys.debug(Registers.RFL) >> Flags.OVERFLOW) == 1, 'Overflow flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.OVERFLOW & 1) == 1, 'Overflow flag set');
   });
 
   t.test('MULR multiplies', () => {
@@ -212,7 +212,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0, 'Register R0 contains result');
-    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO) == 1, 'Zero flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
   t.test('MULR sets overflow flag', () => {
@@ -225,7 +225,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == MAX_VALUE, 'Register R0 is MAX_VALUE');
-    t.assert((sys.debug(Registers.RFL) >> Flags.OVERFLOW) == 1, 'Overflow flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.OVERFLOW & 1) == 1, 'Overflow flag set');
   });
 
   t.test('DIVI divides', () => {
@@ -260,7 +260,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0, 'Register R0 contains result');
-    t.assert((sys.debug(Registers.RFL)) >> Flags.ZERO == 1, 'Zero flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
   t.test('DIVI sets divbyzero flag', () => {
@@ -272,7 +272,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 5, 'Register R0 does not contain result');
-    t.assert((sys.debug(Registers.RFL) >> Flags.DIVBYZERO) == 1, 'Divbyzero flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.DIVBYZERO & 1) == 1, 'Divbyzero flag set');
   });
 
   t.test('DIVR divides', () => {
@@ -310,7 +310,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0, 'Register R0 contains result');
-    t.assert((sys.debug(Registers.RFL)) >> Flags.ZERO == 1, 'Zero flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
   t.test('DIVR sets divbyzero flag', () => {
@@ -323,7 +323,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 5, 'Register R0 does not contain result');
-    t.assert((sys.debug(Registers.RFL) >> Flags.DIVBYZERO) == 1, 'Divbyzero flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.DIVBYZERO & 1) == 1, 'Divbyzero flag set');
   });
 
   t.test('MODI modules', () => {
@@ -346,7 +346,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0, 'Register R0 contains result');
-    t.assert((sys.debug(Registers.RFL)) >> Flags.ZERO == 1, 'Zero flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
   t.test('MODI sets divbyzero flag', () => {
@@ -358,7 +358,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 5, 'Register R0 does not contain result');
-    t.assert((sys.debug(Registers.RFL) >> Flags.DIVBYZERO) == 1, 'Divbyzero flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.DIVBYZERO & 1) == 1, 'Divbyzero flag set');
   });
 
   t.test('MODR modules', () => {
@@ -383,7 +383,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0, 'Register R0 contains result');
-    t.assert((sys.debug(Registers.RFL)) >> Flags.ZERO == 1, 'Zero flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
   t.test('MODR sets divbyzero flag', () => {
@@ -396,7 +396,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 5, 'Register R0 does not contain result');
-    t.assert((sys.debug(Registers.RFL) >> Flags.DIVBYZERO) == 1, 'Divbyzero flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.DIVBYZERO & 1) == 1, 'Divbyzero flag set');
   });
 
   t.test('INC increments', () => {
@@ -419,7 +419,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == MAX_VALUE, 'Register R0 set to MAX_VALUE');
-    t.assert((sys.debug(Registers.RFL) >> Flags.OVERFLOW) == 1, 'Overflow flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.OVERFLOW & 1) == 1, 'Overflow flag set');
   });
 
   t.test('DEC decrements', () => {
@@ -442,7 +442,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0, 'Register R0 contains result');
-    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO) == 1, 'Zero flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
   t.test('DEC sets negative flag', () => {
@@ -453,6 +453,6 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0, 'Register R0 contains result');
-    t.assert((sys.debug(Registers.RFL) >> Flags.NEGATIVE) == 1, 'Negative flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.NEGATIVE & 1) == 1, 'Negative flag set');
   });
 };

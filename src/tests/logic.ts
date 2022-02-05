@@ -29,7 +29,7 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == MAX_VALUE, 'Register R0 set to MAX_VALUE');
-    t.assert((sys.debug(Registers.RFL) >> Flags.OVERFLOW) == 1, 'Overflow flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.OVERFLOW & 1) == 1, 'Overflow flag set');
   });
 
   t.test('SHLR shifts', () => {
@@ -54,7 +54,7 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == MAX_VALUE, 'Register R0 set to MAX_VALUE');
-    t.assert((sys.debug(Registers.RFL) >> Flags.OVERFLOW) == 1, 'Overflow flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.OVERFLOW & 1) == 1, 'Overflow flag set');
   });
 
   t.test('SHRI shifts', () => {
@@ -77,7 +77,7 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0, 'Register R0 contains result');
-    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO) == 1, 'Zero flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
   t.test('SHRR shifts', () => {
@@ -102,7 +102,7 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0, 'Register R0 contains result');
-    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO) == 1, 'Zero flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
   t.test('ORI ors', () => {
@@ -125,7 +125,7 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0, 'Register R0 contains result');
-    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO) == 1, 'Zero flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
   t.test('ORR ors', () => {
@@ -150,7 +150,7 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0, 'Register R0 contains result');
-    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO) == 1, 'Zero flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
   t.test('ANDI ands', () => {
@@ -173,7 +173,7 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0, 'Register R0 contains result');
-    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO) == 1, 'Zero flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
   t.test('ANDR ands', () => {
@@ -198,7 +198,7 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0, 'Register R0 contains result');
-    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO) == 1, 'Zero flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
   t.test('XORI xors', () => {
@@ -221,7 +221,7 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0, 'Register R0 contains result');
-    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO) == 1, 'Zero flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
   t.test('XORR ands', () => {
@@ -246,7 +246,7 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0, 'Register R0 contains result');
-    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO) == 1, 'Zero flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
   t.test('NOT nots', () => {
@@ -269,6 +269,6 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0, 'Register R0 contains result');
-    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO) == 1, 'Zero flag set');
+    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 };
