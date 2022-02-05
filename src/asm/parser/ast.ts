@@ -85,6 +85,9 @@ export type XoriInstr = AstRegImmInstr<'XoriInstr', Opcodes.XORI>;
 export type XorrInstr = AstRegRegInstr<'XorrInstr', Opcodes.XORR>;
 export type NotInstr = AstRegInstr<'NotInstr', Opcodes.NOT>;
 
+export type CmpiInstr = AstRegImmInstr<'CmpiInstr', Opcodes.CMPI>;
+export type CmprInstr = AstRegRegInstr<'CmprInstr', Opcodes.CMPR>;
+
 export type JmpiInstr = AstAddrInstr<'JmpiInstr', Opcodes.JMPI>;
 
 export type CoreInstr = NopInstr |
@@ -131,10 +134,14 @@ export type LogicInstr = ShliInstr |
     XorrInstr |
     NotInstr;
 
+export type CompareInstr = CmpiInstr |
+    CmprInstr;
+
 export type Instr = CoreInstr |
     MemoryInstr |
     ArithmeticInstr |
     LogicInstr |
+    CompareInstr |
     JmpiInstr;
 
 export type Stmt = Instr;

@@ -138,6 +138,12 @@ class Codegen {
           case 'NotInstr':
             bytes.push(Opcodes.NOT, stmt.register);
             break;
+          case 'CmpiInstr':
+            bytes.push(Opcodes.CMPI, stmt.register, ...this.word(stmt.immediate));
+            break;
+          case 'CmprInstr':
+            bytes.push(Opcodes.CMPR, stmt.register1, stmt.register2);
+            break;
           case 'JmpiInstr':
             // TODO: add support for labels
             bytes.push(Opcodes.JMPI, ...this.word(stmt.address));

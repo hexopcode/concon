@@ -39,6 +39,8 @@ import {
   XoriInstr,
   XorrInstr,
   NotInstr,
+  CmpiInstr,
+  CmprInstr,
   JmpiInstr,
 } from './ast';
 import {Opcodes, Registers} from '../../core';
@@ -214,6 +216,10 @@ class Parser {
       return this.xorrInstr();
     } else if (this.match(TokenType.NOT)) {
       return this.notInstr();
+    } else if (this.match(TokenType.CMPI)) {
+      return this.cmpiInstr();
+    } else if (this.match(TokenType.CMPR)) {
+      return this.cmprInstr();
     } else if (this.match(TokenType.JMPI)) {
       return this.jmpiInstr();
     }
@@ -705,6 +711,32 @@ class Parser {
       opcode: Opcodes.NOT,
       line: this.line,
       register: (reg.literal!) as Registers,
+    };
+  }
+
+  private cmpiInstr(): CmpiInstr {
+    const reg = this.reg();
+    this.comma();
+    const imm = this.imm();
+    return {
+      type: 'CmpiInstr',
+      opcode: Opcodes.CMPI,
+      line: this.line,
+      register: (reg.literal!) as Registers,
+      immediate: (imm.literal!) as number,
+    };
+  }
+
+  private cmprInstr(): CmprInstr {
+    const reg1 = this.reg();
+    this.comma();
+    const reg2 = this.reg();
+    return {
+      type: 'CmprInstr',
+      opcode: Opcodes.CMPR,
+      line: this.line,
+      register1: (reg1.literal!) as Registers,
+      register2: (reg2.literal!) as Registers,
     };
   }
 

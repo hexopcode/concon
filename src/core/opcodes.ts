@@ -34,6 +34,7 @@ export enum Opcodes {
   INC = 0x2A,
   DEC = 0x2B,
 
+  // Logic
   SHLI = 0x30,
   SHLR = 0x31,
   SHRI = 0x32,
@@ -45,6 +46,10 @@ export enum Opcodes {
   XORI = 0x38,
   XORR = 0x39,
   NOT = 0x3A,
+
+  // Comparison
+  CMPI = 0x40,
+  CMPR = 0x41,
 
   // Jump
   JMPI = 0x50,

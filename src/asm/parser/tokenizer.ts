@@ -54,6 +54,9 @@ export enum TokenType {
   XORR,
   NOT,
 
+  CMPI,
+  CMPR,
+
   JMPI,
 
   EOF,
@@ -103,6 +106,9 @@ const Keywords: Map<string, TokenType> = new Map(Object.entries({
   'XORI': TokenType.XORI,
   'XORR': TokenType.XORR,
   'NOT': TokenType.NOT,
+
+  'CMPI': TokenType.CMPI,
+  'CMPR': TokenType.CMPR,
 
   'JMPI': TokenType.JMPI,
 }));

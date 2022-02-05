@@ -191,6 +191,12 @@ export class System {
         case Opcodes.NOT:
           this.not();
           continue next;
+        case Opcodes.CMPI:
+          this.cmpi();
+          continue next;
+        case Opcodes.CMPR:
+          this.cmpr();
+          continue next;
         case Opcodes.JMPI:
           this.jmpi();
           continue next;
@@ -543,6 +549,35 @@ export class System {
     const reg = this.register();
     const value = ((~this.registers[reg]) >>> 0) & MAX_VALUE;
     this.setRegisterAndFlags(reg, value);
+  }
+
+  private cmpi() {
+    const reg = this.register();
+    const imm = this.immediate();
+    const value = this.registers[reg];
+
+    this.registers[Registers.RFL] = 0;
+
+    if (value < imm) {
+      this.registers[Registers.RFL] = 1 << Flags.NEGATIVE;
+    } else if (value == imm) {
+      this.registers[Registers.RFL] = 1 << Flags.ZERO;
+    }
+  }
+
+  private cmpr() {
+    const reg1 = this.register();
+    const reg2 = this.register();
+    const imm = this.registers[reg2];
+    const value = this.registers[reg1];
+
+    this.registers[Registers.RFL] = 0;
+
+    if (value < imm) {
+      this.registers[Registers.RFL] = 1 << Flags.NEGATIVE;
+    } else if (value == imm) {
+      this.registers[Registers.RFL] = 1 << Flags.ZERO;
+    }
   }
 
   private jmpi() {

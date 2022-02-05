@@ -1,7 +1,15 @@
 import {ArithmeticTests} from './arithmetic';
+import {CommentsTests} from './comments';
+import {CompareTests} from './compare';
 import {JumpTests} from './jump';
 import {LogicTests} from './logic';
 import {MemoryTests} from './memory';
-import {CommentsTests} from './comments';
 
-export const ALL_TESTS = [JumpTests, MemoryTests, ArithmeticTests, LogicTests, CommentsTests];
+export const ALL_TESTS = [
+  ArithmeticTests,
+  CommentsTests,
+  CompareTests,
+  JumpTests,
+  LogicTests,
+  MemoryTests,
+];
