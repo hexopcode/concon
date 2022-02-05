@@ -1,94 +1,92 @@
-import {Opcodes, Registers} from '../../core';
+import {Registers} from '../../core';
+
+export type Address = number|string;
 
 type AstNode<Type extends string> = {
   type: Type,
   line: number,
 };
 
-type AstInstr<Type extends string, Op extends Opcodes> = AstNode<Type> & {
-  opcode: Op,
-};
-
-type AstRegImmInstr<Type extends string, Op extends Opcodes> = AstInstr<Type, Op> & {
+type AstRegImmInstr<Type extends string> = AstNode<Type> & {
   register: Registers,
   immediate: number,
 };
 
-type AstRegAddrInstr<Type extends string, Op extends Opcodes> = AstInstr<Type, Op> & {
+type AstRegAddrInstr<Type extends string> = AstNode<Type> & {
   register: Registers,
-  address: number,
+  address: Address,
 };
 
-type AstAddrImmInstr<Type extends string, Op extends Opcodes> = AstInstr<Type, Op> & {
-  address: number,
+type AstAddrImmInstr<Type extends string> = AstNode<Type> & {
+  address: Address,
   immediate: number,
 };
 
-type AstAddrRegInstr<Type extends string, Op extends Opcodes> = AstInstr<Type, Op> & {
-  address: number,
+type AstAddrRegInstr<Type extends string> = AstNode<Type> & {
+  address: Address,
   register: Registers,
 };
 
-type AstRegRegInstr<Type extends string, Op extends Opcodes> = AstInstr<Type, Op> & {
+type AstRegRegInstr<Type extends string> = AstNode<Type> & {
   register1: Registers,
   register2: Registers,
 };
 
-type AstRegInstr<Type extends string, Op extends Opcodes> = AstInstr<Type, Op> & {
+type AstRegInstr<Type extends string> = AstNode<Type> & {
   register: Registers,
 };
 
-type AstAddrInstr<Type extends string, Op extends Opcodes> = AstInstr<Type, Op> & {
-  address: number,
+type AstAddrInstr<Type extends string> = AstNode<Type> & {
+  address: Address,
 };
 
-export type NopInstr = AstInstr<'NopInstr', Opcodes.NOP>;
-export type EndInstr = AstInstr<'EndInstr', Opcodes.END>;
-export type VsyncInstr = AstInstr<'VsyncInstr', Opcodes.VSYNC>;
-export type MoviInstr = AstRegImmInstr<'MoviInstr', Opcodes.MOVI>;
-export type MovrInstr = AstRegRegInstr<'MovrInstr', Opcodes.MOVR>;
-export type StoiInstr = AstAddrImmInstr<'StoiInstr', Opcodes.STOI>;
-export type StoibInstr = AstAddrImmInstr<'StoibInstr', Opcodes.STOIB>;
-export type StoriInstr = AstRegImmInstr<'StoriInstr', Opcodes.STORI>;
-export type StoribInstr = AstRegImmInstr<'StoribInstr', Opcodes.STORIB>;
-export type StorInstr = AstAddrRegInstr<'StorInstr', Opcodes.STOR>;
-export type StorbInstr = AstAddrRegInstr<'StorbInstr', Opcodes.STORB>;
-export type StorrInstr = AstRegRegInstr<'StorrInstr', Opcodes.STORR>;
-export type StorrbInstr = AstRegRegInstr<'StorrbInstr', Opcodes.STORRB>;
-export type LodrInstr = AstRegAddrInstr<'LodrInstr', Opcodes.LODR>;
-export type LodrbInstr = AstRegAddrInstr<'LodrbInstr', Opcodes.LODRB>;
-export type LodrrInstr = AstRegRegInstr<'LodrrInstr', Opcodes.LODRR>;
-export type LodrrbInstr = AstRegRegInstr<'LodrrbInstr', Opcodes.LODRRB>;
+export type NopInstr = AstNode<'NopInstr'>;
+export type EndInstr = AstNode<'EndInstr'>;
+export type VsyncInstr = AstNode<'VsyncInstr'>;
+export type MoviInstr = AstRegImmInstr<'MoviInstr'>;
+export type MovrInstr = AstRegRegInstr<'MovrInstr'>;
+export type StoiInstr = AstAddrImmInstr<'StoiInstr'>;
+export type StoibInstr = AstAddrImmInstr<'StoibInstr'>;
+export type StoriInstr = AstRegImmInstr<'StoriInstr'>;
+export type StoribInstr = AstRegImmInstr<'StoribInstr'>;
+export type StorInstr = AstAddrRegInstr<'StorInstr'>;
+export type StorbInstr = AstAddrRegInstr<'StorbInstr'>;
+export type StorrInstr = AstRegRegInstr<'StorrInstr'>;
+export type StorrbInstr = AstRegRegInstr<'StorrbInstr'>;
+export type LodrInstr = AstRegAddrInstr<'LodrInstr'>;
+export type LodrbInstr = AstRegAddrInstr<'LodrbInstr'>;
+export type LodrrInstr = AstRegRegInstr<'LodrrInstr'>;
+export type LodrrbInstr = AstRegRegInstr<'LodrrbInstr'>;
 
-export type AddiInstr = AstRegImmInstr<'AddiInstr', Opcodes.ADDI>;
-export type AddrInstr = AstRegRegInstr<'AddrInstr', Opcodes.ADDR>;
-export type SubiInstr = AstRegImmInstr<'SubiInstr', Opcodes.SUBI>;
-export type SubrInstr = AstRegRegInstr<'SubrInstr', Opcodes.SUBR>;
-export type MuliInstr = AstRegImmInstr<'MuliInstr', Opcodes.MULI>;
-export type MulrInstr = AstRegRegInstr<'MulrInstr', Opcodes.MULR>;
-export type DiviInstr = AstRegImmInstr<'DiviInstr', Opcodes.DIVI>;
-export type DivrInstr = AstRegRegInstr<'DivrInstr', Opcodes.DIVR>;
-export type ModiInstr = AstRegImmInstr<'ModiInstr', Opcodes.MODI>;
-export type ModrInstr = AstRegRegInstr<'ModrInstr', Opcodes.MODR>;
-export type IncInstr = AstRegInstr<'IncInstr', Opcodes.INC>;
-export type DecInstr = AstRegInstr<'DecInstr', Opcodes.DEC>;
+export type AddiInstr = AstRegImmInstr<'AddiInstr'>;
+export type AddrInstr = AstRegRegInstr<'AddrInstr'>;
+export type SubiInstr = AstRegImmInstr<'SubiInstr'>;
+export type SubrInstr = AstRegRegInstr<'SubrInstr'>;
+export type MuliInstr = AstRegImmInstr<'MuliInstr'>;
+export type MulrInstr = AstRegRegInstr<'MulrInstr'>;
+export type DiviInstr = AstRegImmInstr<'DiviInstr'>;
+export type DivrInstr = AstRegRegInstr<'DivrInstr'>;
+export type ModiInstr = AstRegImmInstr<'ModiInstr'>;
+export type ModrInstr = AstRegRegInstr<'ModrInstr'>;
+export type IncInstr = AstRegInstr<'IncInstr'>;
+export type DecInstr = AstRegInstr<'DecInstr'>;
 
-export type ShliInstr = AstRegImmInstr<'ShliInstr', Opcodes.SHLI>;
-export type ShlrInstr = AstRegRegInstr<'ShlrInstr', Opcodes.SHLR>;
-export type ShriInstr = AstRegImmInstr<'ShriInstr', Opcodes.SHRI>;
-export type ShrrInstr = AstRegRegInstr<'ShrrInstr', Opcodes.SHRR>;
-export type OriInstr = AstRegImmInstr<'OriInstr', Opcodes.ORI>;
-export type OrrInstr = AstRegRegInstr<'OrrInstr', Opcodes.ORR>;
-export type AndiInstr = AstRegImmInstr<'AndiInstr', Opcodes.ANDI>;
-export type AndrInstr = AstRegRegInstr<'AndrInstr', Opcodes.ANDR>;
-export type XoriInstr = AstRegImmInstr<'XoriInstr', Opcodes.XORI>;
-export type XorrInstr = AstRegRegInstr<'XorrInstr', Opcodes.XORR>;
-export type NotInstr = AstRegInstr<'NotInstr', Opcodes.NOT>;
+export type ShliInstr = AstRegImmInstr<'ShliInstr'>;
+export type ShlrInstr = AstRegRegInstr<'ShlrInstr'>;
+export type ShriInstr = AstRegImmInstr<'ShriInstr'>;
+export type ShrrInstr = AstRegRegInstr<'ShrrInstr'>;
+export type OriInstr = AstRegImmInstr<'OriInstr'>;
+export type OrrInstr = AstRegRegInstr<'OrrInstr'>;
+export type AndiInstr = AstRegImmInstr<'AndiInstr'>;
+export type AndrInstr = AstRegRegInstr<'AndrInstr'>;
+export type XoriInstr = AstRegImmInstr<'XoriInstr'>;
+export type XorrInstr = AstRegRegInstr<'XorrInstr'>;
+export type NotInstr = AstRegInstr<'NotInstr'>;
 
-export type CmpiInstr = AstRegImmInstr<'CmpiInstr', Opcodes.CMPI>;
-export type CmprInstr = AstRegRegInstr<'CmprInstr', Opcodes.CMPR>;
+export type CmpiInstr = AstRegImmInstr<'CmpiInstr'>;
+export type CmprInstr = AstRegRegInstr<'CmprInstr'>;
 
-export type JmpiInstr = AstAddrInstr<'JmpiInstr', Opcodes.JMPI>;
+export type JmpiInstr = AstAddrInstr<'JmpiInstr'>;
 
 export type CoreInstr = NopInstr |
     EndInstr |

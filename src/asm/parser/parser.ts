@@ -1,6 +1,7 @@
 import {Token, TokenType} from './tokenizer';
 import {
   Ast,
+  Address,
   Stmt,
   MoviInstr,
   MovrInstr,
@@ -43,7 +44,7 @@ import {
   CmprInstr,
   JmpiInstr,
 } from './ast';
-import {Opcodes, Registers} from '../../core';
+import {Registers} from '../../core';
 import {unreachable} from '../../lib';
 import {AsmErrorCollector} from '../base';
 
@@ -127,19 +128,16 @@ class Parser {
     if (this.match(TokenType.NOP)) {
       return {
         type: 'NopInstr',
-        opcode: Opcodes.NOP,
         line: this.line,
       };
     } else if (this.match(TokenType.END)) {
       return {
         type: 'EndInstr',
-        opcode: Opcodes.END,
         line: this.line,
       };
     } else if (this.match(TokenType.VSYNC)) {
       return {
         type: 'VsyncInstr',
-        opcode: Opcodes.VSYNC,
         line: this.line,
       };
     } else if (this.match(TokenType.MOVI)) {
@@ -248,7 +246,6 @@ class Parser {
     const imm = this.imm();
     return {
       type: 'MoviInstr',
-      opcode: Opcodes.MOVI,
       line: this.line,
       register: (reg.literal!) as Registers,
       immediate: (imm.literal!) as number,
@@ -261,7 +258,6 @@ class Parser {
     const reg2 = this.reg();
     return {
       type: 'MovrInstr',
-      opcode: Opcodes.MOVR,
       line: this.line,
       register1: (reg1.literal!) as Registers,
       register2: (reg2.literal!) as Registers,
@@ -274,9 +270,8 @@ class Parser {
     const imm = this.imm();
     return {
       type: 'StoiInstr',
-      opcode: Opcodes.STOI,
       line: this.line,
-      address: (addr.literal!) as number,
+      address: (addr.literal!) as Address,
       immediate: (imm.literal!) as number,
     };
   }
@@ -287,9 +282,8 @@ class Parser {
     const imm = this.imm();
     return {
       type: 'StoibInstr',
-      opcode: Opcodes.STOIB,
       line: this.line,
-      address: (addr.literal!) as number,
+      address: (addr.literal!) as Address,
       immediate: (imm.literal!) as number,
     };
   }
@@ -300,7 +294,6 @@ class Parser {
     const imm = this.imm();
     return {
       type: 'StoriInstr',
-      opcode: Opcodes.STORI,
       line: this.line,
       register: (reg.literal!) as Registers,
       immediate: (imm.literal!) as number,
@@ -313,7 +306,6 @@ class Parser {
     const imm = this.imm();
     return {
       type: 'StoribInstr',
-      opcode: Opcodes.STORIB,
       line: this.line,
       register: (reg.literal!) as Registers,
       immediate: (imm.literal!) as number,
@@ -326,9 +318,8 @@ class Parser {
     const reg = this.reg();
     return {
       type: 'StorInstr',
-      opcode: Opcodes.STOR,
       line: this.line,
-      address: (addr.literal!) as number,
+      address: (addr.literal!) as Address,
       register: (reg.literal!) as Registers,
     };
   }
@@ -339,9 +330,8 @@ class Parser {
     const reg = this.reg();
     return {
       type: 'StorbInstr',
-      opcode: Opcodes.STORB,
       line: this.line,
-      address: (addr.literal!) as number,
+      address: (addr.literal!) as Address,
       register: (reg.literal!) as Registers,
     };
   }
@@ -352,7 +342,6 @@ class Parser {
     const reg2 = this.reg();
     return {
       type: 'StorrInstr',
-      opcode: Opcodes.STORR,
       line: this.line,
       register1: (reg1.literal!) as Registers,
       register2: (reg2.literal!) as Registers,
@@ -365,7 +354,6 @@ class Parser {
     const reg2 = this.reg();
     return {
       type: 'StorrbInstr',
-      opcode: Opcodes.STORRB,
       line: this.line,
       register1: (reg1.literal!) as Registers,
       register2: (reg2.literal!) as Registers,
@@ -378,10 +366,9 @@ class Parser {
     const addr = this.addr();
     return {
       type: 'LodrInstr',
-      opcode: Opcodes.LODR,
       line: this.line,
       register: (reg.literal!) as Registers,
-      address: (addr.literal!) as number,
+      address: (addr.literal!) as Address,
     };
   }
 
@@ -391,10 +378,9 @@ class Parser {
     const addr = this.addr();
     return {
       type: 'LodrbInstr',
-      opcode: Opcodes.LODRB,
       line: this.line,
       register: (reg.literal!) as Registers,
-      address: (addr.literal!) as number,
+      address: (addr.literal!) as Address,
     };
   }
 
@@ -404,7 +390,6 @@ class Parser {
     const reg2 = this.reg();
     return {
       type: 'LodrrInstr',
-      opcode: Opcodes.LODRR,
       line: this.line,
       register1: (reg1.literal!) as Registers,
       register2: (reg2.literal!) as Registers,
@@ -417,7 +402,6 @@ class Parser {
     const reg2 = this.reg();
     return {
       type: 'LodrrbInstr',
-      opcode: Opcodes.LODRRB,
       line: this.line,
       register1: (reg1.literal!) as Registers,
       register2: (reg2.literal!) as Registers,
@@ -430,7 +414,6 @@ class Parser {
     const imm = this.imm();
     return {
       type: 'AddiInstr',
-      opcode: Opcodes.ADDI,
       line: this.line,
       register: (reg.literal!) as Registers,
       immediate: (imm.literal!) as number,
@@ -443,7 +426,6 @@ class Parser {
     const reg2 = this.reg();
     return {
       type: 'AddrInstr',
-      opcode: Opcodes.ADDR,
       line: this.line,
       register1: (reg1.literal!) as Registers,
       register2: (reg2.literal!) as Registers,
@@ -456,7 +438,6 @@ class Parser {
     const imm = this.imm();
     return {
       type: 'SubiInstr',
-      opcode: Opcodes.SUBI,
       line: this.line,
       register: (reg.literal!) as Registers,
       immediate: (imm.literal!) as number,
@@ -469,7 +450,6 @@ class Parser {
     const reg2 = this.reg();
     return {
       type: 'SubrInstr',
-      opcode: Opcodes.SUBR,
       line: this.line,
       register1: (reg1.literal!) as Registers,
       register2: (reg2.literal!) as Registers,
@@ -482,7 +462,6 @@ class Parser {
     const imm = this.imm();
     return {
       type: 'MuliInstr',
-      opcode: Opcodes.MULI,
       line: this.line,
       register: (reg.literal!) as Registers,
       immediate: (imm.literal!) as number,
@@ -495,7 +474,6 @@ class Parser {
     const reg2 = this.reg();
     return {
       type: 'MulrInstr',
-      opcode: Opcodes.MULR,
       line: this.line,
       register1: (reg1.literal!) as Registers,
       register2: (reg2.literal!) as Registers,
@@ -508,7 +486,6 @@ class Parser {
     const imm = this.imm();
     return {
       type: 'DiviInstr',
-      opcode: Opcodes.DIVI,
       line: this.line,
       register: (reg.literal!) as Registers,
       immediate: (imm.literal!) as number,
@@ -521,7 +498,6 @@ class Parser {
     const reg2 = this.reg();
     return {
       type: 'DivrInstr',
-      opcode: Opcodes.DIVR,
       line: this.line,
       register1: (reg1.literal!) as Registers,
       register2: (reg2.literal!) as Registers,
@@ -534,7 +510,6 @@ class Parser {
     const imm = this.imm();
     return {
       type: 'ModiInstr',
-      opcode: Opcodes.MODI,
       line: this.line,
       register: (reg.literal!) as Registers,
       immediate: (imm.literal!) as number,
@@ -547,7 +522,6 @@ class Parser {
     const reg2 = this.reg();
     return {
       type: 'ModrInstr',
-      opcode: Opcodes.MODR,
       line: this.line,
       register1: (reg1.literal!) as Registers,
       register2: (reg2.literal!) as Registers,
@@ -558,7 +532,6 @@ class Parser {
     const reg = this.reg();
     return {
       type: 'IncInstr',
-      opcode: Opcodes.INC,
       line: this.line,
       register: (reg.literal!) as Registers,
     };
@@ -568,7 +541,6 @@ class Parser {
     const reg = this.reg();
     return {
       type: 'DecInstr',
-      opcode: Opcodes.DEC,
       line: this.line,
       register: (reg.literal!) as Registers,
     };
@@ -580,7 +552,6 @@ class Parser {
     const imm = this.imm();
     return {
       type: 'ShliInstr',
-      opcode: Opcodes.SHLI,
       line: this.line,
       register: (reg.literal!) as Registers,
       immediate: (imm.literal!) as number,
@@ -593,7 +564,6 @@ class Parser {
     const reg2 = this.reg();
     return {
       type: 'ShlrInstr',
-      opcode: Opcodes.SHLR,
       line: this.line,
       register1: (reg1.literal!) as Registers,
       register2: (reg2.literal!) as Registers,
@@ -606,7 +576,6 @@ class Parser {
     const imm = this.imm();
     return {
       type: 'ShriInstr',
-      opcode: Opcodes.SHRI,
       line: this.line,
       register: (reg.literal!) as Registers,
       immediate: (imm.literal!) as number,
@@ -619,7 +588,6 @@ class Parser {
     const reg2 = this.reg();
     return {
       type: 'ShrrInstr',
-      opcode: Opcodes.SHRR,
       line: this.line,
       register1: (reg1.literal!) as Registers,
       register2: (reg2.literal!) as Registers,
@@ -632,7 +600,6 @@ class Parser {
     const imm = this.imm();
     return {
       type: 'OriInstr',
-      opcode: Opcodes.ORI,
       line: this.line,
       register: (reg.literal!) as Registers,
       immediate: (imm.literal!) as number,
@@ -645,7 +612,6 @@ class Parser {
     const reg2 = this.reg();
     return {
       type: 'OrrInstr',
-      opcode: Opcodes.ORR,
       line: this.line,
       register1: (reg1.literal!) as Registers,
       register2: (reg2.literal!) as Registers,
@@ -658,7 +624,6 @@ class Parser {
     const imm = this.imm();
     return {
       type: 'AndiInstr',
-      opcode: Opcodes.ANDI,
       line: this.line,
       register: (reg.literal!) as Registers,
       immediate: (imm.literal!) as number,
@@ -671,7 +636,6 @@ class Parser {
     const reg2 = this.reg();
     return {
       type: 'AndrInstr',
-      opcode: Opcodes.ANDR,
       line: this.line,
       register1: (reg1.literal!) as Registers,
       register2: (reg2.literal!) as Registers,
@@ -684,7 +648,6 @@ class Parser {
     const imm = this.imm();
     return {
       type: 'XoriInstr',
-      opcode: Opcodes.XORI,
       line: this.line,
       register: (reg.literal!) as Registers,
       immediate: (imm.literal!) as number,
@@ -697,7 +660,6 @@ class Parser {
     const reg2 = this.reg();
     return {
       type: 'XorrInstr',
-      opcode: Opcodes.XORR,
       line: this.line,
       register1: (reg1.literal!) as Registers,
       register2: (reg2.literal!) as Registers,
@@ -708,7 +670,6 @@ class Parser {
     const reg = this.reg();
     return {
       type: 'NotInstr',
-      opcode: Opcodes.NOT,
       line: this.line,
       register: (reg.literal!) as Registers,
     };
@@ -720,7 +681,6 @@ class Parser {
     const imm = this.imm();
     return {
       type: 'CmpiInstr',
-      opcode: Opcodes.CMPI,
       line: this.line,
       register: (reg.literal!) as Registers,
       immediate: (imm.literal!) as number,
@@ -733,7 +693,6 @@ class Parser {
     const reg2 = this.reg();
     return {
       type: 'CmprInstr',
-      opcode: Opcodes.CMPR,
       line: this.line,
       register1: (reg1.literal!) as Registers,
       register2: (reg2.literal!) as Registers,
@@ -741,13 +700,11 @@ class Parser {
   }
 
   private jmpiInstr(): JmpiInstr {
-    // TODO: add support for labels
     const addr = this.addr();
     return {
       type: 'JmpiInstr',
-      opcode: Opcodes.JMPI,
       line: this.line,
-      address: (addr.literal!) as number,
+      address: (addr.literal!) as Address,
     };
   }
 }
