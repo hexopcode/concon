@@ -105,6 +105,39 @@ class Codegen {
           case 'DecInstr':
             bytes.push(Opcodes.DEC, stmt.register);
             break;
+          case 'ShliInstr':
+            bytes.push(Opcodes.SHLI, stmt.register, ...this.word(stmt.immediate));
+            break;
+          case 'ShlrInstr':
+            bytes.push(Opcodes.SHLR, stmt.register1, stmt.register2);
+            break;
+          case 'ShriInstr':
+            bytes.push(Opcodes.SHRI, stmt.register, ...this.word(stmt.immediate));
+            break;
+          case 'ShrrInstr':
+            bytes.push(Opcodes.SHRR, stmt.register1, stmt.register2);
+            break;
+          case 'OriInstr':
+            bytes.push(Opcodes.ORI, stmt.register, ...this.word(stmt.immediate));
+            break;
+          case 'OrrInstr':
+            bytes.push(Opcodes.ORR, stmt.register1, stmt.register2);
+            break;
+          case 'AndiInstr':
+            bytes.push(Opcodes.ANDI, stmt.register, ...this.word(stmt.immediate));
+            break;
+          case 'AndrInstr':
+            bytes.push(Opcodes.ANDR, stmt.register1, stmt.register2);
+            break;
+          case 'XoriInstr':
+            bytes.push(Opcodes.XORI, stmt.register, ...this.word(stmt.immediate));
+            break;
+          case 'XorrInstr':
+            bytes.push(Opcodes.XORR, stmt.register1, stmt.register2);
+            break;
+          case 'NotInstr':
+            bytes.push(Opcodes.NOT, stmt.register);
+            break;
           case 'JmpiInstr':
             // TODO: add support for labels
             bytes.push(Opcodes.JMPI, ...this.word(stmt.address));

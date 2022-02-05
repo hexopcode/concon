@@ -42,6 +42,18 @@ export enum TokenType {
   INC,
   DEC,
 
+  SHLI,
+  SHLR,
+  SHRI,
+  SHRR,
+  ORI,
+  ORR,
+  ANDI,
+  ANDR,
+  XORI,
+  XORR,
+  NOT,
+
   JMPI,
 
   EOF,
@@ -79,6 +91,18 @@ const Keywords: Map<string, TokenType> = new Map(Object.entries({
   'MODR': TokenType.MODR,
   'INC': TokenType.INC,
   'DEC': TokenType.DEC,
+
+  'SHLI': TokenType.SHLI,
+  'SHLR': TokenType.SHLR,
+  'SHRI': TokenType.SHRI,
+  'SHRR': TokenType.SHRR,
+  'ORI': TokenType.ORI,
+  'ORR': TokenType.ORR,
+  'ANDI': TokenType.ANDI,
+  'ANDR': TokenType.ANDR,
+  'XORI': TokenType.XORI,
+  'XORR': TokenType.XORR,
+  'NOT': TokenType.NOT,
 
   'JMPI': TokenType.JMPI,
 }));

@@ -158,6 +158,39 @@ export class System {
         case Opcodes.DEC:
           this.dec();
           continue next;
+        case Opcodes.SHLI:
+          this.shli();
+          continue next;
+        case Opcodes.SHLR:
+          this.shlr();
+          continue next;
+        case Opcodes.SHRI:
+          this.shri();
+          continue next;
+        case Opcodes.SHRR:
+          this.shrr();
+          continue next;
+        case Opcodes.ORI:
+          this.ori();
+          continue next;
+        case Opcodes.ORR:
+          this.orr();
+          continue next;
+        case Opcodes.ANDI:
+          this.andi();
+          continue next;
+        case Opcodes.ANDR:
+          this.andr();
+          continue next;
+        case Opcodes.XORI:
+          this.xori();
+          continue next;
+        case Opcodes.XORR:
+          this.xorr();
+          continue next;
+        case Opcodes.NOT:
+          this.not();
+          continue next;
         case Opcodes.JMPI:
           this.jmpi();
           continue next;
@@ -429,6 +462,87 @@ export class System {
     const reg = this.register();
     const imm = this.registers[reg];
     this.setRegisterAndFlags(reg, imm - 1);
+  }
+
+  private shli() {
+    const reg = this.register();
+    const imm = this.immediate();
+    const value = this.registers[reg] << imm;
+    this.setRegisterAndFlags(reg, value);
+  }
+
+  private shlr() {
+    const reg1 = this.register();
+    const reg2 = this.register();
+    const imm = this.registers[reg2];
+    const value = this.registers[reg1] << imm;
+    this.setRegisterAndFlags(reg1, value);
+  }
+
+  private shri() {
+    const reg = this.register();
+    const imm = this.immediate();
+    const value = this.registers[reg] >> imm;
+    this.setRegisterAndFlags(reg, value);
+  }
+
+  private shrr() {
+    const reg1 = this.register();
+    const reg2 = this.register();
+    const imm = this.registers[reg2];
+    const value = this.registers[reg1] >> imm;
+    this.setRegisterAndFlags(reg1, value);
+  }
+
+  private ori() {
+    const reg = this.register();
+    const imm = this.immediate();
+    const value = this.registers[reg] | imm;
+    this.setRegisterAndFlags(reg, value);
+  }
+
+  private orr() {
+    const reg1 = this.register();
+    const reg2 = this.register();
+    const imm = this.registers[reg2];
+    const value = this.registers[reg1] | imm;
+    this.setRegisterAndFlags(reg1, value);
+  }
+
+  private andi() {
+    const reg = this.register();
+    const imm = this.immediate();
+    const value = this.registers[reg] & imm;
+    this.setRegisterAndFlags(reg, value);
+  }
+
+  private andr() {
+    const reg1 = this.register();
+    const reg2 = this.register();
+    const imm = this.registers[reg2];
+    const value = this.registers[reg1] & imm;
+    this.setRegisterAndFlags(reg1, value);
+  }
+
+  private xori() {
+    const reg = this.register();
+    const imm = this.immediate();
+    const value = this.registers[reg] ^ imm;
+    this.setRegisterAndFlags(reg, value);
+  }
+
+  private xorr() {
+    const reg1 = this.register();
+    const reg2 = this.register();
+    const imm = this.registers[reg2];
+    const value = this.registers[reg1] ^ imm;
+    this.setRegisterAndFlags(reg1, value);
+  }
+
+  private not() {
+    const reg = this.register();
+    const value = ((~this.registers[reg]) >>> 0) & MAX_VALUE;
+    this.setRegisterAndFlags(reg, value);
   }
 
   private jmpi() {

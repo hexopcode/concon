@@ -28,6 +28,17 @@ import {
   ModrInstr,
   IncInstr,
   DecInstr,
+  ShliInstr,
+  ShlrInstr,
+  ShriInstr,
+  ShrrInstr,
+  OriInstr,
+  OrrInstr,
+  AndiInstr,
+  AndrInstr,
+  XoriInstr,
+  XorrInstr,
+  NotInstr,
   JmpiInstr,
 } from './ast';
 import {Opcodes, Registers} from '../../core';
@@ -181,6 +192,28 @@ class Parser {
       return this.incInstr();
     } else if (this.match(TokenType.DEC)) {
       return this.decInstr();
+    } else if (this.match(TokenType.SHLI)) {
+      return this.shliInstr();
+    } else if (this.match(TokenType.SHLR)) {
+      return this.shlrInstr();
+    } else if (this.match(TokenType.SHRI)) {
+      return this.shriInstr();
+    } else if (this.match(TokenType.SHRR)) {
+      return this.shrrInstr();
+    } else if (this.match(TokenType.ORI)) {
+      return this.oriInstr();
+    } else if (this.match(TokenType.ORR)) {
+      return this.orrInstr();
+    } else if (this.match(TokenType.ANDI)) {
+      return this.andiInstr();
+    } else if (this.match(TokenType.ANDR)) {
+      return this.andrInstr();
+    } else if (this.match(TokenType.XORI)) {
+      return this.xoriInstr();
+    } else if (this.match(TokenType.XORR)) {
+      return this.xorrInstr();
+    } else if (this.match(TokenType.NOT)) {
+      return this.notInstr();
     } else if (this.match(TokenType.JMPI)) {
       return this.jmpiInstr();
     }
@@ -530,6 +563,146 @@ class Parser {
     return {
       type: 'DecInstr',
       opcode: Opcodes.DEC,
+      line: this.line,
+      register: (reg.literal!) as Registers,
+    };
+  }
+
+  private shliInstr(): ShliInstr {
+    const reg = this.reg();
+    this.comma();
+    const imm = this.imm();
+    return {
+      type: 'ShliInstr',
+      opcode: Opcodes.SHLI,
+      line: this.line,
+      register: (reg.literal!) as Registers,
+      immediate: (imm.literal!) as number,
+    };
+  }
+
+  private shlrInstr(): ShlrInstr {
+    const reg1 = this.reg();
+    this.comma();
+    const reg2 = this.reg();
+    return {
+      type: 'ShlrInstr',
+      opcode: Opcodes.SHLR,
+      line: this.line,
+      register1: (reg1.literal!) as Registers,
+      register2: (reg2.literal!) as Registers,
+    };
+  }
+
+  private shriInstr(): ShriInstr {
+    const reg = this.reg();
+    this.comma();
+    const imm = this.imm();
+    return {
+      type: 'ShriInstr',
+      opcode: Opcodes.SHRI,
+      line: this.line,
+      register: (reg.literal!) as Registers,
+      immediate: (imm.literal!) as number,
+    };
+  }
+
+  private shrrInstr(): ShrrInstr {
+    const reg1 = this.reg();
+    this.comma();
+    const reg2 = this.reg();
+    return {
+      type: 'ShrrInstr',
+      opcode: Opcodes.SHRR,
+      line: this.line,
+      register1: (reg1.literal!) as Registers,
+      register2: (reg2.literal!) as Registers,
+    };
+  }
+
+  private oriInstr(): OriInstr {
+    const reg = this.reg();
+    this.comma();
+    const imm = this.imm();
+    return {
+      type: 'OriInstr',
+      opcode: Opcodes.ORI,
+      line: this.line,
+      register: (reg.literal!) as Registers,
+      immediate: (imm.literal!) as number,
+    };
+  }
+
+  private orrInstr(): OrrInstr {
+    const reg1 = this.reg();
+    this.comma();
+    const reg2 = this.reg();
+    return {
+      type: 'OrrInstr',
+      opcode: Opcodes.ORR,
+      line: this.line,
+      register1: (reg1.literal!) as Registers,
+      register2: (reg2.literal!) as Registers,
+    };
+  }
+
+  private andiInstr(): AndiInstr {
+    const reg = this.reg();
+    this.comma();
+    const imm = this.imm();
+    return {
+      type: 'AndiInstr',
+      opcode: Opcodes.ANDI,
+      line: this.line,
+      register: (reg.literal!) as Registers,
+      immediate: (imm.literal!) as number,
+    };
+  }
+
+  private andrInstr(): AndrInstr {
+    const reg1 = this.reg();
+    this.comma();
+    const reg2 = this.reg();
+    return {
+      type: 'AndrInstr',
+      opcode: Opcodes.ANDR,
+      line: this.line,
+      register1: (reg1.literal!) as Registers,
+      register2: (reg2.literal!) as Registers,
+    };
+  }
+
+  private xoriInstr(): XoriInstr {
+    const reg = this.reg();
+    this.comma();
+    const imm = this.imm();
+    return {
+      type: 'XoriInstr',
+      opcode: Opcodes.XORI,
+      line: this.line,
+      register: (reg.literal!) as Registers,
+      immediate: (imm.literal!) as number,
+    };
+  }
+
+  private xorrInstr(): XorrInstr {
+    const reg1 = this.reg();
+    this.comma();
+    const reg2 = this.reg();
+    return {
+      type: 'XorrInstr',
+      opcode: Opcodes.XORR,
+      line: this.line,
+      register1: (reg1.literal!) as Registers,
+      register2: (reg2.literal!) as Registers,
+    };
+  }
+
+  private notInstr(): NotInstr {
+    const reg = this.reg();
+    return {
+      type: 'NotInstr',
+      opcode: Opcodes.NOT,
       line: this.line,
       register: (reg.literal!) as Registers,
     };

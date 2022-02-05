@@ -73,6 +73,18 @@ export type ModrInstr = AstRegRegInstr<'ModrInstr', Opcodes.MODR>;
 export type IncInstr = AstRegInstr<'IncInstr', Opcodes.INC>;
 export type DecInstr = AstRegInstr<'DecInstr', Opcodes.DEC>;
 
+export type ShliInstr = AstRegImmInstr<'ShliInstr', Opcodes.SHLI>;
+export type ShlrInstr = AstRegRegInstr<'ShlrInstr', Opcodes.SHLR>;
+export type ShriInstr = AstRegImmInstr<'ShriInstr', Opcodes.SHRI>;
+export type ShrrInstr = AstRegRegInstr<'ShrrInstr', Opcodes.SHRR>;
+export type OriInstr = AstRegImmInstr<'OriInstr', Opcodes.ORI>;
+export type OrrInstr = AstRegRegInstr<'OrrInstr', Opcodes.ORR>;
+export type AndiInstr = AstRegImmInstr<'AndiInstr', Opcodes.ANDI>;
+export type AndrInstr = AstRegRegInstr<'AndrInstr', Opcodes.ANDR>;
+export type XoriInstr = AstRegImmInstr<'XoriInstr', Opcodes.XORI>;
+export type XorrInstr = AstRegRegInstr<'XorrInstr', Opcodes.XORR>;
+export type NotInstr = AstRegInstr<'NotInstr', Opcodes.NOT>;
+
 export type JmpiInstr = AstAddrInstr<'JmpiInstr', Opcodes.JMPI>;
 
 export type CoreInstr = NopInstr |
@@ -107,9 +119,22 @@ export type ArithmeticInstr = AddiInstr |
     IncInstr |
     DecInstr;
 
+export type LogicInstr = ShliInstr |
+    ShlrInstr |
+    ShriInstr |
+    ShrrInstr |
+    OriInstr |
+    OrrInstr |
+    AndiInstr |
+    AndrInstr |
+    XoriInstr |
+    XorrInstr |
+    NotInstr;
+
 export type Instr = CoreInstr |
     MemoryInstr |
     ArithmeticInstr |
+    LogicInstr |
     JmpiInstr;
 
 export type Stmt = Instr;
