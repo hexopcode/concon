@@ -242,6 +242,74 @@ class Codegen {
             this.bytes.push(Opcodes.JMP);
             this.bytes.push(...this.address(stmt.address));
             break;
+          case 'JmprInstr':
+            this.bytes.push(Opcodes.JMPR);
+            this.bytes.push(stmt.register);
+            break;
+          case 'JzInstr':
+            this.bytes.push(Opcodes.JZ);
+            this.bytes.push(...this.address(stmt.address));
+            break;
+          case 'JzrInstr':
+            this.bytes.push(Opcodes.JZR);
+            this.bytes.push(stmt.register);
+            break;
+          case 'JnzInstr':
+            this.bytes.push(Opcodes.JNZ);
+            this.bytes.push(...this.address(stmt.address));
+            break;
+          case 'JnzrInstr':
+            this.bytes.push(Opcodes.JNZR);
+            this.bytes.push(stmt.register);
+            break;
+          case 'JgInstr':
+            this.bytes.push(Opcodes.JG);
+            this.bytes.push(...this.address(stmt.address));
+            break;
+          case 'JgrInstr':
+            this.bytes.push(Opcodes.JGR);
+            this.bytes.push(stmt.register);
+            break;
+          case 'JgzInstr':
+            this.bytes.push(Opcodes.JGZ);
+            this.bytes.push(...this.address(stmt.address));
+            break;
+          case 'JgzrInstr':
+            this.bytes.push(Opcodes.JGZR);
+            this.bytes.push(stmt.register);
+            break;
+          case 'JlInstr':
+            this.bytes.push(Opcodes.JL);
+            this.bytes.push(...this.address(stmt.address));
+            break;
+          case 'JlrInstr':
+            this.bytes.push(Opcodes.JLR);
+            this.bytes.push(stmt.register);
+            break;
+          case 'JlzInstr':
+            this.bytes.push(Opcodes.JLZ);
+            this.bytes.push(...this.address(stmt.address));
+            break;
+          case 'JlzrInstr':
+            this.bytes.push(Opcodes.JLZR);
+            this.bytes.push(stmt.register);
+            break;
+          case 'JoInstr':
+            this.bytes.push(Opcodes.JO);
+            this.bytes.push(...this.address(stmt.address));
+            break;
+          case 'JorInstr':
+            this.bytes.push(Opcodes.JOR);
+            this.bytes.push(stmt.register);
+            break;
+          case 'JdzInstr':
+            this.bytes.push(Opcodes.JDZ);
+            this.bytes.push(...this.address(stmt.address));
+            break;
+          case 'JdzrInstr':
+            this.bytes.push(Opcodes.JDZR);
+            this.bytes.push(stmt.register);
+            break;
           case 'Label':
             this.labelAddress(stmt.label);
             break;
@@ -281,7 +349,7 @@ class Codegen {
 
     // FIXME: this check should go in the checker instead
     if (this.addressRefs.get(lbl)?.address != undefined) {
-      throw new Error(`Label ${lbl} already declared earlier`);
+      throw new Error(`Label '${lbl}' already declared earlier`);
     }
 
     this.addressRefs.get(lbl)!.address = this.bytes.length;
@@ -296,7 +364,7 @@ class Codegen {
   private patchAddresses() {
     for (const [lbl, addr] of this.addressRefs.entries()) {
       if (addr.address == undefined) {
-        throw new Error(`Cannot resolve label ${lbl}`);
+        throw new Error(`Cannot resolve label '${lbl}'`);
       }
 
       const absolute = MEMORY_PROGRAM_OFFSET + addr.address;

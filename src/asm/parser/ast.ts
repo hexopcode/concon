@@ -87,6 +87,23 @@ export type CmpiInstr = AstRegImmInstr<'CmpiInstr'>;
 export type CmprInstr = AstRegRegInstr<'CmprInstr'>;
 
 export type JmpInstr = AstAddrInstr<'JmpInstr'>;
+export type JmprInstr = AstRegInstr<'JmprInstr'>;
+export type JzInstr = AstAddrInstr<'JzInstr'>;
+export type JzrInstr = AstRegInstr<'JzrInstr'>;
+export type JnzInstr = AstAddrInstr<'JnzInstr'>;
+export type JnzrInstr = AstRegInstr<'JnzrInstr'>;
+export type JgInstr = AstAddrInstr<'JgInstr'>;
+export type JgrInstr = AstRegInstr<'JgrInstr'>;
+export type JgzInstr = AstAddrInstr<'JgzInstr'>;
+export type JgzrInstr = AstRegInstr<'JgzrInstr'>;
+export type JlInstr = AstAddrInstr<'JlInstr'>;
+export type JlrInstr = AstRegInstr<'JlrInstr'>;
+export type JlzInstr = AstAddrInstr<'JlzInstr'>;
+export type JlzrInstr = AstRegInstr<'JlzrInstr'>;
+export type JoInstr = AstAddrInstr<'JoInstr'>;
+export type JorInstr = AstRegInstr<'JorInstr'>;
+export type JdzInstr = AstAddrInstr<'JdzInstr'>;
+export type JdzrInstr = AstRegInstr<'JdzrInstr'>;
 
 export type CoreInstr = NopInstr |
     EndInstr |
@@ -135,12 +152,31 @@ export type LogicInstr = ShliInstr |
 export type CompareInstr = CmpiInstr |
     CmprInstr;
 
+export type JumpInstr = JmpInstr |
+    JmprInstr |
+    JzInstr |
+    JzrInstr |
+    JnzInstr |
+    JnzrInstr |
+    JgInstr |
+    JgrInstr |
+    JgzInstr |
+    JgzrInstr |
+    JlInstr |
+    JlrInstr |
+    JlzInstr |
+    JlzrInstr |
+    JoInstr |
+    JorInstr |
+    JdzInstr |
+    JdzrInstr;
+
 export type Instr = CoreInstr |
     MemoryInstr |
     ArithmeticInstr |
     LogicInstr |
     CompareInstr |
-    JmpInstr;
+    JumpInstr;
 
 export type Label = AstNode<'Label'> & {
   label: string,

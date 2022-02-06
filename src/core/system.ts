@@ -200,6 +200,57 @@ export class System {
         case Opcodes.JMP:
           this.jmp();
           continue next;
+        case Opcodes.JMPR:
+          this.jmpr();
+          continue next;
+        case Opcodes.JZ:
+          this.jz();
+          continue next;
+        case Opcodes.JZR:
+          this.jzr();
+          continue next;
+        case Opcodes.JNZ:
+          this.jnz();
+          continue next;
+        case Opcodes.JNZR:
+          this.jnzr();
+          continue next;
+        case Opcodes.JG:
+          this.jg();
+          continue next;
+        case Opcodes.JGR:
+          this.jgr();
+          continue next;
+        case Opcodes.JGZ:
+          this.jgz();
+          continue next;
+        case Opcodes.JGZR:
+          this.jgzr();
+          continue next;
+        case Opcodes.JL:
+          this.jl();
+          continue next;
+        case Opcodes.JLR:
+          this.jlr();
+          continue next;
+        case Opcodes.JLZ:
+          this.jlz();
+          continue next;
+        case Opcodes.JLZR:
+          this.jlzr();
+          continue next;
+        case Opcodes.JO:
+          this.jo();
+          continue next;
+        case Opcodes.JOR:
+          this.jor();
+          continue next;
+        case Opcodes.JDZ:
+          this.jdz();
+          continue next;
+        case Opcodes.JDZR:
+          this.jdzr();
+          continue next;
         default:
           unreachable(`Unimplemented opcode: ${opcode}`);
       }
@@ -245,6 +296,10 @@ export class System {
     } else {
       this.registers[reg] = value;
     }
+  }
+
+  private isFlagSet(flag: Flags): boolean {
+    return (this.registers[Registers.RFL] >> flag & 1) == 1;
   }
 
   private byte(): number {
@@ -583,5 +638,147 @@ export class System {
   private jmp() {
     const addr = this.address();
     this.registers[Registers.RIP] = addr;
+  }
+
+  private jmpr() {
+    const reg = this.register();
+    const addr = this.registers[reg];
+    this.registers[Registers.RIP] = addr;
+  }
+  
+  private jz() {
+    const addr = this.address();
+
+    if (this.isFlagSet(Flags.ZERO)) {
+      this.registers[Registers.RIP] = addr;
+    }
+  }
+  
+  private jzr() {
+    const reg = this.register();
+    const addr = this.registers[reg];
+
+    if (this.isFlagSet(Flags.ZERO)) {
+      this.registers[Registers.RIP] = addr;
+    }
+  }
+  
+  private jnz() {
+    const addr = this.address();
+
+    if (!this.isFlagSet(Flags.ZERO)) {
+      this.registers[Registers.RIP] = addr;
+    }
+  }
+  
+  private jnzr() {
+    const reg = this.register();
+    const addr = this.registers[reg];
+
+    if (!this.isFlagSet(Flags.ZERO)) {
+      this.registers[Registers.RIP] = addr;
+    }
+  }
+  
+  private jg() {
+    const addr = this.address();
+
+    if (!this.isFlagSet(Flags.ZERO) && !this.isFlagSet(Flags.NEGATIVE)) {
+      this.registers[Registers.RIP] = addr;
+    }
+  }
+  
+  private jgr() {
+    const reg = this.register();
+    const addr = this.registers[reg];
+
+    if (!this.isFlagSet(Flags.ZERO) && !this.isFlagSet(Flags.NEGATIVE)) {
+      this.registers[Registers.RIP] = addr;
+    }
+  }
+  
+  private jgz() {
+    const addr = this.address();
+
+    if (!this.isFlagSet(Flags.NEGATIVE)) {
+      this.registers[Registers.RIP] = addr;
+    }
+  }
+  
+  private jgzr() {
+    const reg = this.register();
+    const addr = this.registers[reg];
+
+    if (!this.isFlagSet(Flags.NEGATIVE)) {
+      this.registers[Registers.RIP] = addr;
+    }
+  }
+  
+  private jl() {
+    const addr = this.address();
+
+    if (!this.isFlagSet(Flags.ZERO) && this.isFlagSet(Flags.NEGATIVE)) {
+      this.registers[Registers.RIP] = addr;
+    }
+  }
+  
+  private jlr() {
+    const reg = this.register();
+    const addr = this.registers[reg];
+
+    if (!this.isFlagSet(Flags.ZERO) && this.isFlagSet(Flags.NEGATIVE)) {
+      this.registers[Registers.RIP] = addr;
+    }
+  }
+  
+  private jlz() {
+    const addr = this.address();
+
+    if (this.isFlagSet(Flags.ZERO) || this.isFlagSet(Flags.NEGATIVE)) {
+      this.registers[Registers.RIP] = addr;
+    }
+  }
+  
+  private jlzr() {
+    const reg = this.register();
+    const addr = this.registers[reg];
+
+    if (this.isFlagSet(Flags.ZERO) || this.isFlagSet(Flags.NEGATIVE)) {
+      this.registers[Registers.RIP] = addr;
+    }
+  }
+  
+  private jo() {
+    const addr = this.address();
+
+    if (this.isFlagSet(Flags.OVERFLOW)) {
+      this.registers[Registers.RIP] = addr;
+    }
+  }
+  
+  private jor() {
+    const reg = this.register();
+    const addr = this.registers[reg];
+
+    if (this.isFlagSet(Flags.OVERFLOW)) {
+      this.registers[Registers.RIP] = addr;
+    }
+  }
+  
+  private jdz() {
+    const addr = this.address();
+
+    if (this.isFlagSet(Flags.DIVBYZERO)) {
+      this.registers[Registers.RIP] = addr;
+    }
+  }
+  
+  private jdzr() {
+    const reg = this.register();
+    const addr = this.registers[reg];
+
+    if (this.isFlagSet(Flags.DIVBYZERO)) {
+      this.registers[Registers.RIP] = addr;
+    }
   }
 }
