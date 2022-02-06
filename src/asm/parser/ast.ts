@@ -142,6 +142,10 @@ export type Instr = CoreInstr |
     CompareInstr |
     JmpiInstr;
 
-export type Stmt = Instr;
+export type Label = AstNode<'Label'> & {
+  label: string,
+};
+
+export type Stmt = Instr | Label;
 
 export type Ast = Stmt[];

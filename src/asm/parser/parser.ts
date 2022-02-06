@@ -43,6 +43,7 @@ import {
   CmpiInstr,
   CmprInstr,
   JmpiInstr,
+  Label,
 } from './ast';
 import {Registers} from '../../core';
 import {unreachable} from '../../lib';
@@ -220,6 +221,10 @@ class Parser {
       return this.cmprInstr();
     } else if (this.match(TokenType.JMPI)) {
       return this.jmpiInstr();
+    } else if (this.match(TokenType.IDENTIFIER)) {
+      if (this.peek()?.type == TokenType.COLON) {
+        return this.label();
+      }
     }
     unreachable(`Invalid token: ${TokenType[this.peek()?.type!]}`);
   }
@@ -233,11 +238,18 @@ class Parser {
   }
 
   private addr(): Token {
-    return this.consume(TokenType.NUMBER, 'Expected address');
+    if (this.check(TokenType.NUMBER)) {
+      return this.consume(TokenType.NUMBER, 'Expected address');
+    }
+    return this.consume(TokenType.IDENTIFIER, 'Expected label');
   }
 
   private comma() {
     this.consume(TokenType.COMMA, `'Expected ','`);
+  }
+
+  private colon() {
+    this.consume(TokenType.COLON, `Expected ':'`);
   }
 
   private moviInstr(): MoviInstr {
@@ -705,6 +717,16 @@ class Parser {
       type: 'JmpiInstr',
       line: this.line,
       address: (addr.literal!) as Address,
+    };
+  }
+
+  private label(): Label {
+    const lbl = this.previous();
+    this.colon();
+    return {
+      type: 'Label',
+      line: this.line,
+      label: (lbl.literal!) as string,
     };
   }
 }

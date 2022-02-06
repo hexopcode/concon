@@ -343,7 +343,7 @@ class Tokenizer {
     if (Keywords.has(text)) {
       this.addToken(Keywords.get(text)!);
     } else {
-      this.addToken(TokenType.IDENTIFIER);
+      this.addToken(TokenType.IDENTIFIER, text);
     }
   }
 
