@@ -86,19 +86,20 @@ class Parser {
   parse(): Ast {
     const statements: Stmt[] = [];
     while (!this.isAtEnd()) {
-      // skip whitespace EOL
+      // skip non-significant EOL (e.g., empty lines)
       while (this.match(TokenType.EOL));
 
       try {
         statements.push(this.statement());
+        if (!this.isAtEnd()) {
+          this.consume(TokenType.EOL, 'Expected end of line');
+        }
       } catch (e) {
         this.collectError({
           line: 0,
           message: (e as Error).message,
         });
-      }
-      if (!this.isAtEnd()) {
-        this.consume(TokenType.EOL, 'Expected end of line');
+        this.synchronize();
       }
     }
     return statements;
@@ -108,8 +109,8 @@ class Parser {
     return !this.peek() || this.peek()!.type == TokenType.EOF;
   }
 
-  private peek(): Token | undefined {
-    return this.tokens[this.current];
+  private peek(seek: number = 0): Token | undefined {
+    return this.tokens[this.current + seek];
   }
 
   private previous(): Token {
@@ -127,7 +128,7 @@ class Parser {
   }
 
   private check(type: TokenType): boolean {
-    if (this.isAtEnd()) {
+    if (this.isAtEnd() && type != TokenType.EOF) {
       return false;
     }
     return this.peek()!.type == type;
@@ -144,7 +145,13 @@ class Parser {
     if (this.check(type)) {
       return this.advance();
     }
-    throw new Error(`Invalid token: ${TokenType[type]}. ${message}`);
+    throw new Error(`Invalid token: ${TokenType[this.peek()!.type]}. ${message}`);
+  }
+
+  private synchronize() {
+    while (!this.match(TokenType.EOL, TokenType.EOF)) {
+      this.advance();
+    }
   }
 
   private statement(): Stmt {
@@ -278,12 +285,13 @@ class Parser {
       return this.jdzInstr();
     } else if (this.match(TokenType.JDZR,)) {
       return this.jdzrInstr();
-    } else if (this.match(TokenType.IDENTIFIER)) {
-      if (this.peek()?.type == TokenType.COLON) {
+    } else if (this.peek()?.type == TokenType.IDENTIFIER) {
+      if (this.peek(1)?.type == TokenType.COLON) {
+        this.advance();
         return this.label();
       }
     }
-    unreachable(`Invalid token: ${TokenType[this.peek()?.type!]}`);
+    unreachable(`Invalid token: ${this.peek()?.lexeme}`);
   }
 
   private reg(): Token {

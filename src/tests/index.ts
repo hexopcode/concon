@@ -4,6 +4,7 @@ import {CompareTests} from './compare';
 import {JumpTests} from './jump';
 import {LogicTests} from './logic';
 import {MemoryTests} from './memory';
+import {ParserErrorTests} from './parser_error';
 
 export const ALL_TESTS = [
   ArithmeticTests,
@@ -12,4 +13,5 @@ export const ALL_TESTS = [
   JumpTests,
   LogicTests,
   MemoryTests,
+  ParserErrorTests,
 ];
