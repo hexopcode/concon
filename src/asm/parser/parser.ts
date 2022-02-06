@@ -283,7 +283,7 @@ class Parser {
       return this.jorInstr();
     } else if (this.match(TokenType.JDZ)) {
       return this.jdzInstr();
-    } else if (this.match(TokenType.JDZR,)) {
+    } else if (this.match(TokenType.JDZR)) {
       return this.jdzrInstr();
     } else if (this.peek()?.type == TokenType.IDENTIFIER) {
       if (this.peek(1)?.type == TokenType.COLON) {
