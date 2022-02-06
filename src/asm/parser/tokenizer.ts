@@ -59,6 +59,7 @@ export enum TokenType {
 
   JMPI,
 
+  EOL,
   EOF,
 }
 
@@ -206,6 +207,7 @@ class Tokenizer {
       case '\t':
         break;
       case '\n':
+        this.addToken(TokenType.EOL);
         this.line++;
         break;
       case '"':

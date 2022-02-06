@@ -69,6 +69,9 @@ class Parser {
   parse(): Ast {
     const statements: Stmt[] = [];
     while (!this.isAtEnd()) {
+      // skip whitespace EOL
+      while (this.match(TokenType.EOL));
+      
       try {
         statements.push(this.statement());
       } catch (e) {
@@ -76,6 +79,9 @@ class Parser {
           line: 0,
           message: (e as Error).message,
         });
+      }
+      if (!this.isAtEnd()) {
+        this.consume(TokenType.EOL, 'Expected end of line');
       }
     }
     return statements;
@@ -121,7 +127,7 @@ class Parser {
     if (this.check(type)) {
       return this.advance();
     }
-    throw new Error(`Invalid token: ${TokenType[type]}`);
+    throw new Error(`Invalid token: ${TokenType[type]}. ${message}`);
   }
 
   private statement(): Stmt {
