@@ -197,8 +197,8 @@ export class System {
         case Opcodes.CMPR:
           this.cmpr();
           continue next;
-        case Opcodes.JMPI:
-          this.jmpi();
+        case Opcodes.JMP:
+          this.jmp();
           continue next;
         default:
           unreachable(`Unimplemented opcode: ${opcode}`);
@@ -580,7 +580,7 @@ export class System {
     }
   }
 
-  private jmpi() {
+  private jmp() {
     const addr = this.address();
     this.registers[Registers.RIP] = addr;
   }

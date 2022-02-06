@@ -42,7 +42,7 @@ import {
   NotInstr,
   CmpiInstr,
   CmprInstr,
-  JmpiInstr,
+  JmpInstr,
   Label,
 } from './ast';
 import {Registers} from '../../core';
@@ -225,8 +225,8 @@ class Parser {
       return this.cmpiInstr();
     } else if (this.match(TokenType.CMPR)) {
       return this.cmprInstr();
-    } else if (this.match(TokenType.JMPI)) {
-      return this.jmpiInstr();
+    } else if (this.match(TokenType.JMP)) {
+      return this.jmpInstr();
     } else if (this.match(TokenType.IDENTIFIER)) {
       if (this.peek()?.type == TokenType.COLON) {
         return this.label();
@@ -717,10 +717,10 @@ class Parser {
     };
   }
 
-  private jmpiInstr(): JmpiInstr {
+  private jmpInstr(): JmpInstr {
     const addr = this.addr();
     return {
-      type: 'JmpiInstr',
+      type: 'JmpInstr',
       line: this.line,
       address: (addr.literal!) as Address,
     };

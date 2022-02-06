@@ -52,5 +52,5 @@ export enum Opcodes {
   CMPR = 0x41,
 
   // Jump
-  JMPI = 0x50,
+  JMP = 0x50,
 }

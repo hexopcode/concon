@@ -9,9 +9,9 @@ export const JumpTests: TestSpec = (t: TestRunner) => {
     sys.reset();
   });
 
-  t.test('JMPI jumps to address', () => {
+  t.test('JMP jumps to address', () => {
     const result = assembleAndBoot(sys, `
-        JMPI 0x2007
+        JMP 0x2007
         MOVI R0, 0xFFFF
         END
     `);
@@ -20,9 +20,9 @@ export const JumpTests: TestSpec = (t: TestRunner) => {
     t.assert(sys.debug(Registers.R0) == 0, 'Register R0 not set');
   });
 
-  t.test('JMPI jumps to label', () => {
+  t.test('JMP jumps to label', () => {
     const result = assembleAndBoot(sys, `
-        JMPI here
+        JMP here
         MOVI R0, 0xFFFF
       here:
         MOVI R1, 0xFFFF

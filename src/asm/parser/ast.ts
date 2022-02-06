@@ -86,7 +86,7 @@ export type NotInstr = AstRegInstr<'NotInstr'>;
 export type CmpiInstr = AstRegImmInstr<'CmpiInstr'>;
 export type CmprInstr = AstRegRegInstr<'CmprInstr'>;
 
-export type JmpiInstr = AstAddrInstr<'JmpiInstr'>;
+export type JmpInstr = AstAddrInstr<'JmpInstr'>;
 
 export type CoreInstr = NopInstr |
     EndInstr |
@@ -140,7 +140,7 @@ export type Instr = CoreInstr |
     ArithmeticInstr |
     LogicInstr |
     CompareInstr |
-    JmpiInstr;
+    JmpInstr;
 
 export type Label = AstNode<'Label'> & {
   label: string,

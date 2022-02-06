@@ -57,7 +57,8 @@ export enum TokenType {
   CMPI,
   CMPR,
 
-  JMPI,
+  JMP,
+  JMPR,
 
   EOL,
   EOF,
@@ -111,7 +112,7 @@ const Keywords: Map<string, TokenType> = new Map(Object.entries({
   'CMPI': TokenType.CMPI,
   'CMPR': TokenType.CMPR,
 
-  'JMPI': TokenType.JMPI,
+  'JMP': TokenType.JMP,
 }));
 
 export type Token = {

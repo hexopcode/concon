@@ -238,8 +238,8 @@ class Codegen {
             this.bytes.push(stmt.register1);
             this.bytes.push(stmt.register2);
             break;
-          case 'JmpiInstr':
-            this.bytes.push(Opcodes.JMPI);
+          case 'JmpInstr':
+            this.bytes.push(Opcodes.JMP);
             this.bytes.push(...this.address(stmt.address));
             break;
           case 'Label':
