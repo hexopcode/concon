@@ -11,8 +11,8 @@ export const CommentsTests: TestSpec = (t: TestRunner) => {
 
   t.test('Single line comment comments', () => {
     const result = assembleAndBoot(sys, `
-      MOVI R0, 0x1234
-      // MOVI R0, 0xFFFF
+      MOV R0, 0x1234
+      // MOV R0, 0xFFFF
       END
     `);
     t.assert(result == Result.END, 'Program runs');
@@ -22,8 +22,8 @@ export const CommentsTests: TestSpec = (t: TestRunner) => {
 
   t.test('Multi-line comment comments', () => {
     const result = assembleAndBoot(sys, `
-      MOVI R0, 0x1234
-      /* MOVI R0, 0xFFFF */
+      MOV R0, 0x1234
+      /* MOV R0, 0xFFFF */
       END
     `);
     t.assert(result == Result.END, 'Program runs');
@@ -33,9 +33,9 @@ export const CommentsTests: TestSpec = (t: TestRunner) => {
 
   t.test('Multi-line comment comments multiple lines', () => {
     const result = assembleAndBoot(sys, `
-      MOVI R0, 0x1234
-      /* MOVI R0, 0xFFFF
-      MOVI R0, 0x4444
+      MOV R0, 0x1234
+      /* MOV R0, 0xFFFF
+      MOV R0, 0x4444
       */
       END
     `);

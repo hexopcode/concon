@@ -11,7 +11,7 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
 
   t.test('SHLI shifts', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 1
+        MOV R0, 1
         SHLI R0, 3
         END
     `);
@@ -22,7 +22,7 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
 
   t.test('SHLI sets overflow flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0xFFFF
+        MOV R0, 0xFFFF
         SHLI R0, 1
         END
     `);
@@ -34,8 +34,8 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
 
   t.test('SHLR shifts', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 1
-        MOVI R1, 3
+        MOV R0, 1
+        MOV R1, 3
         SHLR R0, R1
         END
     `);
@@ -46,8 +46,8 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
 
   t.test('SHLR sets overflow flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0xFFFF
-        MOVI R1, 1
+        MOV R0, 0xFFFF
+        MOV R1, 1
         SHLR R0, R1
         END
     `);
@@ -59,7 +59,7 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
 
   t.test('SHRI shifts', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 8
+        MOV R0, 8
         SHRI R0, 3
         END
     `);
@@ -70,7 +70,7 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
 
   t.test('SHRI sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 1
+        MOV R0, 1
         SHRI R0, 2
         END
     `);
@@ -82,8 +82,8 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
 
   t.test('SHRR shifts', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 8
-        MOVI R1, 3
+        MOV R0, 8
+        MOV R1, 3
         SHRR R0, R1
         END
     `);
@@ -94,8 +94,8 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
 
   t.test('SHRR sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 1
-        MOVI R1, 2
+        MOV R0, 1
+        MOV R1, 2
         SHRR R0, R1
         END
     `);
@@ -107,7 +107,7 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
 
   t.test('ORI ors', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 8
+        MOV R0, 8
         ORI R0, 3
         END
     `);
@@ -118,7 +118,7 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
 
   t.test('ORI sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0
+        MOV R0, 0
         ORI R0, 0
         END
     `);
@@ -130,8 +130,8 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
 
   t.test('ORR ors', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 8
-        MOVI R1, 3
+        MOV R0, 8
+        MOV R1, 3
         ORR R0, R1
         END
     `);
@@ -142,8 +142,8 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
 
   t.test('ORR sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0
-        MOVI R1, 0
+        MOV R0, 0
+        MOV R1, 0
         ORR R0, R1
         END
     `);
@@ -155,7 +155,7 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
 
   t.test('ANDI ands', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 8
+        MOV R0, 8
         ANDI R0, 9
         END
     `);
@@ -166,7 +166,7 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
 
   t.test('ANDI sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 8
+        MOV R0, 8
         ANDI R0, 0
         END
     `);
@@ -178,8 +178,8 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
 
   t.test('ANDR ands', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 8
-        MOVI R1, 9
+        MOV R0, 8
+        MOV R1, 9
         ANDR R0, R1
         END
     `);
@@ -190,8 +190,8 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
 
   t.test('ANDR sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 8
-        MOVI R1, 0
+        MOV R0, 8
+        MOV R1, 0
         ANDR R0, R1
         END
     `);
@@ -203,7 +203,7 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
 
   t.test('XORI xors', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0b101
+        MOV R0, 0b101
         XORI R0, 0b110
         END
     `);
@@ -214,7 +214,7 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
 
   t.test('XORI sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 8
+        MOV R0, 8
         XORI R0, 8
         END
     `);
@@ -226,8 +226,8 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
 
   t.test('XORR ands', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0b101
-        MOVI R1, 0b110
+        MOV R0, 0b101
+        MOV R1, 0b110
         XORR R0, R1
         END
     `);
@@ -238,8 +238,8 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
 
   t.test('XORR sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 8
-        MOVI R1, 8
+        MOV R0, 8
+        MOV R1, 8
         XORR R0, R1
         END
     `);
@@ -251,7 +251,7 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
 
   t.test('NOT nots', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0xFF00
+        MOV R0, 0xFF00
         NOT R0
         END
     `);
@@ -262,7 +262,7 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
 
   t.test('NOT sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0xFFFF
+        MOV R0, 0xFFFF
         NOT R0
         END
     `);

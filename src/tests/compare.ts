@@ -11,7 +11,7 @@ export const CompareTests: TestSpec = (t: TestRunner) => {
 
   t.test('CMPI compares equals', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0xFFFF
+        MOV R0, 0xFFFF
         CMPI R0, 0xFFFF
         END
     `);
@@ -23,7 +23,7 @@ export const CompareTests: TestSpec = (t: TestRunner) => {
 
   t.test('CMPI compares higher value', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0x1234
+        MOV R0, 0x1234
         CMPI R0, 0xFFFF
         END
     `);
@@ -35,7 +35,7 @@ export const CompareTests: TestSpec = (t: TestRunner) => {
 
   t.test('CMPI compares lower value', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0xFFFF
+        MOV R0, 0xFFFF
         CMPI R0, 0x1234
         END
     `);
@@ -46,8 +46,8 @@ export const CompareTests: TestSpec = (t: TestRunner) => {
 
   t.test('CMPR compares equals', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0xFFFF
-        MOVI R1, 0xFFFF
+        MOV R0, 0xFFFF
+        MOV R1, 0xFFFF
         CMPR R0, R1
         END
     `);
@@ -59,8 +59,8 @@ export const CompareTests: TestSpec = (t: TestRunner) => {
 
   t.test('CMPR compares higher value', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0x1234
-        MOVI R1, 0xFFFF
+        MOV R0, 0x1234
+        MOV R1, 0xFFFF
         CMPR R0, R1
         END
     `);
@@ -72,8 +72,8 @@ export const CompareTests: TestSpec = (t: TestRunner) => {
 
   t.test('CMPR compares lower value', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0xFFFF
-        MOVI R1, 0x1234
+        MOV R0, 0xFFFF
+        MOV R1, 0x1234
         CMPR R0, R1
         END
     `);

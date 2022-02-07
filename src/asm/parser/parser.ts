@@ -171,10 +171,8 @@ class Parser {
         type: 'VsyncInstr',
         line: this.line,
       };
-    } else if (this.match(TokenType.MOVI)) {
-      return this.moviInstr();
-    } else if (this.match(TokenType.MOVR)) {
-      return this.movrInstr();
+    } else if (this.match(TokenType.MOV)) {
+      return this.movInstr();
     } else if (this.match(TokenType.STOI)) {
       return this.stoiInstr();
     } else if (this.match(TokenType.STOIB)) {
@@ -315,6 +313,29 @@ class Parser {
 
   private colon() {
     this.consume(TokenType.COLON, `Expected ':'`);
+  }
+
+  private movInstr(): MoviInstr|MovrInstr {
+    const reg = this.reg();
+    this.comma();
+
+    if (this.peek()?.type == TokenType.NUMBER) {
+      return {
+        type: 'MoviInstr',
+        line: this.line,
+        register: (reg.literal!) as Registers,
+        immediate: (this.imm().literal!) as number,
+      };
+    } else if (this.peek()?.type == TokenType.REGISTER) {
+      return {
+        type: 'MovrInstr',
+        line: this.line,
+        register1: (reg.literal!) as Registers,
+        register2: (this.reg().literal!) as Registers,
+      };
+    } else {
+      throw new Error(`Invalid token: ${TokenType[this.peek()!.type]}. Expected NUMBER or REGISTER`);
+    }
   }
 
   private moviInstr(): MoviInstr {

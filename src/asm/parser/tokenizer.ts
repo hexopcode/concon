@@ -14,8 +14,7 @@ export enum TokenType {
   END,
   VSYNC,
 
-  MOVI,
-  MOVR,
+  MOV,
   STOI,
   STOIB,
   STORI,
@@ -85,8 +84,7 @@ const Keywords: Map<string, TokenType> = new Map(Object.entries({
   'END': TokenType.END,
   'VSYNC': TokenType.VSYNC,
   
-  'MOVI': TokenType.MOVI,
-  'MOVR': TokenType.MOVR,
+  'MOV': TokenType.MOV,
   'STOI': TokenType.STOI,
   'STOIB': TokenType.STOIB,
   'STORI': TokenType.STORI,

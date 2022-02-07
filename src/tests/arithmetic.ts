@@ -11,7 +11,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('ADDI does addition', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 1200
+        MOV R0, 1200
         ADDI R0, 34
         END
     `);
@@ -22,7 +22,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('ADDI sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0
+        MOV R0, 0
         ADDI R0, 0
         END
     `);
@@ -34,7 +34,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('ADDI overflows', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0xFFFF
+        MOV R0, 0xFFFF
         ADDI R0, 1
         END
     `);
@@ -46,8 +46,8 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('ADDR does addition', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 1200
-        MOVI R1, 34
+        MOV R0, 1200
+        MOV R1, 34
         ADDR R0, R1
         END
     `);
@@ -58,8 +58,8 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('ADDR sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0
-        MOVI R1, 0
+        MOV R0, 0
+        MOV R1, 0
         ADDR R0, R1
         END
     `);
@@ -71,8 +71,8 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('ADDR overflows', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0xFFFF
-        MOVI R1, 1
+        MOV R0, 0xFFFF
+        MOV R1, 1
         ADDR R0, R1
         END
     `);
@@ -84,7 +84,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('SUBI does subtraction', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 100
+        MOV R0, 100
         SUBI R0, 1
         END
     `);
@@ -95,7 +95,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('SUBI sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 100
+        MOV R0, 100
         SUBI R0, 100
         END
     `);
@@ -107,7 +107,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('SUBI sets negative flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 100
+        MOV R0, 100
         SUBI R0, 101
         END
     `);
@@ -119,8 +119,8 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('SUBR does subtraction', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 100
-        MOVI R1, 1
+        MOV R0, 100
+        MOV R1, 1
         SUBR R0, R1
         END
     `);
@@ -131,8 +131,8 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('SUBR sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 100
-        MOVI R1, 100
+        MOV R0, 100
+        MOV R1, 100
         SUBR R0, R1
         END
     `);
@@ -144,8 +144,8 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('SUBR sets negative flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 100
-        MOVI R1, 101
+        MOV R0, 100
+        MOV R1, 101
         SUBR R0, R1
         END
     `);
@@ -157,7 +157,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('MULI multiplies', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 3
+        MOV R0, 3
         MULI R0, 5
         END
     `);
@@ -168,7 +168,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('MULI sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0
+        MOV R0, 0
         MULI R0, 5
         END
     `);
@@ -180,7 +180,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('MULI sets overflow flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0xFFFF
+        MOV R0, 0xFFFF
         MULI R0, 2
         END
     `);
@@ -192,8 +192,8 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('MULR multiplies', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 3
-        MOVI R1, 5
+        MOV R0, 3
+        MOV R1, 5
         MULR R0, R1
         END
     `);
@@ -204,8 +204,8 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('MULR sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0
-        MOVI R1, 5
+        MOV R0, 0
+        MOV R1, 5
         MULR R0, R1
         END
     `);
@@ -217,8 +217,8 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('MULR sets overflow flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0xFFFF
-        MOVI R1, 2
+        MOV R0, 0xFFFF
+        MOV R1, 2
         MULR R0, R1
         END
     `);
@@ -230,7 +230,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('DIVI divides', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 15
+        MOV R0, 15
         DIVI R0, 5
         END
     `);
@@ -241,7 +241,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('DIVI rounds down', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 3
+        MOV R0, 3
         DIVI R0, 2
         END
     `);
@@ -253,7 +253,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('DIVI sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0
+        MOV R0, 0
         DIVI R0, 5
         END
     `);
@@ -265,7 +265,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('DIVI sets divbyzero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 5
+        MOV R0, 5
         DIVI R0, 0
         END
     `);
@@ -277,8 +277,8 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('DIVR divides', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 15
-        MOVI R1, 5
+        MOV R0, 15
+        MOV R1, 5
         DIVR R0, R1
         END
     `);
@@ -289,8 +289,8 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('DIVR rounds down', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 3
-        MOVI R1, 2
+        MOV R0, 3
+        MOV R1, 2
         DIVR R0, R1
         END
     `);
@@ -302,8 +302,8 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('DIVR sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0
-        MOVI R1, 5
+        MOV R0, 0
+        MOV R1, 5
         DIVR R0, R1
         END
     `);
@@ -315,8 +315,8 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('DIVR sets divbyzero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 5
-        MOVI R1, 0
+        MOV R0, 5
+        MOV R1, 0
         DIVR R0, R1
         END
     `);
@@ -328,7 +328,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('MODI modules', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 3
+        MOV R0, 3
         MODI R0, 2
         END
     `);
@@ -339,7 +339,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('MODI sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0
+        MOV R0, 0
         MODI R0, 5
         END
     `);
@@ -351,7 +351,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('MODI sets divbyzero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 5
+        MOV R0, 5
         MODI R0, 0
         END
     `);
@@ -363,8 +363,8 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('MODR modules', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 3
-        MOVI R1, 2
+        MOV R0, 3
+        MOV R1, 2
         MODR R0, R1
         END
     `);
@@ -375,8 +375,8 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('MODR sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0
-        MOVI R1, 5
+        MOV R0, 0
+        MOV R1, 5
         MODR R0, R1
         END
     `);
@@ -388,8 +388,8 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('MODR sets divbyzero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 5
-        MOVI R1, 0
+        MOV R0, 5
+        MOV R1, 0
         MODR R0, R1
         END
     `);
@@ -401,7 +401,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('INC increments', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 99
+        MOV R0, 99
         INC R0
         END
     `);
@@ -412,7 +412,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('INC sets overflow flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0xFFFF
+        MOV R0, 0xFFFF
         INC R0
         END
     `);
@@ -424,7 +424,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('DEC decrements', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 100
+        MOV R0, 100
         DEC R0
         END
     `);
@@ -435,7 +435,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('DEC sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 1
+        MOV R0, 1
         DEC R0
         END
     `);

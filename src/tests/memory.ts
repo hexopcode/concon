@@ -10,12 +10,12 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
     sys.reset();
   });
 
-  t.test('MOVI instruction sets general registers', () => {
+  t.test('MOV instruction sets general registers', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 1234
-        MOVI R1, 0b1111
-        MOVI R2, 0o777
-        MOVI R3, 0x1234
+        MOV R0, 1234
+        MOV R1, 0b1111
+        MOV R2, 0o777
+        MOV R3, 0x1234
         END
     `);
     t.assert(result == Result.END, 'Program runs');
@@ -28,12 +28,12 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
 
   t.test('registers R10..R15 parsed correctly', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R10, 10
-        MOVI R11, 11
-        MOVI R12, 12
-        MOVI R13, 13
-        MOVI R14, 14
-        MOVI R15, 15
+        MOV R10, 10
+        MOV R11, 11
+        MOV R12, 12
+        MOV R13, 13
+        MOV R14, 14
+        MOV R15, 15
         END
     `);
     t.assert(result == Result.END, 'Program runs');
@@ -46,9 +46,9 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
     t.assert(sys.debug(Registers.R15) == 15, 'R15 set');
   });
 
-  t.test('MOVI instruction sets register RSP', () => {
+  t.test('MOV instruction sets register RSP', () => {
     const result = assembleAndBoot(sys, `
-        MOVI RSP, 1234
+        MOV RSP, 1234
         END
     `);
     t.assert(result == Result.END, 'Program runs');
@@ -57,31 +57,31 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
   });
 
   t.test('register RIP cannot be set', () => {
-    const errors = assembleCheck(`MOVI RIP, 1234`);
+    const errors = assembleCheck(`MOV RIP, 1234`);
 
     t.assert(errors.length == 1, 'Has assembly error');
     t.assert(errors[0].message == 'Cannot set value for register RIP', 'Message mentions RIP');
   });
 
   t.test('register RFL cannot be set', () => {
-    const errors = assembleCheck(`MOVI RFL, 1234`);
+    const errors = assembleCheck(`MOV RFL, 1234`);
 
     t.assert(errors.length == 1, 'Has assembly error');
     t.assert(errors[0].message == 'Cannot set value for register RFL', 'Message mentions RFL');
   });
 
   t.test('register RIN cannot be set', () => {
-    const errors = assembleCheck(`MOVI RIN, 1234`);
+    const errors = assembleCheck(`MOV RIN, 1234`);
 
     t.assert(errors.length == 1, 'Has assembly error');
     t.assert(errors[0].message == 'Cannot set value for register RIN', 'Message mentions RIN');
   });
 
-  t.test('MOVR sets register value from another register', () => {
+  t.test('MOV sets register value from another register', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 1234
-        MOVR R1, R0
-        MOVI R0, 4567
+        MOV R0, 1234
+        MOV R1, R0
+        MOV R0, 4567
         END
     `);
     t.assert(result == Result.END, 'Program runs');
@@ -114,7 +114,7 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
 
   t.test('STORI sets memory at register with immediate', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0x3000
+        MOV R0, 0x3000
         STORI R0, 0x1234
         END
     `);
@@ -126,7 +126,7 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
 
   t.test('STORIB sets memory at register with immediate', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0x3000
+        MOV R0, 0x3000
         STORIB R0, 0x1234
         END
     `);
@@ -138,7 +138,7 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
 
   t.test('STOR sets memory memory with register value', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0x1234
+        MOV R0, 0x1234
         STOR 0x3000, R0
         END
     `);
@@ -150,7 +150,7 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
 
   t.test('STORB sets memory memory with register value', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0x1234
+        MOV R0, 0x1234
         STORB 0x3000, R0
         END
     `);
@@ -162,8 +162,8 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
 
   t.test('STORR sets memory at register with register value', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0x3000
-        MOVI R1, 0x1234
+        MOV R0, 0x3000
+        MOV R1, 0x1234
         STORR R0, R1
         END
     `);
@@ -175,8 +175,8 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
 
   t.test('STORRB sets memory at register with register value', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0x3000
-        MOVI R1, 0x1234
+        MOV R0, 0x3000
+        MOV R1, 0x1234
         STORRB R0, R1
         END
     `);
@@ -188,7 +188,7 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
 
   t.test('LODR reads memory at address into register', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0x1234
+        MOV R0, 0x1234
         STOR 0x3000, R0
         LODR R1, 0x3000
         END
@@ -200,7 +200,7 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
 
   t.test('LODRB reads memory at address into register', () => {
     const result = assembleAndBoot(sys, `
-        MOVI R0, 0x1234
+        MOV R0, 0x1234
         STOR 0x3000, R0
         LODRB R1, 0x3000
         END
@@ -213,7 +213,7 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
   t.test('LODRR reads memory at address from register into register', () => {
     const result = assembleAndBoot(sys, `
         STOI 0x3000, 0x1234
-        MOVI R0, 0x3000
+        MOV R0, 0x3000
         LODRR R1, R0
         END
     `);
@@ -225,7 +225,7 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
   t.test('LODRRB reads memory at address from register into register', () => {
     const result = assembleAndBoot(sys, `
         STOI 0x3000, 0x1234
-        MOVI R0, 0x3000
+        MOV R0, 0x3000
         LODRRB R1, R0
         END
     `);
