@@ -338,30 +338,6 @@ class Parser {
     }
   }
 
-  private moviInstr(): MoviInstr {
-    const reg = this.reg();
-    this.comma();
-    const imm = this.imm();
-    return {
-      type: 'MoviInstr',
-      line: this.line,
-      register: (reg.literal!) as Registers,
-      immediate: (imm.literal!) as number,
-    };
-  }
-
-  private movrInstr(): MovrInstr {
-    const reg1 = this.reg();
-    this.comma();
-    const reg2 = this.reg();
-    return {
-      type: 'MovrInstr',
-      line: this.line,
-      register1: (reg1.literal!) as Registers,
-      register2: (reg2.literal!) as Registers,
-    };
-  }
-
   private stoiInstr(): StoiInstr {
     const addr = this.addr();
     this.comma();
