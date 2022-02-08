@@ -3,6 +3,7 @@ export enum Opcodes {
   NOP = 0x00,
   END = 0x01,
   VSYNC = 0x02,
+  BRK = 0x03,
 
   // Memory
   MOVI = 0x10,

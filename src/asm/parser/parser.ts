@@ -171,6 +171,11 @@ class Parser {
         type: 'VsyncInstr',
         line: this.line,
       };
+    } else if (this.match(TokenType.BRK)) {
+      return {
+        type: 'BrkInstr',
+        line: this.line,
+      };
     } else if (this.match(TokenType.MOV)) {
       return this.movInstr();
     } else if (this.match(TokenType.STOI)) {

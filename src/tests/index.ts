@@ -1,6 +1,7 @@
 import {ArithmeticTests} from './arithmetic';
 import {CommentsTests} from './comments';
 import {CompareTests} from './compare';
+import {CoreTests} from './core';
 import {JumpTests} from './jump';
 import {LogicTests} from './logic';
 import {MemoryTests} from './memory';
@@ -10,6 +11,7 @@ export const ALL_TESTS = [
   ArithmeticTests,
   CommentsTests,
   CompareTests,
+  CoreTests,
   JumpTests,
   LogicTests,
   MemoryTests,

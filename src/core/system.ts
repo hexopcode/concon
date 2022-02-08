@@ -20,6 +20,7 @@ import {Opcodes} from './opcodes';
 export enum Result {
   VSYNC,
   END,
+  BRK,
 }
 
 export class System {
@@ -80,6 +81,9 @@ export class System {
           return Result.END;
         case Opcodes.VSYNC:
           return Result.VSYNC;
+        case Opcodes.BRK:
+          return Result.BRK;
+
         case Opcodes.MOVI:
           this.movi();
           continue next;
@@ -122,6 +126,7 @@ export class System {
         case Opcodes.LODRRB:
           this.lodrrb();
           continue next;
+
         case Opcodes.ADDI:
           this.addi();
           continue next;
@@ -158,6 +163,7 @@ export class System {
         case Opcodes.DEC:
           this.dec();
           continue next;
+
         case Opcodes.SHLI:
           this.shli();
           continue next;
@@ -191,12 +197,14 @@ export class System {
         case Opcodes.NOT:
           this.not();
           continue next;
+          
         case Opcodes.CMPI:
           this.cmpi();
           continue next;
         case Opcodes.CMPR:
           this.cmpr();
           continue next;
+
         case Opcodes.JMP:
           this.jmp();
           continue next;

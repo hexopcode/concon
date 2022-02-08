@@ -43,6 +43,8 @@ type AstAddrInstr<Type extends string> = AstNode<Type> & {
 export type NopInstr = AstNode<'NopInstr'>;
 export type EndInstr = AstNode<'EndInstr'>;
 export type VsyncInstr = AstNode<'VsyncInstr'>;
+export type BrkInstr = AstNode<'BrkInstr'>;
+
 export type MoviInstr = AstRegImmInstr<'MoviInstr'>;
 export type MovrInstr = AstRegRegInstr<'MovrInstr'>;
 export type StoiInstr = AstAddrImmInstr<'StoiInstr'>;
@@ -107,7 +109,8 @@ export type JdzrInstr = AstRegInstr<'JdzrInstr'>;
 
 export type CoreInstr = NopInstr |
     EndInstr |
-    VsyncInstr;
+    VsyncInstr |
+    BrkInstr;
 
 export type MemoryInstr = MoviInstr |
     MovrInstr |

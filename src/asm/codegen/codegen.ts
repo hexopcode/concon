@@ -47,6 +47,9 @@ class Codegen {
           case 'VsyncInstr':
             this.bytes.push(Opcodes.VSYNC);
             break;
+          case 'BrkInstr':
+            this.bytes.push(Opcodes.BRK);
+            break;
           case 'MoviInstr':
             this.bytes.push(Opcodes.MOVI);
             this.bytes.push(stmt.register);
