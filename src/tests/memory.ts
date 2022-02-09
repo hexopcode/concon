@@ -1,4 +1,3 @@
-import {assembleCheck} from '../asm';
 import {Registers, Result, System} from '../core';
 import {TestRunner, TestSpec} from '../lib';
 import {assembleAndBoot} from './helpers';
@@ -54,27 +53,6 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.RSP) == 1234, 'RSP set');
-  });
-
-  t.test('register RIP cannot be set', () => {
-    const errors = assembleCheck(`MOV RIP, 1234`);
-
-    t.assert(errors.length == 1, 'Has assembly error');
-    t.assert(errors[0].message == 'Cannot set value for register RIP', 'Message mentions RIP');
-  });
-
-  t.test('register RFL cannot be set', () => {
-    const errors = assembleCheck(`MOV RFL, 1234`);
-
-    t.assert(errors.length == 1, 'Has assembly error');
-    t.assert(errors[0].message == 'Cannot set value for register RFL', 'Message mentions RFL');
-  });
-
-  t.test('register RIN cannot be set', () => {
-    const errors = assembleCheck(`MOV RIN, 1234`);
-
-    t.assert(errors.length == 1, 'Has assembly error');
-    t.assert(errors[0].message == 'Cannot set value for register RIN', 'Message mentions RIN');
   });
 
   t.test('MOV sets register value from another register', () => {

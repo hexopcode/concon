@@ -7,6 +7,24 @@ type AstNode<Type extends string> = {
   line: number,
 };
 
+export type AstImmExpr = AstNode<'AstImmExpr'> & {
+  // TODO: support more complex expressions
+  value: string|number,
+};
+
+export type AstRegExpr = AstNode<'AstRegExpr'> & {
+  value: Registers,
+}
+
+export type AstImmOrRegExpr = AstImmExpr|AstRegExpr;
+
+type AstTwoOpInstr<Type extends string,
+                   Op1Type extends AstImmOrRegExpr,
+                   Op2Type extends AstImmOrRegExpr> = AstNode<Type> & {
+  op1: Op1Type,
+  op2: Op2Type,
+};
+
 type AstRegImmInstr<Type extends string> = AstNode<Type> & {
   register: Registers,
   immediate: number,
@@ -45,8 +63,8 @@ export type EndInstr = AstNode<'EndInstr'>;
 export type VsyncInstr = AstNode<'VsyncInstr'>;
 export type BrkInstr = AstNode<'BrkInstr'>;
 
-export type MoviInstr = AstRegImmInstr<'MoviInstr'>;
-export type MovrInstr = AstRegRegInstr<'MovrInstr'>;
+export type MovInstr = AstTwoOpInstr<'MovInstr', AstRegExpr, AstImmOrRegExpr>;
+
 export type StoiInstr = AstAddrImmInstr<'StoiInstr'>;
 export type StoibInstr = AstAddrImmInstr<'StoibInstr'>;
 export type StoriInstr = AstRegImmInstr<'StoriInstr'>;
@@ -112,8 +130,8 @@ export type CoreInstr = NopInstr |
     VsyncInstr |
     BrkInstr;
 
-export type MemoryInstr = MoviInstr |
-    MovrInstr |
+export type MemoryInstr =
+    MovInstr |
     StoiInstr |
     StoibInstr |
     StoriInstr |

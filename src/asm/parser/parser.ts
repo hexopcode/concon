@@ -1,10 +1,12 @@
 import {Token, TokenType} from './tokenizer';
 import {
   Ast,
+  AstRegExpr,
+  AstImmExpr,
+  AstImmOrRegExpr,
   Address,
   Stmt,
-  MoviInstr,
-  MovrInstr,
+  MovInstr,
   LodrInstr,
   LodrbInstr,
   LodrrInstr,
@@ -301,8 +303,37 @@ class Parser {
     return this.consume(TokenType.REGISTER, 'Expected register');
   }
 
+  private regExpr(): AstRegExpr {
+    const reg = this.reg();
+    return {
+      type: 'AstRegExpr',
+      line: this.line,
+      value: reg.literal! as Registers,
+    };
+  }
+
   private imm(): Token {
     return this.consume(TokenType.NUMBER, 'Expected immediate');
+  }
+
+  private immExpr(): AstImmExpr {
+    // FIXME: needs better checks for immediate expressions
+    const value = this.check(TokenType.NUMBER) ?
+        this.consume(TokenType.NUMBER, 'Expected NUMBER') :
+        this.consume(TokenType.IDENTIFIER, 'Expected IDENTIFIER');
+
+    return {
+      type: 'AstImmExpr',
+      line: this.line,
+      value: value.literal!,
+    };
+  }
+
+  private immOrRegExpr(): AstImmOrRegExpr {
+    if (this.check(TokenType.REGISTER)) {
+      return this.regExpr();
+    }
+    return this.immExpr();
   }
 
   private addr(): Token {
@@ -320,27 +351,17 @@ class Parser {
     this.consume(TokenType.COLON, `Expected ':'`);
   }
 
-  private movInstr(): MoviInstr|MovrInstr {
-    const reg = this.reg();
+  private movInstr(): MovInstr {
+    const op1 = this.regExpr();
     this.comma();
-
-    if (this.peek()?.type == TokenType.NUMBER) {
-      return {
-        type: 'MoviInstr',
-        line: this.line,
-        register: (reg.literal!) as Registers,
-        immediate: (this.imm().literal!) as number,
-      };
-    } else if (this.peek()?.type == TokenType.REGISTER) {
-      return {
-        type: 'MovrInstr',
-        line: this.line,
-        register1: (reg.literal!) as Registers,
-        register2: (this.reg().literal!) as Registers,
-      };
-    } else {
-      throw new Error(`Invalid token: ${TokenType[this.peek()!.type]}. Expected NUMBER or REGISTER`);
-    }
+    const op2 = this.immOrRegExpr();
+    
+    return {
+      type: 'MovInstr',
+      line: this.line,
+      op1,
+      op2,
+    };
   }
 
   private stoiInstr(): StoiInstr {

@@ -50,15 +50,17 @@ class Codegen {
           case 'BrkInstr':
             this.bytes.push(Opcodes.BRK);
             break;
-          case 'MoviInstr':
-            this.bytes.push(Opcodes.MOVI);
-            this.bytes.push(stmt.register);
-            this.bytes.push(...this.word(stmt.immediate));
-            break;
-          case 'MovrInstr':
-            this.bytes.push(Opcodes.MOVR);
-            this.bytes.push(stmt.register1);
-            this.bytes.push(stmt.register2);
+          case 'MovInstr':
+            if (stmt.op2.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.MOVI);
+              this.bytes.push(stmt.op1.value);
+              // FIXME: make this work with expressions
+              this.bytes.push(...this.word(stmt.op2.value as number));
+            } else {
+              this.bytes.push(Opcodes.MOVR);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(stmt.op2.value);
+            }
             break;
           case 'StoiInstr':
             this.bytes.push(Opcodes.STOI);

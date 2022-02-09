@@ -1,10 +1,20 @@
 import {assemble} from '../asm';
-import {MemoryArea, MEMORY_SCREEN_OFFSET, MEMORY_SCREEN_SIZE, Result, System} from '../core';
-import {runTests} from '../lib';
+import {MemoryArea, Result, System} from '../core';
+import {runTests, TestResultEnum} from '../lib';
 import {ALL_TESTS} from '../tests';
 import {ConconScreen} from './components';
 
-console.log(runTests(...ALL_TESTS));
+const testResults = runTests(...ALL_TESTS);
+const testResultsCollection = [...testResults.values()];
+const total = testResultsCollection.length;
+const failed = testResultsCollection.filter(result => result.result == TestResultEnum.FAILED);
+
+if (failed.length > 0) {
+  console.log(`%cFAILED ${failed.length}/${total}`, 'color: red');
+  console.log(failed);
+} else {
+  console.log(`%cPASSED ${total}/${total}`, 'color: green');
+}
 
 const screen = new ConconScreen();
 screen.attach(document.body);
