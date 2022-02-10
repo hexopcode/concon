@@ -82,16 +82,11 @@ export type LodrbInstr = AstRegAddrInstr<'LodrbInstr'>;
 export type LodrrInstr = AstRegRegInstr<'LodrrInstr'>;
 export type LodrrbInstr = AstRegRegInstr<'LodrrbInstr'>;
 
-export type AddiInstr = AstRegImmInstr<'AddiInstr'>;
-export type AddrInstr = AstRegRegInstr<'AddrInstr'>;
-export type SubiInstr = AstRegImmInstr<'SubiInstr'>;
-export type SubrInstr = AstRegRegInstr<'SubrInstr'>;
-export type MuliInstr = AstRegImmInstr<'MuliInstr'>;
-export type MulrInstr = AstRegRegInstr<'MulrInstr'>;
-export type DiviInstr = AstRegImmInstr<'DiviInstr'>;
-export type DivrInstr = AstRegRegInstr<'DivrInstr'>;
-export type ModiInstr = AstRegImmInstr<'ModiInstr'>;
-export type ModrInstr = AstRegRegInstr<'ModrInstr'>;
+export type AddInstr = AstTwoOpInstr<'AddInstr', AstRegExpr, AstImmOrRegExpr>;
+export type SubInstr = AstTwoOpInstr<'SubInstr', AstRegExpr, AstImmOrRegExpr>;
+export type MulInstr = AstTwoOpInstr<'MulInstr', AstRegExpr, AstImmOrRegExpr>;
+export type DivInstr = AstTwoOpInstr<'DivInstr', AstRegExpr, AstImmOrRegExpr>;
+export type ModInstr = AstTwoOpInstr<'ModInstr', AstRegExpr, AstImmOrRegExpr>;
 export type IncInstr = AstRegInstr<'IncInstr'>;
 export type DecInstr = AstRegInstr<'DecInstr'>;
 
@@ -139,16 +134,11 @@ export type MemoryInstr =
     LodrrInstr |
     LodrrbInstr;
 
-export type ArithmeticInstr = AddiInstr |
-    AddrInstr |
-    SubiInstr |
-    SubrInstr |
-    MuliInstr |
-    MulrInstr |
-    DiviInstr |
-    DivrInstr |
-    ModiInstr |
-    ModrInstr |
+export type ArithmeticInstr = AddInstr |
+    SubInstr |
+    MulInstr |
+    DivInstr |
+    ModInstr |
     IncInstr |
     DecInstr;
 

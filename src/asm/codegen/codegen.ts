@@ -121,54 +121,60 @@ class Codegen {
             this.bytes.push(stmt.register1);
             this.bytes.push(stmt.register2);
             break;
-          case 'AddiInstr':
-            this.bytes.push(Opcodes.ADDI);
-            this.bytes.push(stmt.register);
-            this.bytes.push(...this.word(stmt.immediate));
+          case 'AddInstr':
+            if (stmt.op2.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.ADDI);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(...this.address(stmt.op2.value));
+            } else {
+              this.bytes.push(Opcodes.ADDR);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(stmt.op2.value);
+            }
             break;
-          case 'AddrInstr':
-            this.bytes.push(Opcodes.ADDR);
-            this.bytes.push(stmt.register1);
-            this.bytes.push(stmt.register2);
+          case 'SubInstr':
+            if (stmt.op2.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.SUBI);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(...this.address(stmt.op2.value));
+            } else {
+              this.bytes.push(Opcodes.SUBR);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(stmt.op2.value);
+            }
             break;
-          case 'SubiInstr':
-            this.bytes.push(Opcodes.SUBI);
-            this.bytes.push(stmt.register);
-            this.bytes.push(...this.word(stmt.immediate));
+          case 'MulInstr':
+            if (stmt.op2.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.MULI);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(...this.address(stmt.op2.value));
+            } else {
+              this.bytes.push(Opcodes.MULR);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(stmt.op2.value);
+            }
             break;
-          case 'SubrInstr':
-            this.bytes.push(Opcodes.SUBR);
-            this.bytes.push(stmt.register1);
-            this.bytes.push(stmt.register2);
+          case 'DivInstr':
+            if (stmt.op2.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.DIVI);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(...this.address(stmt.op2.value));
+            } else {
+              this.bytes.push(Opcodes.DIVR);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(stmt.op2.value);
+            }
             break;
-          case 'MuliInstr':
-            this.bytes.push(Opcodes.MULI);
-            this.bytes.push(stmt.register);
-            this.bytes.push(...this.word(stmt.immediate));
-            break;
-          case 'MulrInstr':
-            this.bytes.push(Opcodes.MULR);
-            this.bytes.push(stmt.register1);
-            this.bytes.push(stmt.register2);
-            break;
-          case 'DiviInstr':
-            this.bytes.push(Opcodes.DIVI);
-            this.bytes.push(stmt.register);
-            this.bytes.push(...this.word(stmt.immediate));
-            break;
-          case 'DivrInstr':
-            this.bytes.push(Opcodes.DIVR);
-            this.bytes.push(stmt.register1);
-            this.bytes.push(stmt.register2);
-            break;
-          case 'ModiInstr':
-            this.bytes.push(Opcodes.MODI);
-            this.bytes.push(stmt.register);
-            this.bytes.push(...this.word(stmt.immediate));
-            break;
-          case 'ModrInstr':
-            this.bytes.push(Opcodes.MODR);
-            this.bytes.push(stmt.register1, stmt.register2);
+          case 'ModInstr':
+            if (stmt.op2.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.MODI);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(...this.address(stmt.op2.value));
+            } else {
+              this.bytes.push(Opcodes.MODR);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(stmt.op2.value);
+            }
             break;
           case 'IncInstr':
             this.bytes.push(Opcodes.INC);

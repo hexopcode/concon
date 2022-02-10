@@ -49,7 +49,7 @@ export const JumpTests: TestSpec = (t: TestRunner) => {
   t.test('JZ jumps if zero', () => {
     const result = assembleAndBoot(sys, `
         MOV R0, 0x1234
-        SUBI R0, 0x1234
+        SUB R0, 0x1234
         JZ done
         MOV R0, 0x1111
       done:
@@ -63,7 +63,7 @@ export const JumpTests: TestSpec = (t: TestRunner) => {
   t.test('JZ does not jump', () => {
     const result = assembleAndBoot(sys, `
         MOV R0, 0x1234
-        SUBI R0, 0x1231
+        SUB R0, 0x1231
         JZ done
         MOV R0, 0x1111
       done:
@@ -77,7 +77,7 @@ export const JumpTests: TestSpec = (t: TestRunner) => {
   t.test('JNZ jumps if not zero', () => {
     const result = assembleAndBoot(sys, `
         MOV R0, 0x1234
-        SUBI R0, 0x1231
+        SUB R0, 0x1231
         JNZ done
         MOV R0, 0x1111
       done:
@@ -91,7 +91,7 @@ export const JumpTests: TestSpec = (t: TestRunner) => {
   t.test('JNZ does not jump', () => {
     const result = assembleAndBoot(sys, `
         MOV R0, 0x1234
-        SUBI R0, 0x1234
+        SUB R0, 0x1234
         JNZ done
         MOV R0, 0x1111
       done:
@@ -245,7 +245,7 @@ export const JumpTests: TestSpec = (t: TestRunner) => {
   t.test('JO jumps on overflow', () => {
     const result = assembleAndBoot(sys, `
         MOV R0, 0xFFFF
-        ADDI R0, 1
+        ADD R0, 1
         JO done
         MOV R0, 0x1111
       done:
@@ -260,7 +260,7 @@ export const JumpTests: TestSpec = (t: TestRunner) => {
   t.test('JO does not jump', () => {
     const result = assembleAndBoot(sys, `
         MOV R0, 0xFFFE
-        ADDI R0, 1
+        ADD R0, 1
         JO done
         MOV R0, 0x1111
       done:
@@ -275,7 +275,7 @@ export const JumpTests: TestSpec = (t: TestRunner) => {
   t.test('JDZ jump on divbyzero', () => {
     const result = assembleAndBoot(sys, `
         MOV R0, 0xFFFF
-        DIVI R0, 0
+        DIV R0, 0
         JDZ done
         MOV R0, 0x1111
       done:
@@ -289,7 +289,7 @@ export const JumpTests: TestSpec = (t: TestRunner) => {
   t.test('JDZ does not jump', () => {
     const result = assembleAndBoot(sys, `
         MOV R0, 0xFFFF
-        DIVI R0, 1
+        DIV R0, 1
         JDZ done
         MOV R0, 0x1111
       done:
