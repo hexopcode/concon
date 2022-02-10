@@ -244,12 +244,13 @@ class Codegen {
             }
             break;
           case 'JmpInstr':
-            this.bytes.push(Opcodes.JMP);
-            this.bytes.push(...this.address(stmt.address));
-            break;
-          case 'JmprInstr':
-            this.bytes.push(Opcodes.JMPR);
-            this.bytes.push(stmt.register);
+            if (stmt.op.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.JMP);
+              this.bytes.push(...this.address(stmt.op.value));
+            } else {
+              this.bytes.push(Opcodes.JMPR);
+              this.bytes.push(stmt.op.value);  
+            }
             break;
           case 'JzInstr':
             this.bytes.push(Opcodes.JZ);

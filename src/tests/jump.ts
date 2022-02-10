@@ -34,10 +34,10 @@ export const JumpTests: TestSpec = (t: TestRunner) => {
     t.assert(sys.debug(Registers.R1) == 0xFFFF, 'Register R1 contains result');
   });
 
-  t.test('JMPR jumps to address', () => {
+  t.test('JMP jumps to address', () => {
     const result = assembleAndBoot(sys, `
         MOV R1, 0x200A
-        JMPR R1
+        JMP R1
         MOV R0, 0xFFFF
         END
     `);

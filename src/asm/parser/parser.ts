@@ -44,7 +44,6 @@ import {
   NotInstr,
   CmpInstr,
   JmpInstr,
-  JmprInstr,
   JzInstr,
   JzrInstr,
   JnzInstr,
@@ -253,8 +252,6 @@ class Parser {
       return this.cmpInstr();
     } else if (this.match(TokenType.JMP)) {
       return this.jmpInstr();
-    } else if (this.match(TokenType.JMPR)) {
-      return this.jmprInstr();
     } else if (this.match(TokenType.JZ)) {
       return this.jzInstr();
     } else if (this.match(TokenType.JZR)) {
@@ -786,20 +783,10 @@ class Parser {
   }
 
   private jmpInstr(): JmpInstr {
-    const addr = this.addr();
     return {
       type: 'JmpInstr',
       line: this.line,
-      address: (addr.literal!) as Address,
-    };
-  }
-
-  private jmprInstr(): JmprInstr {
-    const reg = this.reg();
-    return {
-      type: 'JmprInstr',
-      line: this.line,
-      register: (reg.literal!) as Registers,
+      op: this.immOrRegExpr(),
     };
   }
   

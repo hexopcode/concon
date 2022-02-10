@@ -109,8 +109,7 @@ export type NotInstr = AstRegInstr<'NotInstr'>;
 
 export type CmpInstr = AstTwoOpInstr<'CmpInstr', AstRegExpr, AstImmOrRegExpr>;
 
-export type JmpInstr = AstAddrInstr<'JmpInstr'>;
-export type JmprInstr = AstRegInstr<'JmprInstr'>;
+export type JmpInstr = AstOneOpInstr<'JmpInstr', AstImmOrRegExpr>;
 export type JzInstr = AstAddrInstr<'JzInstr'>;
 export type JzrInstr = AstRegInstr<'JzrInstr'>;
 export type JnzInstr = AstAddrInstr<'JnzInstr'>;
@@ -176,7 +175,6 @@ export type LogicInstr = ShliInstr |
 export type CompareInstr = CmpInstr;
 
 export type JumpInstr = JmpInstr |
-    JmprInstr |
     JzInstr |
     JzrInstr |
     JnzInstr |
