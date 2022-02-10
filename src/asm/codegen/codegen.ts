@@ -253,68 +253,76 @@ class Codegen {
             }
             break;
           case 'JzInstr':
-            this.bytes.push(Opcodes.JZ);
-            this.bytes.push(...this.address(stmt.address));
-            break;
-          case 'JzrInstr':
-            this.bytes.push(Opcodes.JZR);
-            this.bytes.push(stmt.register);
+            if (stmt.op.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.JZ);
+              this.bytes.push(...this.address(stmt.op.value));
+            } else {
+              this.bytes.push(Opcodes.JZR);
+              this.bytes.push(stmt.op.value);  
+            }
             break;
           case 'JnzInstr':
-            this.bytes.push(Opcodes.JNZ);
-            this.bytes.push(...this.address(stmt.address));
-            break;
-          case 'JnzrInstr':
-            this.bytes.push(Opcodes.JNZR);
-            this.bytes.push(stmt.register);
+            if (stmt.op.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.JNZ);
+              this.bytes.push(...this.address(stmt.op.value));
+            } else {
+              this.bytes.push(Opcodes.JNZR);
+              this.bytes.push(stmt.op.value);  
+            }
             break;
           case 'JgInstr':
-            this.bytes.push(Opcodes.JG);
-            this.bytes.push(...this.address(stmt.address));
-            break;
-          case 'JgrInstr':
-            this.bytes.push(Opcodes.JGR);
-            this.bytes.push(stmt.register);
+            if (stmt.op.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.JG);
+              this.bytes.push(...this.address(stmt.op.value));
+            } else {
+              this.bytes.push(Opcodes.JGR);
+              this.bytes.push(stmt.op.value);  
+            }
             break;
           case 'JgzInstr':
-            this.bytes.push(Opcodes.JGZ);
-            this.bytes.push(...this.address(stmt.address));
-            break;
-          case 'JgzrInstr':
-            this.bytes.push(Opcodes.JGZR);
-            this.bytes.push(stmt.register);
+            if (stmt.op.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.JGZ);
+              this.bytes.push(...this.address(stmt.op.value));
+            } else {
+              this.bytes.push(Opcodes.JGZR);
+              this.bytes.push(stmt.op.value);  
+            }
             break;
           case 'JlInstr':
-            this.bytes.push(Opcodes.JL);
-            this.bytes.push(...this.address(stmt.address));
-            break;
-          case 'JlrInstr':
-            this.bytes.push(Opcodes.JLR);
-            this.bytes.push(stmt.register);
+            if (stmt.op.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.JL);
+              this.bytes.push(...this.address(stmt.op.value));
+            } else {
+              this.bytes.push(Opcodes.JLR);
+              this.bytes.push(stmt.op.value);  
+            }
             break;
           case 'JlzInstr':
-            this.bytes.push(Opcodes.JLZ);
-            this.bytes.push(...this.address(stmt.address));
-            break;
-          case 'JlzrInstr':
-            this.bytes.push(Opcodes.JLZR);
-            this.bytes.push(stmt.register);
+            if (stmt.op.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.JLZ);
+              this.bytes.push(...this.address(stmt.op.value));
+            } else {
+              this.bytes.push(Opcodes.JLZR);
+              this.bytes.push(stmt.op.value);  
+            }
             break;
           case 'JoInstr':
-            this.bytes.push(Opcodes.JO);
-            this.bytes.push(...this.address(stmt.address));
-            break;
-          case 'JorInstr':
-            this.bytes.push(Opcodes.JOR);
-            this.bytes.push(stmt.register);
+            if (stmt.op.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.JO);
+              this.bytes.push(...this.address(stmt.op.value));
+            } else {
+              this.bytes.push(Opcodes.JOR);
+              this.bytes.push(stmt.op.value);  
+            }
             break;
           case 'JdzInstr':
-            this.bytes.push(Opcodes.JDZ);
-            this.bytes.push(...this.address(stmt.address));
-            break;
-          case 'JdzrInstr':
-            this.bytes.push(Opcodes.JDZR);
-            this.bytes.push(stmt.register);
+            if (stmt.op.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.JDZ);
+              this.bytes.push(...this.address(stmt.op.value));
+            } else {
+              this.bytes.push(Opcodes.JDZR);
+              this.bytes.push(stmt.op.value);  
+            }
             break;
           case 'Label':
             this.labelAddress(stmt.label);

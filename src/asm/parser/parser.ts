@@ -45,21 +45,13 @@ import {
   CmpInstr,
   JmpInstr,
   JzInstr,
-  JzrInstr,
   JnzInstr,
-  JnzrInstr,
   JgInstr,
-  JgrInstr,
   JgzInstr,
-  JgzrInstr,
   JlInstr,
-  JlrInstr,
   JlzInstr,
-  JlzrInstr,
   JoInstr,
-  JorInstr,
   JdzInstr,
-  JdzrInstr,
   Label,
 } from './ast';
 import {Registers} from '../../core';
@@ -254,36 +246,20 @@ class Parser {
       return this.jmpInstr();
     } else if (this.match(TokenType.JZ)) {
       return this.jzInstr();
-    } else if (this.match(TokenType.JZR)) {
-      return this.jzrInstr();
     } else if (this.match(TokenType.JNZ)) {
       return this.jnzInstr();
-    } else if (this.match(TokenType.JNZR)) {
-      return this.jnzrInstr();
     } else if (this.match(TokenType.JG)) {
       return this.jgInstr();
-    } else if (this.match(TokenType.JGR)) {
-      return this.jgrInstr();
     } else if (this.match(TokenType.JGZ)) {
       return this.jgzInstr();
-    } else if (this.match(TokenType.JGZR)) {
-      return this.jgzrInstr();
     } else if (this.match(TokenType.JL)) {
       return this.jlInstr();
-    } else if (this.match(TokenType.JLR)) {
-      return this.jlrInstr();
     } else if (this.match(TokenType.JLZ)) {
       return this.jlzInstr();
-    } else if (this.match(TokenType.JLZR)) {
-      return this.jlzrInstr();
     } else if (this.match(TokenType.JO)) {
       return this.joInstr();
-    } else if (this.match(TokenType.JOR)) {
-      return this.jorInstr();
     } else if (this.match(TokenType.JDZ)) {
       return this.jdzInstr();
-    } else if (this.match(TokenType.JDZR)) {
-      return this.jdzrInstr();
     } else if (this.peek()?.type == TokenType.IDENTIFIER) {
       if (this.peek(1)?.type == TokenType.COLON) {
         this.advance();
@@ -791,146 +767,66 @@ class Parser {
   }
   
   private jzInstr(): JzInstr {
-    const addr = this.addr();
     return {
       type: 'JzInstr',
       line: this.line,
-      address: (addr.literal!) as Address,
-    };
-  }
-
-  private jzrInstr(): JzrInstr {
-    const reg = this.reg();
-    return {
-      type: 'JzrInstr',
-      line: this.line,
-      register: (reg.literal!) as Registers,
+      op: this.immOrRegExpr(),
     };
   }
 
   private jnzInstr(): JnzInstr {
-    const addr = this.addr();
     return {
       type: 'JnzInstr',
       line: this.line,
-      address: (addr.literal!) as Address,
-    };
-  }
-
-  private jnzrInstr(): JnzrInstr {
-    const reg = this.reg();
-    return {
-      type: 'JnzrInstr',
-      line: this.line,
-      register: (reg.literal!) as Registers,
+      op: this.immOrRegExpr(),
     };
   }
 
   private jgInstr(): JgInstr {
-    const addr = this.addr();
     return {
       type: 'JgInstr',
       line: this.line,
-      address: (addr.literal!) as Address,
-    };
-  }
-
-  private jgrInstr(): JgrInstr {
-    const reg = this.reg();
-    return {
-      type: 'JgrInstr',
-      line: this.line,
-      register: (reg.literal!) as Registers,
+      op: this.immOrRegExpr(),
     };
   }
 
   private jgzInstr(): JgzInstr {
-    const addr = this.addr();
     return {
       type: 'JgzInstr',
       line: this.line,
-      address: (addr.literal!) as Address,
-    };
-  }
-
-  private jgzrInstr(): JgzrInstr {
-    const reg = this.reg();
-    return {
-      type: 'JgzrInstr',
-      line: this.line,
-      register: (reg.literal!) as Registers,
+      op: this.immOrRegExpr(),
     };
   }
 
   private jlInstr(): JlInstr {
-    const addr = this.addr();
     return {
       type: 'JlInstr',
       line: this.line,
-      address: (addr.literal!) as Address,
-    };
-  }
-
-  private jlrInstr(): JlrInstr {
-    const reg = this.reg();
-    return {
-      type: 'JlrInstr',
-      line: this.line,
-      register: (reg.literal!) as Registers,
+      op: this.immOrRegExpr(),
     };
   }
 
   private jlzInstr(): JlzInstr {
-    const addr = this.addr();
     return {
       type: 'JlzInstr',
       line: this.line,
-      address: (addr.literal!) as Address,
-    };
-  }
-
-  private jlzrInstr(): JlzrInstr {
-    const reg = this.reg();
-    return {
-      type: 'JlzrInstr',
-      line: this.line,
-      register: (reg.literal!) as Registers,
+      op: this.immOrRegExpr(),
     };
   }
 
   private joInstr(): JoInstr {
-    const addr = this.addr();
     return {
       type: 'JoInstr',
       line: this.line,
-      address: (addr.literal!) as Address,
-    };
-  }
-
-  private jorInstr(): JorInstr {
-    const reg = this.reg();
-    return {
-      type: 'JorInstr',
-      line: this.line,
-      register: (reg.literal!) as Registers,
+      op: this.immOrRegExpr(),
     };
   }
 
   private jdzInstr(): JdzInstr {
-    const addr = this.addr();
     return {
       type: 'JdzInstr',
       line: this.line,
-      address: (addr.literal!) as Address,
-    };
-  }
-
-  private jdzrInstr(): JdzrInstr {
-    const reg = this.reg();
-    return {
-      type: 'JdzrInstr',
-      line: this.line,
-      register: (reg.literal!) as Registers,
+      op: this.immOrRegExpr(),
     };
   }
 

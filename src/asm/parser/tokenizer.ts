@@ -58,21 +58,13 @@ export enum TokenType {
 
   JMP,
   JZ,
-  JZR,
   JNZ,
-  JNZR,
   JG,
-  JGR,
   JGZ,
-  JGZR,
   JL,
-  JLR,
   JLZ,
-  JLZR,
   JO,
-  JOR,
   JDZ,
-  JDZR,
 
   EOL,
   EOF,
@@ -127,21 +119,13 @@ const Keywords: Map<string, TokenType> = new Map(Object.entries({
 
   'JMP': TokenType.JMP,
   'JZ': TokenType.JZ,
-  'JZR': TokenType.JZR,
   'JNZ': TokenType.JNZ,
-  'JNZR': TokenType.JNZR,
   'JG': TokenType.JG,
-  'JGR': TokenType.JGR,
   'JGZ': TokenType.JGZ,
-  'JGZR': TokenType.JGZR,
   'JL': TokenType.JL,
-  'JLR': TokenType.JLR,
   'JLZ': TokenType.JLZ,
-  'JLZR': TokenType.JLZR,
   'JO': TokenType.JO,
-  'JOR': TokenType.JOR,
   'JDZ': TokenType.JDZ,
-  'JDZR': TokenType.JDZR,
 }));
 
 export type Token = {

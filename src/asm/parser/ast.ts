@@ -110,22 +110,14 @@ export type NotInstr = AstRegInstr<'NotInstr'>;
 export type CmpInstr = AstTwoOpInstr<'CmpInstr', AstRegExpr, AstImmOrRegExpr>;
 
 export type JmpInstr = AstOneOpInstr<'JmpInstr', AstImmOrRegExpr>;
-export type JzInstr = AstAddrInstr<'JzInstr'>;
-export type JzrInstr = AstRegInstr<'JzrInstr'>;
-export type JnzInstr = AstAddrInstr<'JnzInstr'>;
-export type JnzrInstr = AstRegInstr<'JnzrInstr'>;
-export type JgInstr = AstAddrInstr<'JgInstr'>;
-export type JgrInstr = AstRegInstr<'JgrInstr'>;
-export type JgzInstr = AstAddrInstr<'JgzInstr'>;
-export type JgzrInstr = AstRegInstr<'JgzrInstr'>;
-export type JlInstr = AstAddrInstr<'JlInstr'>;
-export type JlrInstr = AstRegInstr<'JlrInstr'>;
-export type JlzInstr = AstAddrInstr<'JlzInstr'>;
-export type JlzrInstr = AstRegInstr<'JlzrInstr'>;
-export type JoInstr = AstAddrInstr<'JoInstr'>;
-export type JorInstr = AstRegInstr<'JorInstr'>;
-export type JdzInstr = AstAddrInstr<'JdzInstr'>;
-export type JdzrInstr = AstRegInstr<'JdzrInstr'>;
+export type JzInstr = AstOneOpInstr<'JzInstr', AstImmOrRegExpr>;
+export type JnzInstr = AstOneOpInstr<'JnzInstr', AstImmOrRegExpr>;
+export type JgInstr = AstOneOpInstr<'JgInstr', AstImmOrRegExpr>;
+export type JgzInstr = AstOneOpInstr<'JgzInstr', AstImmOrRegExpr>;
+export type JlInstr = AstOneOpInstr<'JlInstr', AstImmOrRegExpr>;
+export type JlzInstr = AstOneOpInstr<'JlzInstr', AstImmOrRegExpr>;
+export type JoInstr = AstOneOpInstr<'JoInstr', AstImmOrRegExpr>;
+export type JdzInstr = AstOneOpInstr<'JdzInstr', AstImmOrRegExpr>;
 
 export type CoreInstr = NopInstr |
     EndInstr |
@@ -176,21 +168,13 @@ export type CompareInstr = CmpInstr;
 
 export type JumpInstr = JmpInstr |
     JzInstr |
-    JzrInstr |
     JnzInstr |
-    JnzrInstr |
     JgInstr |
-    JgrInstr |
     JgzInstr |
-    JgzrInstr |
     JlInstr |
-    JlrInstr |
     JlzInstr |
-    JlzrInstr |
     JoInstr |
-    JorInstr |
-    JdzInstr |
-    JdzrInstr;
+    JdzInstr;
 
 export type Instr = CoreInstr |
     MemoryInstr |
