@@ -1,7 +1,7 @@
-import {MEMORY_PROGRAM_OFFSET, Opcodes} from '../../core';
+import {MEMORY_PROGRAM_OFFSET, Opcodes, Registers} from '../../core';
 import {unreachable} from '../../lib';
 import {AsmErrorCollector} from '../base';
-import {Address, Stmt} from '../parser';
+import {Address, AstRegExpr, Stmt} from '../parser';
 
 const FAKE_ADDR: number[] = [0xFF, 0xFF];
 
@@ -54,8 +54,7 @@ class Codegen {
             if (stmt.op2.type == 'AstImmExpr') {
               this.bytes.push(Opcodes.MOVI);
               this.bytes.push(stmt.op1.value);
-              // FIXME: make this work with expressions
-              this.bytes.push(...this.word(stmt.op2.value as number));
+              this.bytes.push(...this.address(stmt.op2.value));
             } else {
               this.bytes.push(Opcodes.MOVR);
               this.bytes.push(stmt.op1.value);
@@ -233,15 +232,16 @@ class Codegen {
             this.bytes.push(Opcodes.NOT);
             this.bytes.push(stmt.register);
             break;
-          case 'CmpiInstr':
-            this.bytes.push(Opcodes.CMPI);
-            this.bytes.push(stmt.register);
-            this.bytes.push(...this.word(stmt.immediate));
-            break;
-          case 'CmprInstr':
-            this.bytes.push(Opcodes.CMPR);
-            this.bytes.push(stmt.register1);
-            this.bytes.push(stmt.register2);
+          case 'CmpInstr':
+            if (stmt.op2.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.CMPI);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(...this.address(stmt.op2.value));
+            } else {
+              this.bytes.push(Opcodes.CMPR);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(stmt.op2.value);
+            }
             break;
           case 'JmpInstr':
             this.bytes.push(Opcodes.JMP);
@@ -334,6 +334,7 @@ class Codegen {
     return [n >> 8, n & 0xff];
   }
 
+  // FIXME: make this work with expressions instead
   private address(addr: Address): number[] {
     if (typeof addr == 'number') {
       return this.word(addr);

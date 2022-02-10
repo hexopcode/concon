@@ -18,6 +18,10 @@ export type AstRegExpr = AstNode<'AstRegExpr'> & {
 
 export type AstImmOrRegExpr = AstImmExpr|AstRegExpr;
 
+type AstOneOpInstr<Type extends string, OpType extends AstImmOrRegExpr> = AstNode<Type> & {
+  op: OpType,
+};
+
 type AstTwoOpInstr<Type extends string,
                    Op1Type extends AstImmOrRegExpr,
                    Op2Type extends AstImmOrRegExpr> = AstNode<Type> & {
@@ -103,8 +107,7 @@ export type XoriInstr = AstRegImmInstr<'XoriInstr'>;
 export type XorrInstr = AstRegRegInstr<'XorrInstr'>;
 export type NotInstr = AstRegInstr<'NotInstr'>;
 
-export type CmpiInstr = AstRegImmInstr<'CmpiInstr'>;
-export type CmprInstr = AstRegRegInstr<'CmprInstr'>;
+export type CmpInstr = AstTwoOpInstr<'CmpInstr', AstRegExpr, AstImmOrRegExpr>;
 
 export type JmpInstr = AstAddrInstr<'JmpInstr'>;
 export type JmprInstr = AstRegInstr<'JmprInstr'>;
@@ -170,8 +173,7 @@ export type LogicInstr = ShliInstr |
     XorrInstr |
     NotInstr;
 
-export type CompareInstr = CmpiInstr |
-    CmprInstr;
+export type CompareInstr = CmpInstr;
 
 export type JumpInstr = JmpInstr |
     JmprInstr |

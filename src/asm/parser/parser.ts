@@ -42,8 +42,7 @@ import {
   XoriInstr,
   XorrInstr,
   NotInstr,
-  CmpiInstr,
-  CmprInstr,
+  CmpInstr,
   JmpInstr,
   JmprInstr,
   JzInstr,
@@ -250,10 +249,8 @@ class Parser {
       return this.xorrInstr();
     } else if (this.match(TokenType.NOT)) {
       return this.notInstr();
-    } else if (this.match(TokenType.CMPI)) {
-      return this.cmpiInstr();
-    } else if (this.match(TokenType.CMPR)) {
-      return this.cmprInstr();
+    } else if (this.match(TokenType.CMP)) {
+      return this.cmpInstr();
     } else if (this.match(TokenType.JMP)) {
       return this.jmpInstr();
     } else if (this.match(TokenType.JMPR)) {
@@ -775,27 +772,16 @@ class Parser {
     };
   }
 
-  private cmpiInstr(): CmpiInstr {
-    const reg = this.reg();
+  private cmpInstr(): CmpInstr {
+    const op1 = this.regExpr();
     this.comma();
-    const imm = this.imm();
+    const op2 = this.immOrRegExpr();
+    
     return {
-      type: 'CmpiInstr',
+      type: 'CmpInstr',
       line: this.line,
-      register: (reg.literal!) as Registers,
-      immediate: (imm.literal!) as number,
-    };
-  }
-
-  private cmprInstr(): CmprInstr {
-    const reg1 = this.reg();
-    this.comma();
-    const reg2 = this.reg();
-    return {
-      type: 'CmprInstr',
-      line: this.line,
-      register1: (reg1.literal!) as Registers,
-      register2: (reg2.literal!) as Registers,
+      op1,
+      op2,
     };
   }
 

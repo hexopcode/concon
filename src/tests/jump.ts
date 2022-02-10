@@ -105,7 +105,7 @@ export const JumpTests: TestSpec = (t: TestRunner) => {
   t.test('JG jumps if greater', () => {
     const result = assembleAndBoot(sys, `
         MOV R0, 0x1234
-        CMPI R0, 0x1231
+        CMP R0, 0x1231
         JG done
         MOV R0, 0x1111
       done:
@@ -119,7 +119,7 @@ export const JumpTests: TestSpec = (t: TestRunner) => {
   t.test('JG does not jump', () => {
     const result = assembleAndBoot(sys, `
         MOV R0, 0x1234
-        CMPI R0, 0x1235
+        CMP R0, 0x1235
         JG done
         MOV R0, 0x1111
       done:
@@ -133,7 +133,7 @@ export const JumpTests: TestSpec = (t: TestRunner) => {
   t.test('JGZ jumps if greater', () => {
     const result = assembleAndBoot(sys, `
         MOV R0, 0x1234
-        CMPI R0, 0x1231
+        CMP R0, 0x1231
         JGZ done
         MOV R0, 0x1111
       done:
@@ -147,7 +147,7 @@ export const JumpTests: TestSpec = (t: TestRunner) => {
   t.test('JGZ jumps if zero', () => {
     const result = assembleAndBoot(sys, `
         MOV R0, 0x1234
-        CMPI R0, 0x1234
+        CMP R0, 0x1234
         JGZ done
         MOV R0, 0x1111
       done:
@@ -161,7 +161,7 @@ export const JumpTests: TestSpec = (t: TestRunner) => {
   t.test('JGZ does not jump', () => {
     const result = assembleAndBoot(sys, `
         MOV R0, 0x1234
-        CMPI R0, 0x1236
+        CMP R0, 0x1236
         JGZ done
         MOV R0, 0x1111
       done:
@@ -175,7 +175,7 @@ export const JumpTests: TestSpec = (t: TestRunner) => {
   t.test('JL jumps if lower', () => {
     const result = assembleAndBoot(sys, `
         MOV R0, 0x1234
-        CMPI R0, 0x1235
+        CMP R0, 0x1235
         JL done
         MOV R0, 0x1111
       done:
@@ -189,7 +189,7 @@ export const JumpTests: TestSpec = (t: TestRunner) => {
   t.test('JL does not jump', () => {
     const result = assembleAndBoot(sys, `
         MOV R0, 0x1234
-        CMPI R0, 0x1233
+        CMP R0, 0x1233
         JL done
         MOV R0, 0x1111
       done:
@@ -203,7 +203,7 @@ export const JumpTests: TestSpec = (t: TestRunner) => {
   t.test('JLZ jumps if lower', () => {
     const result = assembleAndBoot(sys, `
         MOV R0, 0x1234
-        CMPI R0, 0x1235
+        CMP R0, 0x1235
         JLZ done
         MOV R0, 0x1111
       done:
@@ -217,7 +217,7 @@ export const JumpTests: TestSpec = (t: TestRunner) => {
   t.test('JLZ jumps if zero', () => {
     const result = assembleAndBoot(sys, `
         MOV R0, 0x1234
-        CMPI R0, 0x1234
+        CMP R0, 0x1234
         JLZ done
         MOV R0, 0x1111
       done:
@@ -231,7 +231,7 @@ export const JumpTests: TestSpec = (t: TestRunner) => {
   t.test('JL does not jump', () => {
     const result = assembleAndBoot(sys, `
         MOV R0, 0x1234
-        CMPI R0, 0x1233
+        CMP R0, 0x1233
         JLZ done
         MOV R0, 0x1111
       done:
