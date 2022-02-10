@@ -184,55 +184,60 @@ class Codegen {
             this.bytes.push(Opcodes.DEC);
             this.bytes.push(stmt.register);
             break;
-          case 'ShliInstr':
-            this.bytes.push(Opcodes.SHLI);
-            this.bytes.push(stmt.register);
-            this.bytes.push(...this.word(stmt.immediate));
+          case 'ShlInstr':
+            if (stmt.op2.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.SHLI);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(...this.address(stmt.op2.value));
+            } else {
+              this.bytes.push(Opcodes.SHLR);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(stmt.op2.value);
+            }
             break;
-          case 'ShlrInstr':
-            this.bytes.push(Opcodes.SHLR);
-            this.bytes.push(stmt.register1);
-            this.bytes.push(stmt.register2);
+          case 'ShrInstr':
+            if (stmt.op2.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.SHRI);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(...this.address(stmt.op2.value));
+            } else {
+              this.bytes.push(Opcodes.SHRR);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(stmt.op2.value);
+            }
             break;
-          case 'ShriInstr':
-            this.bytes.push(Opcodes.SHRI);
-            this.bytes.push(stmt.register);
-            this.bytes.push(...this.word(stmt.immediate));
+          case 'OrInstr':
+            if (stmt.op2.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.ORI);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(...this.address(stmt.op2.value));
+            } else {
+              this.bytes.push(Opcodes.ORR);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(stmt.op2.value);
+            }
             break;
-          case 'ShrrInstr':
-            this.bytes.push(Opcodes.SHRR);
-            this.bytes.push(stmt.register1);
-            this.bytes.push(stmt.register2);
+          case 'AndInstr':
+            if (stmt.op2.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.ANDI);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(...this.address(stmt.op2.value));
+            } else {
+              this.bytes.push(Opcodes.ANDR);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(stmt.op2.value);
+            }
             break;
-          case 'OriInstr':
-            this.bytes.push(Opcodes.ORI);
-            this.bytes.push(stmt.register);
-            this.bytes.push(...this.word(stmt.immediate));
-            break;
-          case 'OrrInstr':
-            this.bytes.push(Opcodes.ORR);
-            this.bytes.push(stmt.register1);
-            this.bytes.push(stmt.register2);
-            break;
-          case 'AndiInstr':
-            this.bytes.push(Opcodes.ANDI);
-            this.bytes.push(stmt.register);
-            this.bytes.push(...this.word(stmt.immediate));
-            break;
-          case 'AndrInstr':
-            this.bytes.push(Opcodes.ANDR);
-            this.bytes.push(stmt.register1);
-            this.bytes.push(stmt.register2);
-            break;
-          case 'XoriInstr':
-            this.bytes.push(Opcodes.XORI);
-            this.bytes.push(stmt.register);
-            this.bytes.push(...this.word(stmt.immediate));
-            break;
-          case 'XorrInstr':
-            this.bytes.push(Opcodes.XORR);
-            this.bytes.push(stmt.register1);
-            this.bytes.push(stmt.register2);
+          case 'XorInstr':
+            if (stmt.op2.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.XORI);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(...this.address(stmt.op2.value));
+            } else {
+              this.bytes.push(Opcodes.XORR);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(stmt.op2.value);
+            }
             break;
           case 'NotInstr':
             this.bytes.push(Opcodes.NOT);

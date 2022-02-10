@@ -90,16 +90,11 @@ export type ModInstr = AstTwoOpInstr<'ModInstr', AstRegExpr, AstImmOrRegExpr>;
 export type IncInstr = AstRegInstr<'IncInstr'>;
 export type DecInstr = AstRegInstr<'DecInstr'>;
 
-export type ShliInstr = AstRegImmInstr<'ShliInstr'>;
-export type ShlrInstr = AstRegRegInstr<'ShlrInstr'>;
-export type ShriInstr = AstRegImmInstr<'ShriInstr'>;
-export type ShrrInstr = AstRegRegInstr<'ShrrInstr'>;
-export type OriInstr = AstRegImmInstr<'OriInstr'>;
-export type OrrInstr = AstRegRegInstr<'OrrInstr'>;
-export type AndiInstr = AstRegImmInstr<'AndiInstr'>;
-export type AndrInstr = AstRegRegInstr<'AndrInstr'>;
-export type XoriInstr = AstRegImmInstr<'XoriInstr'>;
-export type XorrInstr = AstRegRegInstr<'XorrInstr'>;
+export type ShlInstr = AstTwoOpInstr<'ShlInstr', AstRegExpr, AstImmOrRegExpr>;
+export type ShrInstr = AstTwoOpInstr<'ShrInstr', AstRegExpr, AstImmOrRegExpr>;
+export type OrInstr = AstTwoOpInstr<'OrInstr', AstRegExpr, AstImmOrRegExpr>;
+export type AndInstr = AstTwoOpInstr<'AndInstr', AstRegExpr, AstImmOrRegExpr>;
+export type XorInstr = AstTwoOpInstr<'XorInstr', AstRegExpr, AstImmOrRegExpr>;
 export type NotInstr = AstRegInstr<'NotInstr'>;
 
 export type CmpInstr = AstTwoOpInstr<'CmpInstr', AstRegExpr, AstImmOrRegExpr>;
@@ -142,16 +137,11 @@ export type ArithmeticInstr = AddInstr |
     IncInstr |
     DecInstr;
 
-export type LogicInstr = ShliInstr |
-    ShlrInstr |
-    ShriInstr |
-    ShrrInstr |
-    OriInstr |
-    OrrInstr |
-    AndiInstr |
-    AndrInstr |
-    XoriInstr |
-    XorrInstr |
+export type LogicInstr = ShlInstr |
+    ShrInstr |
+    OrInstr |
+    AndInstr |
+    XorInstr |
     NotInstr;
 
 export type CompareInstr = CmpInstr;

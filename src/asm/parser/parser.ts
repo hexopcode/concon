@@ -26,16 +26,11 @@ import {
   ModInstr,
   IncInstr,
   DecInstr,
-  ShliInstr,
-  ShlrInstr,
-  ShriInstr,
-  ShrrInstr,
-  OriInstr,
-  OrrInstr,
-  AndiInstr,
-  AndrInstr,
-  XoriInstr,
-  XorrInstr,
+  ShlInstr,
+  ShrInstr,
+  OrInstr,
+  AndInstr,
+  XorInstr,
   NotInstr,
   CmpInstr,
   JmpInstr,
@@ -203,26 +198,16 @@ class Parser {
       return this.incInstr();
     } else if (this.match(TokenType.DEC)) {
       return this.decInstr();
-    } else if (this.match(TokenType.SHLI)) {
-      return this.shliInstr();
-    } else if (this.match(TokenType.SHLR)) {
-      return this.shlrInstr();
-    } else if (this.match(TokenType.SHRI)) {
-      return this.shriInstr();
-    } else if (this.match(TokenType.SHRR)) {
-      return this.shrrInstr();
-    } else if (this.match(TokenType.ORI)) {
-      return this.oriInstr();
-    } else if (this.match(TokenType.ORR)) {
-      return this.orrInstr();
-    } else if (this.match(TokenType.ANDI)) {
-      return this.andiInstr();
-    } else if (this.match(TokenType.ANDR)) {
-      return this.andrInstr();
-    } else if (this.match(TokenType.XORI)) {
-      return this.xoriInstr();
-    } else if (this.match(TokenType.XORR)) {
-      return this.xorrInstr();
+    } else if (this.match(TokenType.SHL)) {
+      return this.shlInstr();
+    } else if (this.match(TokenType.SHR)) {
+      return this.shrInstr();
+    } else if (this.match(TokenType.OR)) {
+      return this.orInstr();
+    } else if (this.match(TokenType.AND)) {
+      return this.andInstr();
+    } else if (this.match(TokenType.XOR)) {
+      return this.xorInstr();
     } else if (this.match(TokenType.NOT)) {
       return this.notInstr();
     } else if (this.match(TokenType.CMP)) {
@@ -546,123 +531,68 @@ class Parser {
     };
   }
 
-  private shliInstr(): ShliInstr {
-    const reg = this.reg();
+  private shlInstr(): ShlInstr {
+    const op1 = this.regExpr();
     this.comma();
-    const imm = this.imm();
+    const op2 = this.immOrRegExpr();
+    
     return {
-      type: 'ShliInstr',
+      type: 'ShlInstr',
       line: this.line,
-      register: (reg.literal!) as Registers,
-      immediate: (imm.literal!) as number,
+      op1,
+      op2,
     };
   }
 
-  private shlrInstr(): ShlrInstr {
-    const reg1 = this.reg();
+  private shrInstr(): ShrInstr {
+    const op1 = this.regExpr();
     this.comma();
-    const reg2 = this.reg();
+    const op2 = this.immOrRegExpr();
+    
     return {
-      type: 'ShlrInstr',
+      type: 'ShrInstr',
       line: this.line,
-      register1: (reg1.literal!) as Registers,
-      register2: (reg2.literal!) as Registers,
+      op1,
+      op2,
     };
   }
 
-  private shriInstr(): ShriInstr {
-    const reg = this.reg();
+  private orInstr(): OrInstr {
+    const op1 = this.regExpr();
     this.comma();
-    const imm = this.imm();
+    const op2 = this.immOrRegExpr();
+    
     return {
-      type: 'ShriInstr',
+      type: 'OrInstr',
       line: this.line,
-      register: (reg.literal!) as Registers,
-      immediate: (imm.literal!) as number,
+      op1,
+      op2,
     };
   }
 
-  private shrrInstr(): ShrrInstr {
-    const reg1 = this.reg();
+  private andInstr(): AndInstr {
+    const op1 = this.regExpr();
     this.comma();
-    const reg2 = this.reg();
+    const op2 = this.immOrRegExpr();
+    
     return {
-      type: 'ShrrInstr',
+      type: 'AndInstr',
       line: this.line,
-      register1: (reg1.literal!) as Registers,
-      register2: (reg2.literal!) as Registers,
+      op1,
+      op2,
     };
   }
 
-  private oriInstr(): OriInstr {
-    const reg = this.reg();
+  private xorInstr(): XorInstr {
+    const op1 = this.regExpr();
     this.comma();
-    const imm = this.imm();
+    const op2 = this.immOrRegExpr();
+    
     return {
-      type: 'OriInstr',
+      type: 'XorInstr',
       line: this.line,
-      register: (reg.literal!) as Registers,
-      immediate: (imm.literal!) as number,
-    };
-  }
-
-  private orrInstr(): OrrInstr {
-    const reg1 = this.reg();
-    this.comma();
-    const reg2 = this.reg();
-    return {
-      type: 'OrrInstr',
-      line: this.line,
-      register1: (reg1.literal!) as Registers,
-      register2: (reg2.literal!) as Registers,
-    };
-  }
-
-  private andiInstr(): AndiInstr {
-    const reg = this.reg();
-    this.comma();
-    const imm = this.imm();
-    return {
-      type: 'AndiInstr',
-      line: this.line,
-      register: (reg.literal!) as Registers,
-      immediate: (imm.literal!) as number,
-    };
-  }
-
-  private andrInstr(): AndrInstr {
-    const reg1 = this.reg();
-    this.comma();
-    const reg2 = this.reg();
-    return {
-      type: 'AndrInstr',
-      line: this.line,
-      register1: (reg1.literal!) as Registers,
-      register2: (reg2.literal!) as Registers,
-    };
-  }
-
-  private xoriInstr(): XoriInstr {
-    const reg = this.reg();
-    this.comma();
-    const imm = this.imm();
-    return {
-      type: 'XoriInstr',
-      line: this.line,
-      register: (reg.literal!) as Registers,
-      immediate: (imm.literal!) as number,
-    };
-  }
-
-  private xorrInstr(): XorrInstr {
-    const reg1 = this.reg();
-    this.comma();
-    const reg2 = this.reg();
-    return {
-      type: 'XorrInstr',
-      line: this.line,
-      register1: (reg1.literal!) as Registers,
-      register2: (reg2.literal!) as Registers,
+      op1,
+      op2,
     };
   }
 
