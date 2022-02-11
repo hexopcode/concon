@@ -21,10 +21,17 @@ screen.attach(document.body);
 
 const sys = new System();
 sys.loadProgram(assemble(`
-    STO 0x178F, 0b1111111111111111
-    STO 0x17AF, 0b1001100110011001
-    STO 0x17CF, 0b0110011001100110
-    STO 0x17EF, 0b1111111111111111
+    MOV R0, 0
+  loop:
+    CMP R0, 0x1000
+    JZ render
+    MOV R1, 0x1000
+    ADD R1, R0
+    STO R1, 0b1110010011100100
+    INC R0
+    JMP loop
+
+  render:
     VSYNC
     END
 `));
