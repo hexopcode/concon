@@ -178,11 +178,11 @@ class Codegen {
             break;
           case 'IncInstr':
             this.bytes.push(Opcodes.INC);
-            this.bytes.push(stmt.register);
+            this.bytes.push(stmt.op.value);
             break;
           case 'DecInstr':
             this.bytes.push(Opcodes.DEC);
-            this.bytes.push(stmt.register);
+            this.bytes.push(stmt.op.value);
             break;
           case 'ShlInstr':
             if (stmt.op2.type == 'AstImmExpr') {
@@ -241,7 +241,7 @@ class Codegen {
             break;
           case 'NotInstr':
             this.bytes.push(Opcodes.NOT);
-            this.bytes.push(stmt.register);
+            this.bytes.push(stmt.op.value);
             break;
           case 'CmpInstr':
             if (stmt.op2.type == 'AstImmExpr') {

@@ -514,20 +514,18 @@ class Parser {
   }
 
   private incInstr(): IncInstr {
-    const reg = this.reg();
     return {
       type: 'IncInstr',
       line: this.line,
-      register: (reg.literal!) as Registers,
+      op: this.regExpr(),
     };
   }
 
   private decInstr(): DecInstr {
-    const reg = this.reg();
     return {
       type: 'DecInstr',
       line: this.line,
-      register: (reg.literal!) as Registers,
+      op: this.regExpr(),
     };
   }
 
@@ -597,11 +595,10 @@ class Parser {
   }
 
   private notInstr(): NotInstr {
-    const reg = this.reg();
     return {
       type: 'NotInstr',
       line: this.line,
-      register: (reg.literal!) as Registers,
+      op: this.regExpr(),
     };
   }
 

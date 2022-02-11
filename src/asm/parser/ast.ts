@@ -54,14 +54,6 @@ type AstRegRegInstr<Type extends string> = AstNode<Type> & {
   register2: Registers,
 };
 
-type AstRegInstr<Type extends string> = AstNode<Type> & {
-  register: Registers,
-};
-
-type AstAddrInstr<Type extends string> = AstNode<Type> & {
-  address: Address,
-};
-
 export type NopInstr = AstNode<'NopInstr'>;
 export type EndInstr = AstNode<'EndInstr'>;
 export type VsyncInstr = AstNode<'VsyncInstr'>;
@@ -87,15 +79,15 @@ export type SubInstr = AstTwoOpInstr<'SubInstr', AstRegExpr, AstImmOrRegExpr>;
 export type MulInstr = AstTwoOpInstr<'MulInstr', AstRegExpr, AstImmOrRegExpr>;
 export type DivInstr = AstTwoOpInstr<'DivInstr', AstRegExpr, AstImmOrRegExpr>;
 export type ModInstr = AstTwoOpInstr<'ModInstr', AstRegExpr, AstImmOrRegExpr>;
-export type IncInstr = AstRegInstr<'IncInstr'>;
-export type DecInstr = AstRegInstr<'DecInstr'>;
+export type IncInstr = AstOneOpInstr<'IncInstr', AstRegExpr>;
+export type DecInstr = AstOneOpInstr<'DecInstr', AstRegExpr>;
 
 export type ShlInstr = AstTwoOpInstr<'ShlInstr', AstRegExpr, AstImmOrRegExpr>;
 export type ShrInstr = AstTwoOpInstr<'ShrInstr', AstRegExpr, AstImmOrRegExpr>;
 export type OrInstr = AstTwoOpInstr<'OrInstr', AstRegExpr, AstImmOrRegExpr>;
 export type AndInstr = AstTwoOpInstr<'AndInstr', AstRegExpr, AstImmOrRegExpr>;
 export type XorInstr = AstTwoOpInstr<'XorInstr', AstRegExpr, AstImmOrRegExpr>;
-export type NotInstr = AstRegInstr<'NotInstr'>;
+export type NotInstr = AstOneOpInstr<'NotInstr', AstRegExpr>;
 
 export type CmpInstr = AstTwoOpInstr<'CmpInstr', AstRegExpr, AstImmOrRegExpr>;
 
