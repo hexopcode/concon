@@ -22,17 +22,40 @@ screen.attach(document.body);
 const sys = new System();
 sys.loadProgram(assemble(`
     MOV R0, 0
+    MOV R10, 0b1110010011100100
+
   loop:
     CMP R0, 0x1000
     JZ render
     MOV R1, 0x1000
     ADD R1, R0
-    STO R1, 0b1110010011100100
+
+    MOV R11, R10
+    SHR R11, 1
+    MOV R12, R10
+    AND R12, 1
+    SHL R12, 15
+    OR R12, R11
+    MOV R10, R12
+
+    STO R1, R10
     INC R0
     JMP loop
 
   render:
     VSYNC
+    MOV R0, 0
+
+    MOV R11, R10
+    SHR R11, 1
+    MOV R12, R10
+    AND R12, 1
+    SHL R12, 15
+    OR R12, R11
+    MOV R10, R12
+
+    // JMP loop
+
     END
 `));
 
