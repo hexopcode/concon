@@ -1,7 +1,7 @@
-import {MEMORY_PROGRAM_OFFSET, Opcodes, Registers} from '../../core';
+import {MEMORY_PROGRAM_OFFSET, Opcodes} from '../../core';
 import {unreachable} from '../../lib';
 import {AsmErrorCollector} from '../base';
-import {Address, AstRegExpr, Stmt} from '../parser';
+import {Address, Stmt} from '../parser';
 
 const FAKE_ADDR: number[] = [0xFF, 0xFF];
 
@@ -61,65 +61,65 @@ class Codegen {
               this.bytes.push(stmt.op2.value);
             }
             break;
-          case 'StoiInstr':
-            this.bytes.push(Opcodes.STOI);
-            this.bytes.push(...this.address(stmt.address));
-            this.bytes.push(...this.word(stmt.immediate));
+          case 'StoInstr':
+            if (stmt.op1.type == 'AstImmExpr' && stmt.op2.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.STOI);
+              this.bytes.push(...this.address(stmt.op1.value));
+              this.bytes.push(...this.address(stmt.op2.value));              
+            } else if (stmt.op1.type == 'AstRegExpr' && stmt.op2.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.STORI);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(...this.address(stmt.op2.value));
+            } else if (stmt.op1.type == 'AstImmExpr' && stmt.op2.type == 'AstRegExpr') {
+              this.bytes.push(Opcodes.STOR);
+              this.bytes.push(...this.address(stmt.op1.value));
+              this.bytes.push(stmt.op2.value);
+            } else if (stmt.op1.type == 'AstRegExpr' && stmt.op2.type == 'AstRegExpr') {
+              this.bytes.push(Opcodes.STORR);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(stmt.op2.value);
+            }
             break;
-          case 'StoibInstr':
-            this.bytes.push(Opcodes.STOIB);
-            this.bytes.push(...this.address(stmt.address));
-            this.bytes.push(...this.word(stmt.immediate));
+          case 'StobInstr':
+            if (stmt.op1.type == 'AstImmExpr' && stmt.op2.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.STOIB);
+              this.bytes.push(...this.address(stmt.op1.value));
+              this.bytes.push(...this.address(stmt.op2.value));              
+            } else if (stmt.op1.type == 'AstRegExpr' && stmt.op2.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.STORIB);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(...this.address(stmt.op2.value));
+            } else if (stmt.op1.type == 'AstImmExpr' && stmt.op2.type == 'AstRegExpr') {
+              this.bytes.push(Opcodes.STORB);
+              this.bytes.push(...this.address(stmt.op1.value));
+              this.bytes.push(stmt.op2.value);
+            } else if (stmt.op1.type == 'AstRegExpr' && stmt.op2.type == 'AstRegExpr') {
+              this.bytes.push(Opcodes.STORRB);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(stmt.op2.value);
+            }
             break;
-          case 'StoriInstr':
-            this.bytes.push(Opcodes.STORI);
-            this.bytes.push(stmt.register);
-            this.bytes.push(...this.word(stmt.immediate));
+          case 'LodInstr':
+            if (stmt.op2.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.LODR);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(...this.address(stmt.op2.value));              
+            } else {
+              this.bytes.push(Opcodes.LODRR);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(stmt.op2.value);
+            }
             break;
-          case 'StoribInstr':
-            this.bytes.push(Opcodes.STORIB);
-            this.bytes.push(stmt.register);
-            this.bytes.push(...this.word(stmt.immediate));
-            break;
-          case 'StorInstr':
-            this.bytes.push(Opcodes.STOR);
-            this.bytes.push(...this.address(stmt.address));
-            this.bytes.push(stmt.register);
-            break;
-          case 'StorbInstr':
-            this.bytes.push(Opcodes.STORB);
-            this.bytes.push(...this.address(stmt.address));
-            this.bytes.push(stmt.register);
-            break;
-          case 'StorrInstr':
-            this.bytes.push(Opcodes.STORR);
-            this.bytes.push(stmt.register1);
-            this.bytes.push(stmt.register2);
-            break;
-          case 'StorrbInstr':
-            this.bytes.push(Opcodes.STORRB);
-            this.bytes.push(stmt.register1);
-            this.bytes.push(stmt.register2);
-            break;
-          case 'LodrInstr':
-            this.bytes.push(Opcodes.LODR);
-            this.bytes.push(stmt.register);
-            this.bytes.push(...this.address(stmt.address));
-            break;
-          case 'LodrbInstr':
-            this.bytes.push(Opcodes.LODRB);
-            this.bytes.push(stmt.register);
-            this.bytes.push(...this.address(stmt.address));
-            break;
-          case 'LodrrInstr':
-            this.bytes.push(Opcodes.LODRR);
-            this.bytes.push(stmt.register1);
-            this.bytes.push(stmt.register2);
-            break;
-          case 'LodrrbInstr':
-            this.bytes.push(Opcodes.LODRRB);
-            this.bytes.push(stmt.register1);
-            this.bytes.push(stmt.register2);
+          case 'LodbInstr':
+            if (stmt.op2.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.LODRB);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(...this.address(stmt.op2.value));              
+            } else {
+              this.bytes.push(Opcodes.LODRRB);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(stmt.op2.value);
+            }
             break;
           case 'AddInstr':
             if (stmt.op2.type == 'AstImmExpr') {

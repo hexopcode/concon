@@ -29,50 +29,16 @@ type AstTwoOpInstr<Type extends string,
   op2: Op2Type,
 };
 
-type AstRegImmInstr<Type extends string> = AstNode<Type> & {
-  register: Registers,
-  immediate: number,
-};
-
-type AstRegAddrInstr<Type extends string> = AstNode<Type> & {
-  register: Registers,
-  address: Address,
-};
-
-type AstAddrImmInstr<Type extends string> = AstNode<Type> & {
-  address: Address,
-  immediate: number,
-};
-
-type AstAddrRegInstr<Type extends string> = AstNode<Type> & {
-  address: Address,
-  register: Registers,
-};
-
-type AstRegRegInstr<Type extends string> = AstNode<Type> & {
-  register1: Registers,
-  register2: Registers,
-};
-
 export type NopInstr = AstNode<'NopInstr'>;
 export type EndInstr = AstNode<'EndInstr'>;
 export type VsyncInstr = AstNode<'VsyncInstr'>;
 export type BrkInstr = AstNode<'BrkInstr'>;
 
 export type MovInstr = AstTwoOpInstr<'MovInstr', AstRegExpr, AstImmOrRegExpr>;
-
-export type StoiInstr = AstAddrImmInstr<'StoiInstr'>;
-export type StoibInstr = AstAddrImmInstr<'StoibInstr'>;
-export type StoriInstr = AstRegImmInstr<'StoriInstr'>;
-export type StoribInstr = AstRegImmInstr<'StoribInstr'>;
-export type StorInstr = AstAddrRegInstr<'StorInstr'>;
-export type StorbInstr = AstAddrRegInstr<'StorbInstr'>;
-export type StorrInstr = AstRegRegInstr<'StorrInstr'>;
-export type StorrbInstr = AstRegRegInstr<'StorrbInstr'>;
-export type LodrInstr = AstRegAddrInstr<'LodrInstr'>;
-export type LodrbInstr = AstRegAddrInstr<'LodrbInstr'>;
-export type LodrrInstr = AstRegRegInstr<'LodrrInstr'>;
-export type LodrrbInstr = AstRegRegInstr<'LodrrbInstr'>;
+export type StoInstr = AstTwoOpInstr<'StoInstr', AstImmOrRegExpr, AstImmOrRegExpr>;
+export type StobInstr = AstTwoOpInstr<'StobInstr', AstImmOrRegExpr, AstImmOrRegExpr>;
+export type LodInstr = AstTwoOpInstr<'LodInstr', AstRegExpr, AstImmOrRegExpr>;
+export type LodbInstr = AstTwoOpInstr<'LodbInstr', AstRegExpr, AstImmOrRegExpr>;
 
 export type AddInstr = AstTwoOpInstr<'AddInstr', AstRegExpr, AstImmOrRegExpr>;
 export type SubInstr = AstTwoOpInstr<'SubInstr', AstRegExpr, AstImmOrRegExpr>;
@@ -108,18 +74,10 @@ export type CoreInstr = NopInstr |
 
 export type MemoryInstr =
     MovInstr |
-    StoiInstr |
-    StoibInstr |
-    StoriInstr |
-    StoribInstr |
-    StorInstr |
-    StorbInstr |
-    StorrInstr |
-    StorrbInstr |
-    LodrInstr |
-    LodrbInstr |
-    LodrrInstr |
-    LodrrbInstr;
+    StoInstr |
+    StobInstr |
+    LodInstr |
+    LodbInstr;
 
 export type ArithmeticInstr = AddInstr |
     SubInstr |

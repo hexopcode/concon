@@ -7,18 +7,10 @@ import {
   Address,
   Stmt,
   MovInstr,
-  LodrInstr,
-  LodrbInstr,
-  LodrrInstr,
-  LodrrbInstr,
-  StoiInstr,
-  StoibInstr,
-  StoriInstr,
-  StoribInstr,
-  StorInstr,
-  StorbInstr,
-  StorrInstr,
-  StorrbInstr,
+  LodInstr,
+  LodbInstr,
+  StoInstr,
+  StobInstr,
   AddInstr,
   SubInstr,
   MulInstr,
@@ -160,30 +152,14 @@ class Parser {
       };
     } else if (this.match(TokenType.MOV)) {
       return this.movInstr();
-    } else if (this.match(TokenType.STOI)) {
-      return this.stoiInstr();
-    } else if (this.match(TokenType.STOIB)) {
-      return this.stoibInstr();
-    } else if (this.match(TokenType.STORI)) {
-      return this.storiInstr();
-    } else if (this.match(TokenType.STORIB)) {
-      return this.storibInstr();
-    } else if (this.match(TokenType.STOR)) {
-      return this.storInstr();
-    } else if (this.match(TokenType.STORB)) {
-      return this.storbInstr();
-    } else if (this.match(TokenType.STORR)) {
-      return this.storrInstr();
-    } else if (this.match(TokenType.STORRB)) {
-      return this.storrbInstr();
-    } else if (this.match(TokenType.LODR)) {
-      return this.lodrInstr();
-    } else if (this.match(TokenType.LODRB)) {
-      return this.lodrbInstr();
-    } else if (this.match(TokenType.LODRR)) {
-      return this.lodrrInstr();
-    } else if (this.match(TokenType.LODRRB)) {
-      return this.lodrrbInstr();
+    } else if (this.match(TokenType.STO)) {
+      return this.stoInstr();
+    } else if (this.match(TokenType.STOB)) {
+      return this.stobInstr();
+    } else if (this.match(TokenType.LOD)) {
+      return this.lodInstr();
+    } else if (this.match(TokenType.LODB)) {
+      return this.lodbInstr();
     } else if (this.match(TokenType.ADD)) {
       return this.addInstr();
     } else if (this.match(TokenType.SUB)) {
@@ -304,147 +280,55 @@ class Parser {
     };
   }
 
-  private stoiInstr(): StoiInstr {
-    const addr = this.addr();
+  private stoInstr(): StoInstr {
+    const op1 = this.immOrRegExpr();
     this.comma();
-    const imm = this.imm();
+    const op2 = this.immOrRegExpr();
+
     return {
-      type: 'StoiInstr',
+      type: 'StoInstr',
       line: this.line,
-      address: (addr.literal!) as Address,
-      immediate: (imm.literal!) as number,
+      op1,
+      op2,
     };
   }
 
-  private stoibInstr(): StoibInstr {
-    const addr = this.addr();
+  private stobInstr(): StobInstr {
+    const op1 = this.immOrRegExpr();
     this.comma();
-    const imm = this.imm();
+    const op2 = this.immOrRegExpr();
+
     return {
-      type: 'StoibInstr',
+      type: 'StobInstr',
       line: this.line,
-      address: (addr.literal!) as Address,
-      immediate: (imm.literal!) as number,
+      op1,
+      op2,
     };
   }
 
-  private storiInstr(): StoriInstr {
-    const reg = this.reg();
+  private lodInstr(): LodInstr {
+    const op1 = this.regExpr();
     this.comma();
-    const imm = this.imm();
+    const op2 = this.immOrRegExpr();
+
     return {
-      type: 'StoriInstr',
+      type: 'LodInstr',
       line: this.line,
-      register: (reg.literal!) as Registers,
-      immediate: (imm.literal!) as number,
+      op1,
+      op2,
     };
   }
 
-  private storibInstr(): StoribInstr {
-    const reg = this.reg();
+  private lodbInstr(): LodbInstr {
+    const op1 = this.regExpr();
     this.comma();
-    const imm = this.imm();
-    return {
-      type: 'StoribInstr',
-      line: this.line,
-      register: (reg.literal!) as Registers,
-      immediate: (imm.literal!) as number,
-    };
-  }
+    const op2 = this.immOrRegExpr();
 
-  private storInstr(): StorInstr {
-    const addr = this.addr();
-    this.comma();
-    const reg = this.reg();
     return {
-      type: 'StorInstr',
+      type: 'LodbInstr',
       line: this.line,
-      address: (addr.literal!) as Address,
-      register: (reg.literal!) as Registers,
-    };
-  }
-
-  private storbInstr(): StorbInstr {
-    const addr = this.addr();
-    this.comma();
-    const reg = this.reg();
-    return {
-      type: 'StorbInstr',
-      line: this.line,
-      address: (addr.literal!) as Address,
-      register: (reg.literal!) as Registers,
-    };
-  }
-
-  private storrInstr(): StorrInstr {
-    const reg1 = this.reg();
-    this.comma();
-    const reg2 = this.reg();
-    return {
-      type: 'StorrInstr',
-      line: this.line,
-      register1: (reg1.literal!) as Registers,
-      register2: (reg2.literal!) as Registers,
-    };
-  }
-
-  private storrbInstr(): StorrbInstr {
-    const reg1 = this.reg();
-    this.comma();
-    const reg2 = this.reg();
-    return {
-      type: 'StorrbInstr',
-      line: this.line,
-      register1: (reg1.literal!) as Registers,
-      register2: (reg2.literal!) as Registers,
-    };
-  }
-
-  private lodrInstr(): LodrInstr {
-    const reg = this.reg();
-    this.comma();
-    const addr = this.addr();
-    return {
-      type: 'LodrInstr',
-      line: this.line,
-      register: (reg.literal!) as Registers,
-      address: (addr.literal!) as Address,
-    };
-  }
-
-  private lodrbInstr(): LodrbInstr {
-    const reg = this.reg();
-    this.comma();
-    const addr = this.addr();
-    return {
-      type: 'LodrbInstr',
-      line: this.line,
-      register: (reg.literal!) as Registers,
-      address: (addr.literal!) as Address,
-    };
-  }
-
-  private lodrrInstr(): LodrrInstr {
-    const reg1 = this.reg();
-    this.comma();
-    const reg2 = this.reg();
-    return {
-      type: 'LodrrInstr',
-      line: this.line,
-      register1: (reg1.literal!) as Registers,
-      register2: (reg2.literal!) as Registers,
-    };
-  }
-
-  private lodrrbInstr(): LodrrbInstr {
-    const reg1 = this.reg();
-    this.comma();
-    const reg2 = this.reg();
-    return {
-      type: 'LodrrbInstr',
-      line: this.line,
-      register1: (reg1.literal!) as Registers,
-      register2: (reg2.literal!) as Registers,
+      op1,
+      op2,
     };
   }
 
