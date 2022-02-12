@@ -87,10 +87,10 @@ export class System {
   }
 
   private cycleInternal(): Result {
-    next: for (let opcode: Opcodes = this.instruction();; opcode = this.instruction()) {
+    for (let opcode: Opcodes = this.instruction();; opcode = this.instruction()) {
       switch (opcode) {
         case Opcodes.NOP:
-          continue next;
+          break;
         case Opcodes.END:
           return Result.END;
         case Opcodes.VSYNC:
@@ -100,179 +100,179 @@ export class System {
 
         case Opcodes.MOVI:
           this.movi();
-          continue next;
+          break;
         case Opcodes.MOVR:
           this.movr();
-          continue next;
+          break;
         case Opcodes.STOI:
           this.stoi();
-          continue next;
+          break;
         case Opcodes.STOIB:
           this.stoib();
-          continue next;
+          break;
         case Opcodes.STORI:
           this.stori();
-          continue next;
+          break;
         case Opcodes.STORIB:
           this.storib();
-          continue next;
+          break;
         case Opcodes.STOR:
           this.stor();
-          continue next;
+          break;
         case Opcodes.STORB:
           this.storb();
-          continue next;
+          break;
         case Opcodes.STORR:
           this.storr();
-          continue next;
+          break;
         case Opcodes.STORRB:
           this.storrb();
-          continue next;
+          break;
         case Opcodes.LODR:
           this.lodr();
-          continue next;
+          break;
         case Opcodes.LODRB:
           this.lodrb();
-          continue next;
+          break;
         case Opcodes.LODRR:
           this.lodrr();
-          continue next;
+          break;
         case Opcodes.LODRRB:
           this.lodrrb();
-          continue next;
+          break;
 
         case Opcodes.ADDI:
           this.addi();
-          continue next;
+          break;
         case Opcodes.ADDR:
           this.addr();
-          continue next;
+          break;
         case Opcodes.SUBI:
           this.subi();
-          continue next;
+          break;
         case Opcodes.SUBR:
           this.subr();
-          continue next;
+          break;
         case Opcodes.MULI:
           this.muli();
-          continue next;
+          break;
         case Opcodes.MULR:
           this.mulr();
-          continue next;
+          break;
         case Opcodes.DIVI:
           this.divi();
-          continue next;
+          break;
         case Opcodes.DIVR:
           this.divr();
-          continue next;
+          break;
         case Opcodes.MODI:
           this.modi();
-          continue next;
+          break;
         case Opcodes.MODR:
           this.modr();
-          continue next;
+          break;
         case Opcodes.INC:
           this.inc();
-          continue next;
+          break;
         case Opcodes.DEC:
           this.dec();
-          continue next;
+          break;
 
         case Opcodes.SHLI:
           this.shli();
-          continue next;
+          break;
         case Opcodes.SHLR:
           this.shlr();
-          continue next;
+          break;
         case Opcodes.SHRI:
           this.shri();
-          continue next;
+          break;
         case Opcodes.SHRR:
           this.shrr();
-          continue next;
+          break;
         case Opcodes.ORI:
           this.ori();
-          continue next;
+          break;
         case Opcodes.ORR:
           this.orr();
-          continue next;
+          break;
         case Opcodes.ANDI:
           this.andi();
-          continue next;
+          break;
         case Opcodes.ANDR:
           this.andr();
-          continue next;
+          break;
         case Opcodes.XORI:
           this.xori();
-          continue next;
+          break;
         case Opcodes.XORR:
           this.xorr();
-          continue next;
+          break;
         case Opcodes.NOT:
           this.not();
-          continue next;
+          break;
           
         case Opcodes.CMPI:
           this.cmpi();
-          continue next;
+          break;
         case Opcodes.CMPR:
           this.cmpr();
-          continue next;
+          break;
 
         case Opcodes.JMP:
           this.jmp();
-          continue next;
+          break;
         case Opcodes.JMPR:
           this.jmpr();
-          continue next;
+          break;
         case Opcodes.JZ:
           this.jz();
-          continue next;
+          break;
         case Opcodes.JZR:
           this.jzr();
-          continue next;
+          break;
         case Opcodes.JNZ:
           this.jnz();
-          continue next;
+          break;
         case Opcodes.JNZR:
           this.jnzr();
-          continue next;
+          break;
         case Opcodes.JG:
           this.jg();
-          continue next;
+          break;
         case Opcodes.JGR:
           this.jgr();
-          continue next;
+          break;
         case Opcodes.JGZ:
           this.jgz();
-          continue next;
+          break;
         case Opcodes.JGZR:
           this.jgzr();
-          continue next;
+          break;
         case Opcodes.JL:
           this.jl();
-          continue next;
+          break;
         case Opcodes.JLR:
           this.jlr();
-          continue next;
+          break;
         case Opcodes.JLZ:
           this.jlz();
-          continue next;
+          break;
         case Opcodes.JLZR:
           this.jlzr();
-          continue next;
+          break;
         case Opcodes.JO:
           this.jo();
-          continue next;
+          break;
         case Opcodes.JOR:
           this.jor();
-          continue next;
+          break;
         case Opcodes.JDZ:
           this.jdz();
-          continue next;
+          break;
         case Opcodes.JDZR:
           this.jdzr();
-          continue next;
+          break;
         default:
           unreachable(`Unimplemented opcode: ${opcode}`);
       }
