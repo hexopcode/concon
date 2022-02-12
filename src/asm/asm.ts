@@ -1,7 +1,7 @@
 import {Opcodes} from '../core';
 import {AsmError} from './base';
 import {codegen} from './codegen';
-import {check, parse, tokenize, tokenString} from './parser';
+import {check, parse, tokenize} from './parser';
 
 const END_PROGRAM = new Uint8Array([Opcodes.END]);
 
@@ -44,10 +44,6 @@ export function assemble(source: string): Uint8Array {
     logErrors(errors);
     return END_PROGRAM;
   }
-  
-  // console.log(tokens.map(tokenString));
-  // console.log(ast);
-  // console.log(bytes);
   
   return bytes;
 }
