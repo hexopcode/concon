@@ -1,14 +1,11 @@
-import {MEMORY_PROGRAM_OFFSET, Opcodes} from '../../core';
+import {Opcodes} from '../../core';
 import {unreachable} from '../../lib';
 import {AsmErrorCollector} from '../base';
 import {Address, Stmt} from '../parser';
+import {AddressRef, Program} from './program';
+import {word} from './utilities';
 
 const FAKE_ADDR: number[] = [0xFF, 0xFF];
-
-type AddressRef = {
-  address?: number,
-  references: number[],
-};
 
 export function codegen(ast: Stmt[], collectError: AsmErrorCollector) {
   return new Codegen(ast, collectError).codegen();
@@ -17,21 +14,26 @@ export function codegen(ast: Stmt[], collectError: AsmErrorCollector) {
 class Codegen {
   private readonly ast: Stmt[];
   private readonly collectError: AsmErrorCollector;
+  private readonly addressRefs: Map<string, AddressRef>;
   private readonly bytes: number[];
-  private readonly addressRefs: Map<string, AddressRef>; 
 
   constructor(ast: Stmt[], collectError: AsmErrorCollector) {
     this.ast = ast;
     this.collectError = collectError;
-    this.bytes = [];
     this.addressRefs = new Map();
+    this.bytes = [];
   }
 
-  codegen(): Uint8Array {
+  codegen(): Program {
     this.emitOpcodes();
-    this.patchAddresses();
 
-    return new Uint8Array(this.bytes);
+    // FIXME: set the correct stack and start addresses
+    return {
+      stackAddress: 0xFFFF,
+      startAddress: 0,
+      addressRefs: this.addressRefs,
+      code: new Uint8Array(this.bytes),
+    }
   }
 
   private emitOpcodes() {
@@ -350,14 +352,10 @@ class Codegen {
     }
   }
 
-  private word(n: number): number[] {
-    return [n >> 8, n & 0xff];
-  }
-
   // FIXME: make this work with expressions instead
   private address(addr: Address): number[] {
     if (typeof addr == 'number') {
-      return this.word(addr);
+      return word(addr);
     }
 
     if (!this.addressRefs.has(addr)) {
@@ -385,22 +383,5 @@ class Codegen {
     this.addressRefs.set(lbl, {
       references: [],
     });
-  }
-
-  private patchAddresses() {
-    for (const [lbl, addr] of this.addressRefs.entries()) {
-      if (addr.address == undefined) {
-        throw new Error(`Cannot resolve label '${lbl}'`);
-      }
-
-      const absolute = MEMORY_PROGRAM_OFFSET + addr.address;
-      const hi = absolute >> 8;
-      const lo = absolute & 0xFF;
-
-      for (const ref of addr.references) {
-        this.bytes[ref] = hi;
-        this.bytes[ref + 1] = lo;
-      }
-    }
   }
 }

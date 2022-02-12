@@ -1,6 +1,6 @@
 import {Opcodes} from '../core';
 import {AsmError} from './base';
-import {codegen} from './codegen';
+import {codegen, DEFAULT_LINKER_OPTIONS, link, LinkerOptions} from './codegen';
 import {check, parse, tokenize} from './parser';
 
 const END_PROGRAM = new Uint8Array([Opcodes.END]);
@@ -13,7 +13,7 @@ function logErrors(errors: AsmError[]) {
   }
 }
 
-export function assemble(source: string): Uint8Array {
+export function assemble(source: string, linkerOptions: LinkerOptions = DEFAULT_LINKER_OPTIONS): Uint8Array {
   const errors: AsmError[] = [];
   const collectErrors = errors.push.bind(errors);
   
@@ -38,9 +38,16 @@ export function assemble(source: string): Uint8Array {
     return END_PROGRAM;
   }
   
-  const bytes = codegen(ast, collectErrors);
+  const program = codegen(ast, collectErrors);
   if (errors.length > 0) {
     console.error('Fatal error(s) in codegen');
+    logErrors(errors);
+    return END_PROGRAM;
+  }
+
+  const bytes = link(program, linkerOptions);
+  if (errors.length > 0) {
+    console.error('Fatal error(s) in linking');
     logErrors(errors);
     return END_PROGRAM;
   }
@@ -48,7 +55,7 @@ export function assemble(source: string): Uint8Array {
   return bytes;
 }
 
-export function assembleCheck(source: string): AsmError[] {
+export function assembleCheck(source: string, linkerOptions: LinkerOptions = DEFAULT_LINKER_OPTIONS): AsmError[] {
   const errors: AsmError[] = [];
   const collectErrors = errors.push.bind(errors);
   
@@ -67,7 +74,12 @@ export function assembleCheck(source: string): AsmError[] {
     return errors;
   }
 
-  codegen(ast, collectErrors);
+  const program = codegen(ast, collectErrors);
+  if (errors.length > 0) {
+    return errors;
+  }
+
+  link(program, linkerOptions);
   if (errors.length > 0) {
     return errors;
   }

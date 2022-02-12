@@ -9,7 +9,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     sys.reset();
   });
 
-  t.test('ADD does ADDtion', () => {
+  t.test('ADD does addtion', () => {
     const result = assembleAndBoot(sys, `
         MOV R0, 1200
         ADD R0, 34
@@ -447,6 +447,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
 
   t.test('DEC sets negative flag', () => {
     const result = assembleAndBoot(sys, `
+        MOV R0, 0
         DEC R0
         END
     `);

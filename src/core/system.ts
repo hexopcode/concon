@@ -39,6 +39,8 @@ export class System {
       [MemoryArea.PROGRAM, new Uint8Array(this.buffer, MEMORY_PROGRAM_OFFSET, MEMORY_PROGRAM_SIZE)],
     ]);
     this.registers = new Uint16Array(REGISTER_COUNT);
+
+    this.reset();
   }
 
   reset() {

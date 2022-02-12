@@ -11,7 +11,8 @@ export const JumpTests: TestSpec = (t: TestRunner) => {
 
   t.test('JMP jumps to address', () => {
     const result = assembleAndBoot(sys, `
-        JMP 0x2007
+        MOV R0, 0
+        JMP 0x2015
         MOV R0, 0xFFFF
         END
     `);
@@ -22,6 +23,7 @@ export const JumpTests: TestSpec = (t: TestRunner) => {
 
   t.test('JMP jumps to label', () => {
     const result = assembleAndBoot(sys, `
+        MOV R0, 0
         JMP here
         MOV R0, 0xFFFF
       here:
@@ -36,7 +38,8 @@ export const JumpTests: TestSpec = (t: TestRunner) => {
 
   t.test('JMP jumps to address', () => {
     const result = assembleAndBoot(sys, `
-        MOV R1, 0x200A
+        MOV R0, 0
+        MOV R1, 0x2018
         JMP R1
         MOV R0, 0xFFFF
         END
