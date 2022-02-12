@@ -13,6 +13,10 @@ export const CoreTests: TestSpec = (t: TestRunner) => {
     t.assert(assembleAndBoot(sys, `END`) == Result.END, 'Ended');
   });
 
+  t.test('missing END ends with SEGFAULT', () => {
+    t.assert(assembleAndBoot(sys, ``) == Result.SEGFAULT, 'Seg fault');
+  });
+
   t.test('VSYNC vsyncs', () => {
     t.assert(assembleAndBoot(sys, `VSYNC`) == Result.VSYNC, 'Vsynced');
   });

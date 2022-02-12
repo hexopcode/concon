@@ -1,4 +1,4 @@
-import {assert, unreachable} from '../lib';
+import {assert, SegFaultError, unreachable} from '../lib';
 import {create_os_image} from '../os';
 import {
   MAX_VALUE,
@@ -21,6 +21,7 @@ export enum Result {
   VSYNC,
   END,
   BRK,
+  SEGFAULT,
 }
 
 export class System {
@@ -73,6 +74,17 @@ export class System {
   }
 
   cycle(): Result {
+    try {
+      return this.cycleInternal();
+    } catch (e) {
+      if (e instanceof SegFaultError) {
+        return Result.SEGFAULT;
+      }
+      throw e;
+    }
+  }
+
+  private cycleInternal(): Result {
     next: for (let opcode: Opcodes = this.instruction();; opcode = this.instruction()) {
       switch (opcode) {
         case Opcodes.NOP:
@@ -265,6 +277,14 @@ export class System {
     }
   }
 
+  private byte(): number {
+    const rip = this.registers[Registers.RIP];
+    this.checkMemoryBoundary(rip);
+    const byte = this.memory[rip];
+    this.registers[Registers.RIP] = rip + 1;
+    return byte;
+  }
+
   private instruction(): Opcodes {
     return this.byte() as Opcodes;
   }
@@ -285,7 +305,7 @@ export class System {
 
   private checkMemoryBoundary(addr: number) {
     if (addr >= this.memory.length) {
-      throw new Error('Invalid memory access: reached past the end of memory area.');
+      throw new SegFaultError('Invalid memory access: reached past the end of memory area.');
     }
   }
 
@@ -308,15 +328,6 @@ export class System {
 
   private isFlagSet(flag: Flags): boolean {
     return (this.registers[Registers.RFL] >> flag & 1) == 1;
-  }
-
-  private byte(): number {
-    const rip = this.registers[Registers.RIP];
-    // FIXME: automate this with a proxy around the memory object
-    this.checkMemoryBoundary(rip);
-    const byte = this.memory[rip];
-    this.registers[Registers.RIP] = rip + 1;
-    return byte;
   }
 
   private movi() {
