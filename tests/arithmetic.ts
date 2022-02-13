@@ -1,5 +1,5 @@
-import {Flags, MAX_VALUE, Registers, Result, System} from '../core';
-import {TestRunner, TestSpec} from '../lib';
+import {Flags, MAX_VALUE, Registers, Result, System} from '../src/core';
+import {TestRunner, TestSpec} from '../src/lib';
 import {assembleAndBoot} from './helpers';
 
 export const ArithmeticTests: TestSpec = (t: TestRunner) => {

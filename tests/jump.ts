@@ -1,5 +1,5 @@
-import {Flags, Registers, Result, System} from '../core';
-import {TestRunner, TestSpec} from '../lib';
+import {Flags, Registers, Result, System} from '../src/core';
+import {TestRunner, TestSpec} from '../src/lib';
 import {assembleAndBoot} from './helpers';
 
 export const JumpTests: TestSpec = (t: TestRunner) => {

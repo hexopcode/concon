@@ -1,6 +1,6 @@
-import {assembleCheck} from '../asm';
-import {System} from '../core';
-import {TestRunner, TestSpec} from '../lib';
+import {assembleCheck} from '../src/asm';
+import {System} from '../src/core';
+import {TestRunner, TestSpec} from '../src/lib';
 
 export const ParserErrorTests: TestSpec = (t: TestRunner) => {
   const sys = new System();

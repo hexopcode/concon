@@ -1,7 +1,7 @@
 import {assemble} from '../asm';
 import {MemoryArea, Result, System} from '../core';
 import {runTests, TestResultEnum} from '../lib';
-import {ALL_TESTS} from '../tests';
+import {ALL_TESTS} from '../../tests';
 import {ConconScreen} from './components';
 
 const testResults = runTests(...ALL_TESTS);
