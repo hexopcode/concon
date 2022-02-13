@@ -9,26 +9,26 @@ export const JumpTests: TestSpec = (t: TestRunner) => {
     sys.reset();
   });
 
-  t.test('JMP jumps to address', () => {
+  t.test('jmp jumps to address', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0
-        JMP 0x2015
-        MOV R0, 0xFFFF
-        END
+        mov r0, 0
+        jmp 0x2015
+        mov r0, 0xFFFF
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
     
     t.assert(sys.debug(Registers.R0) == 0, 'Register R0 not set');
   });
 
-  t.test('JMP jumps to label', () => {
+  t.test('jmp jumps to label', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0
-        JMP here
-        MOV R0, 0xFFFF
+        mov r0, 0
+        jmp here
+        mov r0, 0xFFFF
       here:
-        MOV R1, 0xFFFF
-        END
+        mov r1, 0xFFFF
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -36,223 +36,223 @@ export const JumpTests: TestSpec = (t: TestRunner) => {
     t.assert(sys.debug(Registers.R1) == 0xFFFF, 'Register R1 contains result');
   });
 
-  t.test('JMP jumps to address', () => {
+  t.test('jmp jumps to address', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0
-        MOV R1, 0x2018
-        JMP R1
-        MOV R0, 0xFFFF
-        END
+        mov r0, 0
+        mov r1, 0x2018
+        jmp r1
+        mov r0, 0xFFFF
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
     
     t.assert(sys.debug(Registers.R0) == 0, 'Register R0 not set');
   });
 
-  t.test('JZ jumps if zero', () => {
+  t.test('jz jumps if zero', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0x1234
-        SUB R0, 0x1234
-        JZ done
-        MOV R0, 0x1111
+        mov r0, 0x1234
+        sub r0, 0x1234
+        jz done
+        mov r0, 0x1111
       done:
-        END
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0, 'Register R0 not set');
   });
 
-  t.test('JZ does not jump', () => {
+  t.test('jz does not jump', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0x1234
-        SUB R0, 0x1231
-        JZ done
-        MOV R0, 0x1111
+        mov r0, 0x1234
+        sub r0, 0x1231
+        jz done
+        mov r0, 0x1111
       done:
-        END
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0x1111, 'Register R0 contains result');
   });
 
-  t.test('JNZ jumps if not zero', () => {
+  t.test('jnz jumps if not zero', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0x1234
-        SUB R0, 0x1231
-        JNZ done
-        MOV R0, 0x1111
+        mov r0, 0x1234
+        sub r0, 0x1231
+        jnz done
+        mov r0, 0x1111
       done:
-        END
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 3, 'Register R0 contains result');
   });
 
-  t.test('JNZ does not jump', () => {
+  t.test('jnz does not jump', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0x1234
-        SUB R0, 0x1234
-        JNZ done
-        MOV R0, 0x1111
+        mov r0, 0x1234
+        sub r0, 0x1234
+        jnz done
+        mov r0, 0x1111
       done:
-        END
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0x1111, 'Register R0 contains result');
   });
 
-  t.test('JG jumps if greater', () => {
+  t.test('jg jumps if greater', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0x1234
-        CMP R0, 0x1231
-        JG done
-        MOV R0, 0x1111
+        mov r0, 0x1234
+        cmp r0, 0x1231
+        jg done
+        mov r0, 0x1111
       done:
-        END
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0x1234, 'Register R0 contais result');
   });
 
-  t.test('JG does not jump', () => {
+  t.test('jg does not jump', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0x1234
-        CMP R0, 0x1235
-        JG done
-        MOV R0, 0x1111
+        mov r0, 0x1234
+        cmp r0, 0x1235
+        jg done
+        mov r0, 0x1111
       done:
-        END
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0x1111, 'Register R0 contains result');
   });
 
-  t.test('JGZ jumps if greater', () => {
+  t.test('jgz jumps if greater', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0x1234
-        CMP R0, 0x1231
-        JGZ done
-        MOV R0, 0x1111
+        mov r0, 0x1234
+        cmp r0, 0x1231
+        jgz done
+        mov r0, 0x1111
       done:
-        END
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0x1234, 'Register R0 not set');
   });
 
-  t.test('JGZ jumps if zero', () => {
+  t.test('jgz jumps if zero', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0x1234
-        CMP R0, 0x1234
-        JGZ done
-        MOV R0, 0x1111
+        mov r0, 0x1234
+        cmp r0, 0x1234
+        jgz done
+        mov r0, 0x1111
       done:
-        END
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0x1234, 'Register R0 not set');
   });
 
-  t.test('JGZ does not jump', () => {
+  t.test('jgz does not jump', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0x1234
-        CMP R0, 0x1236
-        JGZ done
-        MOV R0, 0x1111
+        mov r0, 0x1234
+        cmp r0, 0x1236
+        jgz done
+        mov r0, 0x1111
       done:
-        END
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0x1111, 'Register R0 contains result');
   });
 
-  t.test('JL jumps if lower', () => {
+  t.test('jl jumps if lower', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0x1234
-        CMP R0, 0x1235
-        JL done
-        MOV R0, 0x1111
+        mov r0, 0x1234
+        cmp r0, 0x1235
+        jl done
+        mov r0, 0x1111
       done:
-        END
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0x1234, 'Register R0 not set');
   });
 
-  t.test('JL does not jump', () => {
+  t.test('jl does not jump', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0x1234
-        CMP R0, 0x1233
-        JL done
-        MOV R0, 0x1111
+        mov r0, 0x1234
+        cmp r0, 0x1233
+        jl done
+        mov r0, 0x1111
       done:
-        END
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0x1111, 'Register R0 contains result');
   });
 
-  t.test('JLZ jumps if lower', () => {
+  t.test('jlz jumps if lower', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0x1234
-        CMP R0, 0x1235
-        JLZ done
-        MOV R0, 0x1111
+        mov r0, 0x1234
+        cmp r0, 0x1235
+        jlz done
+        mov r0, 0x1111
       done:
-        END
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0x1234, 'Register R0 not set');
   });
 
-  t.test('JLZ jumps if zero', () => {
+  t.test('jlz jumps if zero', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0x1234
-        CMP R0, 0x1234
-        JLZ done
-        MOV R0, 0x1111
+        mov r0, 0x1234
+        cmp r0, 0x1234
+        jlz done
+        mov r0, 0x1111
       done:
-        END
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0x1234, 'Register R0 not set');
   });
 
-  t.test('JL does not jump', () => {
+  t.test('jl does not jump', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0x1234
-        CMP R0, 0x1233
-        JLZ done
-        MOV R0, 0x1111
+        mov r0, 0x1234
+        cmp r0, 0x1233
+        jlz done
+        mov r0, 0x1111
       done:
-        END
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 0x1111, 'Register R0 contains result');
   });
 
-  t.test('JO jumps on overflow', () => {
+  t.test('jo jumps on overflow', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0xFFFF
-        ADD R0, 1
-        JO done
-        MOV R0, 0x1111
+        mov r0, 0xFFFF
+        add r0, 1
+        jo done
+        mov r0, 0x1111
       done:
-        END
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -260,14 +260,14 @@ export const JumpTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.OVERFLOW & 1) == 1, 'Overflow flag is set');
   });
 
-  t.test('JO does not jump', () => {
+  t.test('jo does not jump', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0xFFFE
-        ADD R0, 1
-        JO done
-        MOV R0, 0x1111
+        mov r0, 0xFFFE
+        add r0, 1
+        jo done
+        mov r0, 0x1111
       done:
-        END
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -275,28 +275,28 @@ export const JumpTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.OVERFLOW & 1) == 0, 'Overflow flag not set');
   });
 
-  t.test('JDZ jump on divbyzero', () => {
+  t.test('jdz jump on divbyzero', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0xFFFF
-        DIV R0, 0
-        JDZ done
-        MOV R0, 0x1111
+        mov r0, 0xFFFF
+        div r0, 0
+        jdz done
+        mov r0, 0x1111
       done:
-        END
+        end
     `);
 
     t.assert(sys.debug(Registers.R0) == 0xFFFF, 'Register R0 contains result');
     t.assert((sys.debug(Registers.RFL) >> Flags.DIVBYZERO & 1) == 1, 'Divbyzero flag is set');
   });
 
-  t.test('JDZ does not jump', () => {
+  t.test('jdz does not jump', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0xFFFF
-        DIV R0, 1
-        JDZ done
-        MOV R0, 0x1111
+        mov r0, 0xFFFF
+        div r0, 1
+        jdz done
+        mov r0, 0x1111
       done:
-        END
+        end
     `);
 
     t.assert(sys.debug(Registers.R0) == 0x1111, 'Register R0 contains result');

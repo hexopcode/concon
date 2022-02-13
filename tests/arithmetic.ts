@@ -9,22 +9,22 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     sys.reset();
   });
 
-  t.test('ADD does addtion', () => {
+  t.test('add does addtion', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 1200
-        ADD R0, 34
-        END
+        mov r0, 1200
+        add r0, 34
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 1234, 'Register R0 contains result');
   });
 
-  t.test('ADD sets zero flag', () => {
+  t.test('add sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0
-        ADD R0, 0
-        END
+        mov r0, 0
+        add r0, 0
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -32,11 +32,11 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
-  t.test('ADD overflows', () => {
+  t.test('add overflows', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0xFFFF
-        ADD R0, 1
-        END
+        mov r0, 0xffff
+        add r0, 1
+        end
     `);
     t.assert(result == Result.END, 'Program run');
 
@@ -44,24 +44,24 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.OVERFLOW & 1) == 1, 'Overflow flag set');
   });
 
-  t.test('ADD does ADDtion', () => {
+  t.test('add does addtion', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 1200
-        MOV R1, 34
-        ADD R0, R1
-        END
+        mov r0, 1200
+        mov r1, 34
+        add r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 1234, 'Register R0 contains result');
   });
 
-  t.test('ADD sets zero flag', () => {
+  t.test('add sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0
-        MOV R1, 0
-        ADD R0, R1
-        END
+        mov r0, 0
+        mov r1, 0
+        add r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -69,12 +69,12 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
-  t.test('ADD overflows', () => {
+  t.test('add overflows', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0xFFFF
-        MOV R1, 1
-        ADD R0, R1
-        END
+        mov r0, 0xffff
+        mov r1, 1
+        add r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -82,22 +82,22 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.OVERFLOW & 1) == 1, 'Overflow flag set');
   });
 
-  t.test('SUB does subtraction', () => {
+  t.test('sub does subtraction', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 100
-        SUB R0, 1
-        END
+        mov r0, 100
+        sub r0, 1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 99, 'Register R0 contains result');
   });
 
-  t.test('SUB sets zero flag', () => {
+  t.test('sub sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 100
-        SUB R0, 100
-        END
+        mov r0, 100
+        sub r0, 100
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -105,11 +105,11 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
-  t.test('SUB sets negative flag', () => {
+  t.test('sub sets negative flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 100
-        SUB R0, 101
-        END
+        mov r0, 100
+        sub r0, 101
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -117,24 +117,24 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.NEGATIVE & 1) == 1, 'Negative flag set');
   });
 
-  t.test('SUB does subtraction', () => {
+  t.test('sub does subtraction', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 100
-        MOV R1, 1
-        SUB R0, R1
-        END
+        mov r0, 100
+        mov r1, 1
+        sub r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 99, 'Register R0 contains result');
   });
 
-  t.test('SUB sets zero flag', () => {
+  t.test('sub sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 100
-        MOV R1, 100
-        SUB R0, R1
-        END
+        mov r0, 100
+        mov r1, 100
+        sub r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -142,12 +142,12 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
-  t.test('SUB sets negative flag', () => {
+  t.test('sub sets negative flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 100
-        MOV R1, 101
-        SUB R0, R1
-        END
+        mov r0, 100
+        mov r1, 101
+        sub r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -155,22 +155,22 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.NEGATIVE & 1) == 1, 'Negative flag set');
   });
 
-  t.test('MUL multiplies', () => {
+  t.test('mul multiplies', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 3
-        MUL R0, 5
-        END
+        mov r0, 3
+        mul r0, 5
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 15, 'Register R0 contains result');
   });
 
-  t.test('MUL sets zero flag', () => {
+  t.test('mul sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0
-        MUL R0, 5
-        END
+        mov r0, 0
+        mul r0, 5
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -178,11 +178,11 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
-  t.test('MUL sets overflow flag', () => {
+  t.test('mul sets overflow flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0xFFFF
-        MUL R0, 2
-        END
+        mov r0, 0xffff
+        mul r0, 2
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -190,24 +190,24 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.OVERFLOW & 1) == 1, 'Overflow flag set');
   });
 
-  t.test('MUL multiplies', () => {
+  t.test('mul multiplies', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 3
-        MOV R1, 5
-        MUL R0, R1
-        END
+        mov r0, 3
+        mov r1, 5
+        mul r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 15, 'Register R0 contains result');
   });
 
-  t.test('MUL sets zero flag', () => {
+  t.test('mul sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0
-        MOV R1, 5
-        MUL R0, R1
-        END
+        mov r0, 0
+        mov r1, 5
+        mul r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -215,12 +215,12 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
-  t.test('MUL sets overflow flag', () => {
+  t.test('mul sets overflow flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0xFFFF
-        MOV R1, 2
-        MUL R0, R1
-        END
+        mov r0, 0xFFFF
+        mov r1, 2
+        mul r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -228,22 +228,22 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.OVERFLOW & 1) == 1, 'Overflow flag set');
   });
 
-  t.test('DIV divides', () => {
+  t.test('div divides', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 15
-        DIV R0, 5
-        END
+        mov r0, 15
+        div r0, 5
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 3, 'Register R0 contains result');
   });
 
-  t.test('DIV rounds down', () => {
+  t.test('div rounds down', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 3
-        DIV R0, 2
-        END
+        mov r0, 3
+        div r0, 2
+        end
     `);
 
     t.assert(result == Result.END, 'Program runs');
@@ -251,11 +251,11 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert(sys.debug(Registers.R0) == 1, 'Register R0 contains result');
   });
 
-  t.test('DIV sets zero flag', () => {
+  t.test('div sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0
-        DIV R0, 5
-        END
+        mov r0, 0
+        div r0, 5
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -263,11 +263,11 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
-  t.test('DIV sets divbyzero flag', () => {
+  t.test('div sets divbyzero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 5
-        DIV R0, 0
-        END
+        mov r0, 5
+        div r0, 0
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -275,24 +275,24 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.DIVBYZERO & 1) == 1, 'Divbyzero flag set');
   });
 
-  t.test('DIV divides', () => {
+  t.test('div divides', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 15
-        MOV R1, 5
-        DIV R0, R1
-        END
+        mov r0, 15
+        mov r1, 5
+        div r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 3, 'Register R0 contains result');
   });
 
-  t.test('DIV rounds down', () => {
+  t.test('div rounds down', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 3
-        MOV R1, 2
-        DIV R0, R1
-        END
+        mov r0, 3
+        mov r1, 2
+        div r0, r1
+        end
     `);
 
     t.assert(result == Result.END, 'Program runs');
@@ -300,12 +300,12 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert(sys.debug(Registers.R0) == 1, 'Register R0 contains result');
   });
 
-  t.test('DIV sets zero flag', () => {
+  t.test('div sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0
-        MOV R1, 5
-        DIV R0, R1
-        END
+        mov r0, 0
+        mov r1, 5
+        div r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -313,12 +313,12 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
-  t.test('DIV sets divbyzero flag', () => {
+  t.test('div sets divbyzero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 5
-        MOV R1, 0
-        DIV R0, R1
-        END
+        mov r0, 5
+        mov r1, 0
+        div r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -326,22 +326,22 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.DIVBYZERO & 1) == 1, 'Divbyzero flag set');
   });
 
-  t.test('MOD modules', () => {
+  t.test('mod modules', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 3
-        MOD R0, 2
-        END
+        mov r0, 3
+        mod r0, 2
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 1, 'Register R0 contains result');
   });
 
-  t.test('MOD sets zero flag', () => {
+  t.test('mod sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0
-        MOD R0, 5
-        END
+        mov r0, 0
+        mod r0, 5
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -349,11 +349,11 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
-  t.test('MOD sets divbyzero flag', () => {
+  t.test('mod sets divbyzero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 5
-        MOD R0, 0
-        END
+        mov r0, 5
+        mod r0, 0
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -361,24 +361,24 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.DIVBYZERO & 1) == 1, 'Divbyzero flag set');
   });
 
-  t.test('MOD modules', () => {
+  t.test('mod modules', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 3
-        MOV R1, 2
-        MOD R0, R1
-        END
+        mov r0, 3
+        mov r1, 2
+        mod r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 1, 'Register R0 contains result');
   });
 
-  t.test('MOD sets zero flag', () => {
+  t.test('mod sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0
-        MOV R1, 5
-        MOD R0, R1
-        END
+        mov r0, 0
+        mov r1, 5
+        mod r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -386,12 +386,12 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
-  t.test('MOD sets divbyzero flag', () => {
+  t.test('mod sets divbyzero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 5
-        MOV R1, 0
-        MOD R0, R1
-        END
+        mov r0, 5
+        mov r1, 0
+        mod r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -399,22 +399,22 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.DIVBYZERO & 1) == 1, 'Divbyzero flag set');
   });
 
-  t.test('INC increments', () => {
+  t.test('inc increments', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 99
-        INC R0
-        END
+        mov r0, 99
+        inc r0
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 100, 'Register R0 contains result');
   });
 
-  t.test('INC sets overflow flag', () => {
+  t.test('inc sets overflow flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0xFFFF
-        INC R0
-        END
+        mov r0, 0xFFFF
+        inc r0
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -422,22 +422,22 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.OVERFLOW & 1) == 1, 'Overflow flag set');
   });
 
-  t.test('DEC decrements', () => {
+  t.test('dec decrements', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 100
-        DEC R0
-        END
+        mov r0, 100
+        dec r0
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R0) == 99, 'Register R0 contains result');
   });
 
-  t.test('DEC sets zero flag', () => {
+  t.test('dec sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 1
-        DEC R0
-        END
+        mov r0, 1
+        dec r0
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -445,11 +445,11 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
-  t.test('DEC sets negative flag', () => {
+  t.test('dec sets negative flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0
-        DEC R0
-        END
+        mov r0, 0
+        dec r0
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 

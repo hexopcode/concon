@@ -17,7 +17,7 @@ export const ParserErrorTests: TestSpec = (t: TestRunner) => {
   });
 
   t.test('parser fails with incorrect operand', () => {
-    const errors = assembleCheck(`INC 0x1234`);
+    const errors = assembleCheck(`inc 0x1234`);
 
     t.assert(errors.length == 1, 'Has assembly error');
     t.assert(errors[0].message == 'Invalid token: NUMBER. Expected register', 'Has error message');

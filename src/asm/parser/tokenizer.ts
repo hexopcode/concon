@@ -53,43 +53,43 @@ export enum TokenType {
 }
 
 const Keywords: Map<string, TokenType> = new Map(Object.entries({
-  'NOP': TokenType.NOP,
-  'END': TokenType.END,
-  'VSYNC': TokenType.VSYNC,
-  'BRK': TokenType.BRK,
+  'nop': TokenType.NOP,
+  'end': TokenType.END,
+  'vsync': TokenType.VSYNC,
+  'brk': TokenType.BRK,
   
-  'MOV': TokenType.MOV,
-  'STO': TokenType.STO,
-  'STOB': TokenType.STOB,
-  'LOD': TokenType.LOD,
-  'LODB': TokenType.LODB,
+  'mov': TokenType.MOV,
+  'sto': TokenType.STO,
+  'stob': TokenType.STOB,
+  'lod': TokenType.LOD,
+  'lodb': TokenType.LODB,
 
-  'ADD': TokenType.ADD,
-  'SUB': TokenType.SUB,
-  'MUL': TokenType.MUL,
-  'DIV': TokenType.DIV,
-  'MOD': TokenType.MOD,
-  'INC': TokenType.INC,
-  'DEC': TokenType.DEC,
+  'add': TokenType.ADD,
+  'sub': TokenType.SUB,
+  'mul': TokenType.MUL,
+  'div': TokenType.DIV,
+  'mod': TokenType.MOD,
+  'inc': TokenType.INC,
+  'dec': TokenType.DEC,
 
-  'SHL': TokenType.SHL,
-  'SHR': TokenType.SHR,
-  'OR': TokenType.OR,
-  'AND': TokenType.AND,
-  'XOR': TokenType.XOR,
-  'NOT': TokenType.NOT,
+  'shl': TokenType.SHL,
+  'shr': TokenType.SHR,
+  'or': TokenType.OR,
+  'and': TokenType.AND,
+  'xor': TokenType.XOR,
+  'not': TokenType.NOT,
 
-  'CMP': TokenType.CMP,
+  'cmp': TokenType.CMP,
 
-  'JMP': TokenType.JMP,
-  'JZ': TokenType.JZ,
-  'JNZ': TokenType.JNZ,
-  'JG': TokenType.JG,
-  'JGZ': TokenType.JGZ,
-  'JL': TokenType.JL,
-  'JLZ': TokenType.JLZ,
-  'JO': TokenType.JO,
-  'JDZ': TokenType.JDZ,
+  'jmp': TokenType.JMP,
+  'jz': TokenType.JZ,
+  'jnz': TokenType.JNZ,
+  'jg': TokenType.JG,
+  'jgz': TokenType.JGZ,
+  'jl': TokenType.JL,
+  'jlz': TokenType.JLZ,
+  'jo': TokenType.JO,
+  'jdz': TokenType.JDZ,
 }));
 
 export type Token = {
@@ -328,7 +328,7 @@ class Tokenizer {
   }
 
   private isRegister(c: string): boolean {
-    if (c != 'R') {
+    if (c != 'r') {
       return false;
     }
 
@@ -337,10 +337,10 @@ class Tokenizer {
 
     return (c1 >= '0' && c1 <= '9') ||
         (c1 == '1' && c2 >= '0' && c2 <= '5') ||
-        (c1 == 'I' && c2 == 'P') ||
-        (c1 == 'S' && c2 == 'P') ||
-        (c1 == 'F' && c2 == 'L') ||
-        (c1 == 'I' && c2 == 'N');
+        (c1 == 'i' && c2 == 'p') ||
+        (c1 == 's' && c2 == 'p') ||
+        (c1 == 'f' && c2 == 'l') ||
+        (c1 == 'i' && c2 == 'n');
   }
 
   private register() {
@@ -356,16 +356,16 @@ class Tokenizer {
       } else {
         this.addToken(TokenType.REGISTER, Registers.R1);
       }
-    } else if (c1 == 'I' && c2 == 'P') {
+    } else if (c1 == 'i' && c2 == 'p') {
       this.advance();
       this.addToken(TokenType.REGISTER, Registers.RIP);
-    } else if (c1 == 'S' && c2 == 'P') {
+    } else if (c1 == 's' && c2 == 'p') {
       this.advance();
       this.addToken(TokenType.REGISTER, Registers.RSP);
-    } else if (c1 == 'F' && c2 == 'L') {
+    } else if (c1 == 'f' && c2 == 'l') {
       this.advance();
       this.addToken(TokenType.REGISTER, Registers.RFL);
-    } else if (c1 == 'I' && c2 == 'N') {
+    } else if (c1 == 'i' && c2 == 'n') {
       this.advance();
       this.addToken(TokenType.REGISTER, Registers.RIN);
     }

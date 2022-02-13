@@ -9,11 +9,11 @@ export const CompareTests: TestSpec = (t: TestRunner) => {
     sys.reset();
   });
 
-  t.test('CMP compares equals', () => {
+  t.test('cmp compares equals', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0xFFFF
-        CMP R0, 0xFFFF
-        END
+        mov r0, 0xFFFF
+        cmp r0, 0xFFFF
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
     
@@ -21,11 +21,11 @@ export const CompareTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.NEGATIVE & 1) == 0, 'Negative flag not set');
   });
 
-  t.test('CMP compares higher value', () => {
+  t.test('cmp compares higher value', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0x1234
-        CMP R0, 0xFFFF
-        END
+        mov r0, 0x1234
+        cmp r0, 0xFFFF
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -33,23 +33,23 @@ export const CompareTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.NEGATIVE & 1) == 1, 'Negative flag set');
   });
 
-  t.test('CMP compares lower value', () => {
+  t.test('cmp compares lower value', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0xFFFF
-        CMP R0, 0x1234
-        END
+        mov r0, 0xFFFF
+        cmp r0, 0x1234
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.RFL) == 0, 'Flags not set');
   });
 
-  t.test('CMP compares equals', () => {
+  t.test('cmp compares equals', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0xFFFF
-        MOV R1, 0xFFFF
-        CMP R0, R1
-        END
+        mov r0, 0xFFFF
+        mov r1, 0xFFFF
+        cmp r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
     
@@ -57,12 +57,12 @@ export const CompareTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.NEGATIVE & 1) == 0, 'Negative flag not set');
   });
 
-  t.test('CMP compares higher value', () => {
+  t.test('cmp compares higher value', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0x1234
-        MOV R1, 0xFFFF
-        CMP R0, R1
-        END
+        mov r0, 0x1234
+        mov r1, 0xFFFF
+        cmp r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -70,12 +70,12 @@ export const CompareTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.NEGATIVE & 1) == 1, 'Negative flag set');
   });
 
-  t.test('CMP compares lower value', () => {
+  t.test('cmp compares lower value', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0xFFFF
-        MOV R1, 0x1234
-        CMP R0, R1
-        END
+        mov r0, 0xFFFF
+        mov r1, 0x1234
+        cmp r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 

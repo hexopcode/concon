@@ -21,42 +21,42 @@ screen.attach(document.body);
 
 const sys = new System();
 sys.loadProgram(assemble(`
-    MOV R0, 0
-    MOV R10, 0b1110010011100100
+    mov r0, 0
+    mov r10, 0b1110010011100100
 
   loop:
-    CMP R0, 0x1000
-    JZ render
-    MOV R1, 0x1000
-    ADD R1, R0
+    cmp r0, 0x1000
+    jz render
+    mov r1, 0x1000
+    add r1, r0
 
-    MOV R11, R10
-    SHR R11, 1
-    MOV R12, R10
-    AND R12, 1
-    SHL R12, 15
-    OR R12, R11
-    MOV R10, R12
+    mov r11, r10
+    shr r11, 1
+    mov r12, r10
+    and r12, 1
+    shl r12, 15
+    or r12, r11
+    mov r10, r12
 
-    STO R1, R10
-    INC R0
-    JMP loop
+    sto r1, r10
+    inc r0
+    jmp loop
 
   render:
-    VSYNC
-    MOV R0, 0
+    vsync
+    mov r0, 0
 
-    MOV R11, R10
-    SHR R11, 1
-    MOV R12, R10
-    AND R12, 1
-    SHL R12, 15
-    OR R12, R11
-    MOV R10, R12
+    mov r11, r10
+    shr r11, 1
+    mov r12, r10
+    and r12, 1
+    shl r12, 15
+    or r12, r11
+    mov r10, r12
 
-    // JMP loop
+    // jmp loop
 
-    END
+    end
 `));
 
 if (sys.boot() == Result.VSYNC) {

@@ -9,13 +9,13 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
     sys.reset();
   });
 
-  t.test('MOV instruction sets general registers', () => {
+  t.test('mov instruction sets general registers', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 1234
-        MOV R1, 0b1111
-        MOV R2, 0o777
-        MOV R3, 0x1234
-        END
+        mov r0, 1234
+        mov r1, 0b1111
+        mov r2, 0o777
+        mov r3, 0x1234
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -27,13 +27,13 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
 
   t.test('registers R10..R15 parsed correctly', () => {
     const result = assembleAndBoot(sys, `
-        MOV R10, 10
-        MOV R11, 11
-        MOV R12, 12
-        MOV R13, 13
-        MOV R14, 14
-        MOV R15, 15
-        END
+        mov r10, 10
+        mov r11, 11
+        mov r12, 12
+        mov r13, 13
+        mov r14, 14
+        mov r15, 15
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -45,22 +45,22 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
     t.assert(sys.debug(Registers.R15) == 15, 'R15 set');
   });
 
-  t.test('MOV instruction sets register RSP', () => {
+  t.test('mov instruction sets register RSP', () => {
     const result = assembleAndBoot(sys, `
-        MOV RSP, 1234
-        END
+        mov rsp, 1234
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
-    t.assert(sys.debug(Registers.RSP) == 1234, 'RSP set');
+    t.assert(sys.debug(Registers.RSP) == 1234, 'rsp set');
   });
 
-  t.test('MOV sets register value from another register', () => {
+  t.test('mov sets register value from another register', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 1234
-        MOV R1, R0
-        MOV R0, 4567
-        END
+        mov r0, 1234
+        mov r1, r0
+        mov r0, 4567
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -68,10 +68,10 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
     t.assert(sys.debug(Registers.R1) == 1234, 'R1 set');
   });
 
-  t.test('STO sets memory with immediate', () => {
+  t.test('sto sets memory with immediate', () => {
     const result = assembleAndBoot(sys, `
-        STO 0x3000, 0x1234
-        END
+        sto 0x3000, 0x1234
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -79,10 +79,10 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
     t.assert(sys.debugMem(0x3001, 1)[0] == 0x34, 'Mem is set');
   });
 
-  t.test('STOB sets memory with immediate', () => {
+  t.test('stob sets memory with immediate', () => {
     const result = assembleAndBoot(sys, `
-        STOB 0x3000, 0x1234
-        END
+        stob 0x3000, 0x1234
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -90,11 +90,11 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
     t.assert(sys.debugMem(0x3001, 1)[0] == 0x00, 'Mem is set');
   });
 
-  t.test('STO sets memory at register with immediate', () => {
+  t.test('sto sets memory at register with immediate', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0x3000
-        STO R0, 0x1234
-        END
+        mov r0, 0x3000
+        sto r0, 0x1234
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -102,11 +102,11 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
     t.assert(sys.debugMem(0x3001, 1)[0] == 0x34, 'Mem is set');
   });
 
-  t.test('STOB sets memory at register with immediate', () => {
+  t.test('stob sets memory at register with immediate', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0x3000
-        STOB R0, 0x1234
-        END
+        mov r0, 0x3000
+        stob r0, 0x1234
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -114,11 +114,11 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
     t.assert(sys.debugMem(0x3001, 1)[0] == 0x00, 'Mem is set');
   });
 
-  t.test('STO sets memory memory with register value', () => {
+  t.test('sto sets memory memory with register value', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0x1234
-        STO 0x3000, R0
-        END
+        mov r0, 0x1234
+        sto 0x3000, r0
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -126,11 +126,11 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
     t.assert(sys.debugMem(0x3001, 1)[0] == 0x34, 'Mem is set');
   });
 
-  t.test('STOB sets memory memory with register value', () => {
+  t.test('stob sets memory memory with register value', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0x1234
-        STOB 0x3000, R0
-        END
+        mov r0, 0x1234
+        stob 0x3000, r0
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -138,12 +138,12 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
     t.assert(sys.debugMem(0x3001, 1)[0] == 0x00, 'Mem is set');
   });
 
-  t.test('STO sets memory at register with register value', () => {
+  t.test('sto sets memory at register with register value', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0x3000
-        MOV R1, 0x1234
-        STO R0, R1
-        END
+        mov r0, 0x3000
+        mov r1, 0x1234
+        sto r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -151,12 +151,12 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
     t.assert(sys.debugMem(0x3001, 1)[0] == 0x34, 'Mem is set');
   });
 
-  t.test('STOB sets memory at register with register value', () => {
+  t.test('stob sets memory at register with register value', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0x3000
-        MOV R1, 0x1234
-        STOB R0, R1
-        END
+        mov r0, 0x3000
+        mov r1, 0x1234
+        stob r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -164,48 +164,48 @@ export const MemoryTests: TestSpec = (t: TestRunner) => {
     t.assert(sys.debugMem(0x3001, 1)[0] == 0x00, 'Mem is set');
   });
 
-  t.test('LOD reads memory at address into register', () => {
+  t.test('lod reads memory at address into register', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0x1234
-        STO 0x3000, R0
-        LOD R1, 0x3000
-        END
+        mov r0, 0x1234
+        sto 0x3000, r0
+        lod r1, 0x3000
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R1) == 0x1234, 'Register is set');
   });
 
-  t.test('LODB reads memory at address into register', () => {
+  t.test('lodb reads memory at address into register', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0x1234
-        STO 0x3000, R0
-        LODB R1, 0x3000
-        END
+        mov r0, 0x1234
+        sto 0x3000, r0
+        lodb r1, 0x3000
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R1) == 0x12, 'Register is set');
   });
 
-  t.test('LOD reads memory at address from register into register', () => {
+  t.test('lod reads memory at address from register into register', () => {
     const result = assembleAndBoot(sys, `
-        STO 0x3000, 0x1234
-        MOV R0, 0x3000
-        LOD R1, R0
-        END
+        sto 0x3000, 0x1234
+        mov r0, 0x3000
+        lod r1, r0
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
     t.assert(sys.debug(Registers.R1) == 0x1234, 'Register is set');
   });
 
-  t.test('LODB reads memory at address from register into register', () => {
+  t.test('lodb reads memory at address from register into register', () => {
     const result = assembleAndBoot(sys, `
-        STO 0x3000, 0x1234
-        MOV R0, 0x3000
-        LODB R1, R0
-        END
+        sto 0x3000, 0x1234
+        mov r0, 0x3000
+        lodb r1, r0
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 

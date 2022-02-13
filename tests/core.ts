@@ -9,19 +9,19 @@ export const CoreTests: TestSpec = (t: TestRunner) => {
     sys.reset();
   });
 
-  t.test('END ends', () => {
-    t.assert(assembleAndBoot(sys, `END`) == Result.END, 'Ended');
+  t.test('end ends', () => {
+    t.assert(assembleAndBoot(sys, `end`) == Result.END, 'Ended');
   });
 
-  t.test('missing END ends with SEGFAULT', () => {
+  t.test('missing end ends with SEGFAULT', () => {
     t.assert(assembleAndBoot(sys, ``) == Result.SEGFAULT, 'Seg fault');
   });
 
-  t.test('VSYNC vsyncs', () => {
-    t.assert(assembleAndBoot(sys, `VSYNC`) == Result.VSYNC, 'Vsynced');
+  t.test('vsync vsyncs', () => {
+    t.assert(assembleAndBoot(sys, `vsync`) == Result.VSYNC, 'Vsynced');
   });
 
-  t.test('BRK breaks', () => {
-    t.assert(assembleAndBoot(sys, `BRK`) == Result.BRK, 'Break');
+  t.test('brk breaks', () => {
+    t.assert(assembleAndBoot(sys, `brk`) == Result.BRK, 'Break');
   });
 }

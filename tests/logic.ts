@@ -9,22 +9,22 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
     sys.reset();
   });
 
-  t.test('SHL shifts', () => {
+  t.test('shl shifts', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 1
-        SHL R0, 3
-        END
+        mov r0, 1
+        shl r0, 3
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
     
     t.assert(sys.debug(Registers.R0) == 8, 'Register R0 contains result');
   });
 
-  t.test('SHL sets overflow flag', () => {
+  t.test('shl sets overflow flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0xFFFF
-        SHL R0, 1
-        END
+        mov r0, 0xFFFF
+        shl r0, 1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -32,24 +32,24 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.OVERFLOW & 1) == 1, 'Overflow flag set');
   });
 
-  t.test('SHL shifts', () => {
+  t.test('shl shifts', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 1
-        MOV R1, 3
-        SHL R0, R1
-        END
+        mov r0, 1
+        mov r1, 3
+        shl r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
     
     t.assert(sys.debug(Registers.R0) == 8, 'Register R0 contains result');
   });
 
-  t.test('SHL sets overflow flag', () => {
+  t.test('shl sets overflow flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0xFFFF
-        MOV R1, 1
-        SHL R0, R1
-        END
+        mov r0, 0xFFFF
+        mov r1, 1
+        shl r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -57,22 +57,22 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.OVERFLOW & 1) == 1, 'Overflow flag set');
   });
 
-  t.test('SHR shifts', () => {
+  t.test('shr shifts', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 8
-        SHR R0, 3
-        END
+        mov r0, 8
+        shr r0, 3
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
     
     t.assert(sys.debug(Registers.R0) == 1, 'Register R0 contains result');
   });
 
-  t.test('SHR sets zero flag', () => {
+  t.test('shr sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 1
-        SHR R0, 2
-        END
+        mov r0, 1
+        shr r0, 2
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -80,24 +80,24 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
-  t.test('SHR shifts', () => {
+  t.test('shr shifts', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 8
-        MOV R1, 3
-        SHR R0, R1
-        END
+        mov r0, 8
+        mov r1, 3
+        shr r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
     
     t.assert(sys.debug(Registers.R0) == 1, 'Register R0 contains result');
   });
 
-  t.test('SHR sets zero flag', () => {
+  t.test('shr sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 1
-        MOV R1, 2
-        SHR R0, R1
-        END
+        mov r0, 1
+        mov r1, 2
+        shr r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -105,22 +105,22 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
-  t.test('OR ors', () => {
+  t.test('or ors', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 8
-        OR R0, 3
-        END
+        mov r0, 8
+        or r0, 3
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
     
     t.assert(sys.debug(Registers.R0) == 11, 'Register R0 contains result');
   });
 
-  t.test('OR sets zero flag', () => {
+  t.test('or sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0
-        OR R0, 0
-        END
+        mov r0, 0
+        or r0, 0
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -128,24 +128,24 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
-  t.test('OR ors', () => {
+  t.test('or ors', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 8
-        MOV R1, 3
-        OR R0, R1
-        END
+        mov r0, 8
+        mov r1, 3
+        or r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
     
     t.assert(sys.debug(Registers.R0) == 11, 'Register R0 contains result');
   });
 
-  t.test('OR sets zero flag', () => {
+  t.test('or sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0
-        MOV R1, 0
-        OR R0, R1
-        END
+        mov r0, 0
+        mov r1, 0
+        or r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -153,22 +153,22 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
-  t.test('AND ands', () => {
+  t.test('and ands', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 8
-        AND R0, 9
-        END
+        mov r0, 8
+        and r0, 9
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
     
     t.assert(sys.debug(Registers.R0) == 8, 'Register R0 contains result');
   });
 
-  t.test('AND sets zero flag', () => {
+  t.test('and sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 8
-        AND R0, 0
-        END
+        mov r0, 8
+        and r0, 0
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -176,24 +176,24 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
-  t.test('AND ands', () => {
+  t.test('and ands', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 8
-        MOV R1, 9
-        AND R0, R1
-        END
+        mov r0, 8
+        mov r1, 9
+        and r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
     
     t.assert(sys.debug(Registers.R0) == 8, 'Register R0 contains result');
   });
 
-  t.test('AND sets zero flag', () => {
+  t.test('and sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 8
-        MOV R1, 0
-        AND R0, R1
-        END
+        mov r0, 8
+        mov r1, 0
+        and r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -201,22 +201,22 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
-  t.test('XOR xors', () => {
+  t.test('xor xors', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0b101
-        XOR R0, 0b110
-        END
+        mov r0, 0b101
+        xor r0, 0b110
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
     
     t.assert(sys.debug(Registers.R0) == 0b011, 'Register R0 contains result');
   });
 
-  t.test('XOR sets zero flag', () => {
+  t.test('xor sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 8
-        XOR R0, 8
-        END
+        mov r0, 8
+        xor r0, 8
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -224,24 +224,24 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
-  t.test('XOR ands', () => {
+  t.test('xor ands', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0b101
-        MOV R1, 0b110
-        XOR R0, R1
-        END
+        mov r0, 0b101
+        mov r1, 0b110
+        xor r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
     
     t.assert(sys.debug(Registers.R0) == 0b011, 'Register R0 contains result');
   });
 
-  t.test('XOR sets zero flag', () => {
+  t.test('xor sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 8
-        MOV R1, 8
-        XOR R0, R1
-        END
+        mov r0, 8
+        mov r1, 8
+        xor r0, r1
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
@@ -249,22 +249,22 @@ export const LogicTests: TestSpec = (t: TestRunner) => {
     t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
   });
 
-  t.test('NOT nots', () => {
+  t.test('not nots', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0xFF00
-        NOT R0
-        END
+        mov r0, 0xFF00
+        not r0
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
     
     t.assert(sys.debug(Registers.R0) == 0x00FF, 'Register R0 contains result');
   });
 
-  t.test('NOT sets zero flag', () => {
+  t.test('not sets zero flag', () => {
     const result = assembleAndBoot(sys, `
-        MOV R0, 0xFFFF
-        NOT R0
-        END
+        mov r0, 0xFFFF
+        not r0
+        end
     `);
     t.assert(result == Result.END, 'Program runs');
 
