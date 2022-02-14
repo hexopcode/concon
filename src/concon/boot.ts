@@ -64,7 +64,7 @@ if (sys.boot() == Result.VSYNC) {
 }
 
 function cycle() {
-  screen.render(sys.memoryArea(MemoryArea.SCREEN));
+  screen.render(sys.memoryArea(MemoryArea.FRAMEBUFFER));
 
   const result = sys.cycle();
   if (result == Result.VSYNC) {

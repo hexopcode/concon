@@ -36,23 +36,23 @@ export class ConconScreen {
     root.appendChild(this.dom);
   }
 
-  render(screen: Uint8Array) {
+  render(framebuffer: Uint8Array) {
     // FIXME: This should really be a pixel shader.
     // For now, let's keep it simple and just use the CPU,
     const imageData = this.ctx.getImageData(0, 0, PIXELS, PIXELS);
     const buffer: Uint8ClampedArray = imageData.data;
 
-    for (let i = 0; i < screen.length; ++i) {
-      const byte = screen[i];
+    for (let i = 0; i < framebuffer.length; ++i) {
+      const byte = framebuffer[i];
 
       const p1 = (byte & 0b11000000) >> 6;
       const p2 = (byte & 0b00110000) >> 4;
       const p3 = (byte & 0b00001100) >> 2;
       const p4 = (byte & 0b00000011);
       
-      const screenBufferPixelOffset = i << 2;  // 4 pixels per byte
-      const xx = screenBufferPixelOffset % SIZE;
-      const yy = screenBufferPixelOffset / SIZE | 0;
+      const framebufferBufferPixelOffset = i << 2;  // 4 pixels per byte
+      const xx = framebufferBufferPixelOffset % SIZE;
+      const yy = framebufferBufferPixelOffset / SIZE | 0;
 
       const bufferOffset = (yy * SIZE * SCALE * SCALE + xx * SCALE) * 4; // 4 bytes per pixel (rgba)
 

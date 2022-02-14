@@ -7,8 +7,8 @@ import {
   MEMORY_OS_OFFSET,
   MEMORY_PROGRAM_OFFSET,
   MEMORY_PROGRAM_SIZE,
-  MEMORY_SCREEN_OFFSET,
-  MEMORY_SCREEN_SIZE,
+  MEMORY_FRAMEBUFFER_OFFSET,
+  MEMORY_FRAMEBUFFER_SIZE,
   MEMORY_SIZE,
   REGISTER_COUNT,
   Flags,
@@ -35,7 +35,7 @@ export class System {
     this.memory = new Uint8Array(this.buffer);
     this.memoryAreas = new Map([
       [MemoryArea.OS, new Uint8Array(this.buffer, MEMORY_OS_OFFSET, MEMORY_OS_SIZE)],
-      [MemoryArea.SCREEN, new Uint8Array(this.buffer, MEMORY_SCREEN_OFFSET, MEMORY_SCREEN_SIZE)],
+      [MemoryArea.FRAMEBUFFER, new Uint8Array(this.buffer, MEMORY_FRAMEBUFFER_OFFSET, MEMORY_FRAMEBUFFER_SIZE)],
       [MemoryArea.PROGRAM, new Uint8Array(this.buffer, MEMORY_PROGRAM_OFFSET, MEMORY_PROGRAM_SIZE)],
     ]);
     this.registers = new Uint16Array(REGISTER_COUNT);
