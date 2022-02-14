@@ -11,6 +11,7 @@ import {
   VERSION_0_1,
   VERSION_OFFSET,
 } from '../../core';
+import { AstImmExpr } from '../parser';
 import {Program} from './program';
 import {word} from './utilities';
 
@@ -38,7 +39,7 @@ class Linker {
   }
 
   link(): Uint8Array {
-    this.patchAddresses();
+    this.resolveCodeExprs();
 
     if (!this.options.header) {
       // FIXME: the assembler should guarantee that the code
@@ -54,35 +55,34 @@ class Linker {
     return bytes;
   }
 
-  private patchAddresses() {
-    for (const [lbl, addr] of this.program.addressRefs.entries()) {
-      if (addr.address == undefined) {
-        throw new Error(`Cannot resolve label '${lbl}'`);
-      }
-
-      const headerLength = this.options.header ? HEADER_LENGTH : 0;
-      const absolute = MEMORY_PROGRAM_OFFSET + headerLength + addr.address;
-      const hi = absolute >> 8;
-      const lo = absolute & 0xFF;
-
-      for (const ref of addr.references) {
-        this.program.code.set([hi, lo], ref);
-      }
+  private resolveCodeExprs() {
+    for (const [offset, expr] of this.program.codeExprs.entries()) {
+      this.program.code.set(word(this.resolveExpr(expr)), offset);
     }
+  }
+
+  private resolveExpr(expr: AstImmExpr): number {
+    if (typeof expr.value == 'number') {
+      return expr.value;
+    }
+
+    if (!this.program.labels.has(expr.value)) {
+      throw new Error(`Cannot resolve label '${expr.value}'`);
+    }
+
+    const offset = this.program.labels.get(expr.value)!;
+    const headerLength = this.options.header ? HEADER_LENGTH : 0;
+    const absolute = MEMORY_PROGRAM_OFFSET + headerLength + offset;
+    return absolute;
   }
 
   private header(): Uint8Array {
     const bytes = new Uint8Array(HEADER_LENGTH);
     bytes.set(MAGIC_SIGNATURE, MAGIC_OFFSET);
     bytes.set(this.options.version, VERSION_OFFSET);
-    bytes.set(word(this.program.stackAddress), STACK_ADDRESS_OFFSET);
-    bytes.set(word(this.program.startAddress), START_ADDRESS_OFFSET);
+    bytes.set(word(this.program.startAddr + this.program.code.length), STACK_ADDRESS_OFFSET);
+    bytes.set(word(this.program.startAddr), START_ADDRESS_OFFSET);
     bytes.set(word(this.program.code.length), CODE_SIZE_OFFSET);
     return bytes;
-  }
-
-  // FIXME: factor out as codegen utility
-  private static word(n: number): Uint8Array {
-    return new Uint8Array([n >> 8 & 0xFF, n & 0xFF]);
   }
 }

@@ -1,11 +1,8 @@
-export type AddressRef = {
-  address?: number,
-  references: number[],
-};
+import {AstImmExpr} from '../parser';
 
 export type Program = {
-  stackAddress: number,
-  startAddress: number,
-  addressRefs: Map<string, AddressRef>,
+  startAddr: number,
+  labels: Map<string, number>;
+  codeExprs: Map<number, AstImmExpr>;
   code: Uint8Array,
 };
