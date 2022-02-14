@@ -9,7 +9,7 @@ export const ArithmeticTests: TestSpec = (t: TestRunner) => {
     sys.reset();
   });
 
-  t.test('add does addtion', () => {
+  t.test('add does addition', () => {
     const result = assembleAndBoot(sys, `
         mov r0, 1200
         add r0, 34
