@@ -18,11 +18,11 @@ export type AstRegExpr = AstNode<'AstRegExpr'> & {
 
 export type AstImmOrRegExpr = AstImmExpr|AstRegExpr;
 
-type AstOneOpInstr<Type extends string, OpType extends AstImmOrRegExpr> = AstNode<Type> & {
+type AstOneOpStmt<Type extends string, OpType extends AstImmOrRegExpr> = AstNode<Type> & {
   op: OpType,
 };
 
-type AstTwoOpInstr<Type extends string,
+type AstTwoOpStmt<Type extends string,
                    Op1Type extends AstImmOrRegExpr,
                    Op2Type extends AstImmOrRegExpr> = AstNode<Type> & {
   op1: Op1Type,
@@ -34,38 +34,38 @@ export type EndInstr = AstNode<'EndInstr'>;
 export type VsyncInstr = AstNode<'VsyncInstr'>;
 export type BrkInstr = AstNode<'BrkInstr'>;
 
-export type MovInstr = AstTwoOpInstr<'MovInstr', AstRegExpr, AstImmOrRegExpr>;
-export type StoInstr = AstTwoOpInstr<'StoInstr', AstImmOrRegExpr, AstImmOrRegExpr>;
-export type StobInstr = AstTwoOpInstr<'StobInstr', AstImmOrRegExpr, AstImmOrRegExpr>;
-export type LodInstr = AstTwoOpInstr<'LodInstr', AstRegExpr, AstImmOrRegExpr>;
-export type LodbInstr = AstTwoOpInstr<'LodbInstr', AstRegExpr, AstImmOrRegExpr>;
+export type MovInstr = AstTwoOpStmt<'MovInstr', AstRegExpr, AstImmOrRegExpr>;
+export type StoInstr = AstTwoOpStmt<'StoInstr', AstImmOrRegExpr, AstImmOrRegExpr>;
+export type StobInstr = AstTwoOpStmt<'StobInstr', AstImmOrRegExpr, AstImmOrRegExpr>;
+export type LodInstr = AstTwoOpStmt<'LodInstr', AstRegExpr, AstImmOrRegExpr>;
+export type LodbInstr = AstTwoOpStmt<'LodbInstr', AstRegExpr, AstImmOrRegExpr>;
 
-export type AddInstr = AstTwoOpInstr<'AddInstr', AstRegExpr, AstImmOrRegExpr>;
-export type SubInstr = AstTwoOpInstr<'SubInstr', AstRegExpr, AstImmOrRegExpr>;
-export type MulInstr = AstTwoOpInstr<'MulInstr', AstRegExpr, AstImmOrRegExpr>;
-export type DivInstr = AstTwoOpInstr<'DivInstr', AstRegExpr, AstImmOrRegExpr>;
-export type ModInstr = AstTwoOpInstr<'ModInstr', AstRegExpr, AstImmOrRegExpr>;
-export type IncInstr = AstOneOpInstr<'IncInstr', AstRegExpr>;
-export type DecInstr = AstOneOpInstr<'DecInstr', AstRegExpr>;
+export type AddInstr = AstTwoOpStmt<'AddInstr', AstRegExpr, AstImmOrRegExpr>;
+export type SubInstr = AstTwoOpStmt<'SubInstr', AstRegExpr, AstImmOrRegExpr>;
+export type MulInstr = AstTwoOpStmt<'MulInstr', AstRegExpr, AstImmOrRegExpr>;
+export type DivInstr = AstTwoOpStmt<'DivInstr', AstRegExpr, AstImmOrRegExpr>;
+export type ModInstr = AstTwoOpStmt<'ModInstr', AstRegExpr, AstImmOrRegExpr>;
+export type IncInstr = AstOneOpStmt<'IncInstr', AstRegExpr>;
+export type DecInstr = AstOneOpStmt<'DecInstr', AstRegExpr>;
 
-export type ShlInstr = AstTwoOpInstr<'ShlInstr', AstRegExpr, AstImmOrRegExpr>;
-export type ShrInstr = AstTwoOpInstr<'ShrInstr', AstRegExpr, AstImmOrRegExpr>;
-export type OrInstr = AstTwoOpInstr<'OrInstr', AstRegExpr, AstImmOrRegExpr>;
-export type AndInstr = AstTwoOpInstr<'AndInstr', AstRegExpr, AstImmOrRegExpr>;
-export type XorInstr = AstTwoOpInstr<'XorInstr', AstRegExpr, AstImmOrRegExpr>;
-export type NotInstr = AstOneOpInstr<'NotInstr', AstRegExpr>;
+export type ShlInstr = AstTwoOpStmt<'ShlInstr', AstRegExpr, AstImmOrRegExpr>;
+export type ShrInstr = AstTwoOpStmt<'ShrInstr', AstRegExpr, AstImmOrRegExpr>;
+export type OrInstr = AstTwoOpStmt<'OrInstr', AstRegExpr, AstImmOrRegExpr>;
+export type AndInstr = AstTwoOpStmt<'AndInstr', AstRegExpr, AstImmOrRegExpr>;
+export type XorInstr = AstTwoOpStmt<'XorInstr', AstRegExpr, AstImmOrRegExpr>;
+export type NotInstr = AstOneOpStmt<'NotInstr', AstRegExpr>;
 
-export type CmpInstr = AstTwoOpInstr<'CmpInstr', AstRegExpr, AstImmOrRegExpr>;
+export type CmpInstr = AstTwoOpStmt<'CmpInstr', AstRegExpr, AstImmOrRegExpr>;
 
-export type JmpInstr = AstOneOpInstr<'JmpInstr', AstImmOrRegExpr>;
-export type JzInstr = AstOneOpInstr<'JzInstr', AstImmOrRegExpr>;
-export type JnzInstr = AstOneOpInstr<'JnzInstr', AstImmOrRegExpr>;
-export type JgInstr = AstOneOpInstr<'JgInstr', AstImmOrRegExpr>;
-export type JgzInstr = AstOneOpInstr<'JgzInstr', AstImmOrRegExpr>;
-export type JlInstr = AstOneOpInstr<'JlInstr', AstImmOrRegExpr>;
-export type JlzInstr = AstOneOpInstr<'JlzInstr', AstImmOrRegExpr>;
-export type JoInstr = AstOneOpInstr<'JoInstr', AstImmOrRegExpr>;
-export type JdzInstr = AstOneOpInstr<'JdzInstr', AstImmOrRegExpr>;
+export type JmpInstr = AstOneOpStmt<'JmpInstr', AstImmOrRegExpr>;
+export type JzInstr = AstOneOpStmt<'JzInstr', AstImmOrRegExpr>;
+export type JnzInstr = AstOneOpStmt<'JnzInstr', AstImmOrRegExpr>;
+export type JgInstr = AstOneOpStmt<'JgInstr', AstImmOrRegExpr>;
+export type JgzInstr = AstOneOpStmt<'JgzInstr', AstImmOrRegExpr>;
+export type JlInstr = AstOneOpStmt<'JlInstr', AstImmOrRegExpr>;
+export type JlzInstr = AstOneOpStmt<'JlzInstr', AstImmOrRegExpr>;
+export type JoInstr = AstOneOpStmt<'JoInstr', AstImmOrRegExpr>;
+export type JdzInstr = AstOneOpStmt<'JdzInstr', AstImmOrRegExpr>;
 
 export type CoreInstr = NopInstr |
     EndInstr |
