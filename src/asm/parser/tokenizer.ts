@@ -2,14 +2,18 @@ import {Registers} from '../../core';
 import {AsmErrorCollector} from '../base';
 
 export enum TokenType {
+  // punctuation
   COMMA,
   COLON,
 
+  // misc
   IDENTIFIER,
+  // native
   REGISTER,
   STRING,
   NUMBER,
 
+  // instructions
   NOP,
   END,
   VSYNC,

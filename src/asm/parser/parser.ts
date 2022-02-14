@@ -4,7 +4,6 @@ import {
   AstRegExpr,
   AstImmExpr,
   AstImmOrRegExpr,
-  Address,
   Stmt,
   MovInstr,
   LodInstr,
