@@ -10,75 +10,69 @@ export const CompareTests: TestSpec = (t: TestRunner) => {
   });
 
   t.test('cmp compares equals', () => {
-    const result = assembleAndBoot(sys, `
+    t.assertThat(assembleAndBoot(sys, `
         mov r0, 0xFFFF
         cmp r0, 0xFFFF
         end
-    `);
-    t.assert(result == Result.END, 'Program runs');
+    `)).is(Result.END);
     
-    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
-    t.assert((sys.debug(Registers.RFL) >> Flags.NEGATIVE & 1) == 0, 'Negative flag not set');
+    t.assertThat((sys.debug(Registers.RFL) >> Flags.ZERO & 1)).is(1);
+    t.assertThat((sys.debug(Registers.RFL) >> Flags.NEGATIVE & 1)).is(0);
   });
 
   t.test('cmp compares higher value', () => {
-    const result = assembleAndBoot(sys, `
+    t.assertThat(assembleAndBoot(sys, `
         mov r0, 0x1234
         cmp r0, 0xFFFF
         end
-    `);
-    t.assert(result == Result.END, 'Program runs');
+    `)).is(Result.END);
 
-    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 0, 'Zero flag not set');
-    t.assert((sys.debug(Registers.RFL) >> Flags.NEGATIVE & 1) == 1, 'Negative flag set');
+    t.assertThat((sys.debug(Registers.RFL) >> Flags.ZERO & 1)).is(0);
+    t.assertThat((sys.debug(Registers.RFL) >> Flags.NEGATIVE & 1)).is(1);
   });
 
   t.test('cmp compares lower value', () => {
-    const result = assembleAndBoot(sys, `
+    t.assertThat(assembleAndBoot(sys, `
         mov r0, 0xFFFF
         cmp r0, 0x1234
         end
-    `);
-    t.assert(result == Result.END, 'Program runs');
+    `)).is(Result.END);
 
-    t.assert(sys.debug(Registers.RFL) == 0, 'Flags not set');
+    t.assertThat(sys.debug(Registers.RFL)).is(0);
   });
 
   t.test('cmp compares equals', () => {
-    const result = assembleAndBoot(sys, `
+    t.assertThat(assembleAndBoot(sys, `
         mov r0, 0xFFFF
         mov r1, 0xFFFF
         cmp r0, r1
         end
-    `);
-    t.assert(result == Result.END, 'Program runs');
+    `)).is(Result.END);
     
-    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 1, 'Zero flag set');
-    t.assert((sys.debug(Registers.RFL) >> Flags.NEGATIVE & 1) == 0, 'Negative flag not set');
+    t.assertThat((sys.debug(Registers.RFL) >> Flags.ZERO & 1)).is(1);
+    t.assertThat((sys.debug(Registers.RFL) >> Flags.NEGATIVE & 1)).is(0);
   });
 
   t.test('cmp compares higher value', () => {
-    const result = assembleAndBoot(sys, `
+    t.assertThat(assembleAndBoot(sys, `
         mov r0, 0x1234
         mov r1, 0xFFFF
         cmp r0, r1
         end
-    `);
-    t.assert(result == Result.END, 'Program runs');
+    `)).is(Result.END);
 
-    t.assert((sys.debug(Registers.RFL) >> Flags.ZERO & 1) == 0, 'Zero flag not set');
-    t.assert((sys.debug(Registers.RFL) >> Flags.NEGATIVE & 1) == 1, 'Negative flag set');
+    t.assertThat((sys.debug(Registers.RFL) >> Flags.ZERO & 1)).is(0);
+    t.assertThat((sys.debug(Registers.RFL) >> Flags.NEGATIVE & 1)).is(1);
   });
 
   t.test('cmp compares lower value', () => {
-    const result = assembleAndBoot(sys, `
+    t.assertThat(assembleAndBoot(sys, `
         mov r0, 0xFFFF
         mov r1, 0x1234
         cmp r0, r1
         end
-    `);
-    t.assert(result == Result.END, 'Program runs');
+    `)).is(Result.END);
 
-    t.assert(sys.debug(Registers.RFL) == 0, 'Flags not set');
+    t.assertThat(sys.debug(Registers.RFL)).is(0);
   });
 };

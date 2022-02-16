@@ -10,18 +10,18 @@ export const CoreTests: TestSpec = (t: TestRunner) => {
   });
 
   t.test('end ends', () => {
-    t.assert(assembleAndBoot(sys, `end`) == Result.END, 'Ended');
+    t.assertThat(assembleAndBoot(sys, `end`)).is(Result.END);
   });
 
   t.test('missing end ends with SEGFAULT', () => {
-    t.assert(assembleAndBoot(sys, ``) == Result.SEGFAULT, 'Seg fault');
+    t.assertThat(assembleAndBoot(sys, ``)).is(Result.SEGFAULT);
   });
 
   t.test('vsync vsyncs', () => {
-    t.assert(assembleAndBoot(sys, `vsync`) == Result.VSYNC, 'Vsynced');
+    t.assertThat(assembleAndBoot(sys, `vsync`)).is(Result.VSYNC);
   });
 
   t.test('brk breaks', () => {
-    t.assert(assembleAndBoot(sys, `brk`) == Result.BRK, 'Break');
+    t.assertThat(assembleAndBoot(sys, `brk`)).is(Result.BRK);
   });
 }

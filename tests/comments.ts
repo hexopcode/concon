@@ -10,37 +10,34 @@ export const CommentsTests: TestSpec = (t: TestRunner) => {
   });
 
   t.test('Single line comment comments', () => {
-    const result = assembleAndBoot(sys, `
+    t.assertThat(assembleAndBoot(sys, `
       mov r0, 0x1234
       // mov r0, 0xFFFF
       end
-    `);
-    t.assert(result == Result.END, 'Program runs');
+    `)).is(Result.END);
     
-    t.assert(sys.debug(Registers.R0) == 0x1234, 'Register R0 has value');
+    t.assertThat(sys.debug(Registers.R0)).is(0x1234);
   });
 
   t.test('Multi-line comment comments', () => {
-    const result = assembleAndBoot(sys, `
+    t.assertThat(assembleAndBoot(sys, `
       mov r0, 0x1234
       /* mov r0, 0xFFFF */
       end
-    `);
-    t.assert(result == Result.END, 'Program runs');
+    `)).is(Result.END);
     
-    t.assert(sys.debug(Registers.R0) == 0x1234, 'Register R0 has value');
+    t.assertThat(sys.debug(Registers.R0)).is(0x1234);
   });
 
   t.test('Multi-line comment comments multiple lines', () => {
-    const result = assembleAndBoot(sys, `
+    t.assertThat(assembleAndBoot(sys, `
       mov r0, 0x1234
       /* mov r0, 0xFFFF
       mov r0, 0x4444
       */
       end
-    `);
-    t.assert(result == Result.END, 'Program runs');
+    `)).is(Result.END);
     
-    t.assert(sys.debug(Registers.R0) == 0x1234, 'Register R0 has value');
+    t.assertThat(sys.debug(Registers.R0)).is(0x1234);
   });
 };

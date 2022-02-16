@@ -12,14 +12,14 @@ export const ParserErrorTests: TestSpec = (t: TestRunner) => {
   t.test('parser fails with unknown identifier', () => {
     const errors = assembleCheck(`POTATO`);
 
-    t.assert(errors.length == 1, 'Has assembly error');
-    t.assert(errors[0].message == 'Invalid token: POTATO', 'Has error message');
+    t.assertThat(errors.length).is(1);
+    t.assertThat(errors[0].message).is('Invalid token: POTATO');
   });
 
   t.test('parser fails with incorrect operand', () => {
     const errors = assembleCheck(`inc 0x1234`);
 
-    t.assert(errors.length == 1, 'Has assembly error');
-    t.assert(errors[0].message == 'Invalid token: NUMBER. Expected register', 'Has error message');
+    t.assertThat(errors.length).is(1);
+    t.assertThat(errors[0].message).is('Invalid token: NUMBER. Expected register');
   });
 };

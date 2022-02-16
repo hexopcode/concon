@@ -28,6 +28,25 @@ export function runTests(...specs: TestSpec[]): Set<TestResult> {
   return new Set(allResults);
 }
 
+function assertInternal(cond: boolean, message: string) {
+  if (!cond) {
+    console.error(message);
+    throw new Error(message);
+  }
+}
+
+class Expect<T> {
+  private readonly value: T;
+
+  constructor(value: T) {
+    this.value = value;
+  }
+
+  is(expect: T) {
+    assertInternal(this.value == expect, `Expected ${expect} but got ${this.value}`);
+  }
+}
+
 export class TestRunner {
   private testBefore?: () => void;
   private testAfter?: () => void;
@@ -52,10 +71,11 @@ export class TestRunner {
   }
 
   assert(cond: boolean, message: string) {
-    if (!cond) {
-      console.error(message);
-      throw new Error(message);
-    }
+    assertInternal(cond, message);
+  }
+
+  assertThat<T>(value: T): Expect<T> {
+    return new Expect(value);
   }
 
   run(): Set<TestResult> {

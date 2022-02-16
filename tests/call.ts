@@ -10,19 +10,18 @@ export const CallTests: TestSpec = (t: TestRunner) => {
   });
 
   t.test('push pop work', () => {
-    const result = assembleAndBoot(sys, `
+    t.assertThat(assembleAndBoot(sys, `
         mov r0, 0x1234
         push r0
         pop r1
         end
-    `);
-    t.assert(result == Result.END, 'ends');
-    t.assert(sys.debug(Registers.R0) == 0x1234, 'R0 is set');
-    t.assert(sys.debug(Registers.R1) == 0x1234, 'R1 is set');
+    `)).is(Result.END);
+    t.assertThat(sys.debug(Registers.R0)).is(0x1234);
+    t.assertThat(sys.debug(Registers.R1)).is(0x1234);
   });
 
   t.test('pushall popall work', () => {
-    const result = assembleAndBoot(sys, `
+    t.assertThat(assembleAndBoot(sys, `
         mov r0, 0x1234
         mov r1, 0x2345
         mov r2, 0x3456
@@ -42,13 +41,12 @@ export const CallTests: TestSpec = (t: TestRunner) => {
         popall
 
         end
-    `);
-    t.assert(result == Result.END, 'ends');
-    t.assert(sys.debug(Registers.R0) == 0x1234, 'R0 is set');
-    t.assert(sys.debug(Registers.R1) == 0x2345, 'R1 is set');
-    t.assert(sys.debug(Registers.R2) == 0x3456, 'R2 is set');
-    t.assert(sys.debug(Registers.R13) == 0xdddd, 'R0 is set');
-    t.assert(sys.debug(Registers.R14) == 0xeeee, 'R0 is set');
-    t.assert(sys.debug(Registers.R15) == 0xffff, 'R0 is set');
+    `)).is(Result.END);
+    t.assertThat(sys.debug(Registers.R0)).is(0x1234);
+    t.assertThat(sys.debug(Registers.R1)).is(0x2345);
+    t.assertThat(sys.debug(Registers.R2)).is(0x3456);
+    t.assertThat(sys.debug(Registers.R13)).is(0xdddd);
+    t.assertThat(sys.debug(Registers.R14)).is(0xeeee);
+    t.assertThat(sys.debug(Registers.R15)).is(0xffff);
   });
 }
