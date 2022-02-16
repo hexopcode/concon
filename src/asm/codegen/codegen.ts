@@ -336,6 +336,25 @@ class Codegen {
               this.bytes.push(stmt.op.value);
             }
             break;
+          case 'PushInstr':
+            if (stmt.op.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.PUSHI);
+              this.bytes.push(...this.immExpr(stmt.op));
+            } else {
+              this.bytes.push(Opcodes.PUSHR);
+              this.bytes.push(stmt.op.value);
+            }
+            break;
+          case 'PushAllInstr':
+            this.bytes.push(Opcodes.PUSHALLR);
+            break;
+          case 'PopInstr':
+            this.bytes.push(Opcodes.POPR);
+            this.bytes.push(stmt.op.value);
+            break;
+          case 'PopAllInstr':
+            this.bytes.push(Opcodes.POPALLR);
+            break;
           case 'Label':
             this.labelAddress(stmt.label);
             break;

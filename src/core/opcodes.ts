@@ -71,4 +71,11 @@ export enum Opcodes {
   JOR = 0x5F,
   JDZ = 0x60,
   JDZR = 0x61,
+
+  // Call
+  PUSHI = 0x70,
+  PUSHR = 0x71,
+  PUSHALLR = 0x72,
+  POPR = 0x73,
+  POPALLR = 0x74,
 }

@@ -1,3 +1,4 @@
+import {REGISTER_GENERAL_COUNT} from './arch';
 import {assert, SegFaultError, unreachable} from '../lib';
 import {create_os_image} from '../os';
 import {
@@ -272,6 +273,21 @@ export class System {
           break;
         case Opcodes.JDZR:
           this.jdzr();
+          break;
+        case Opcodes.PUSHI:
+          this.pushi();
+          break;
+        case Opcodes.PUSHR:
+          this.pushr();
+          break;
+        case Opcodes.PUSHALLR:
+          this.pushallr();
+          break;
+        case Opcodes.POPR:
+          this.popr();
+          break;
+        case Opcodes.POPALLR:
+          this.popallr();
           break;
         default:
           unreachable(`Unimplemented opcode: ${opcode}`);
@@ -800,6 +816,57 @@ export class System {
 
     if (this.isFlagSet(Flags.DIVBYZERO)) {
       this.registers[Registers.RIP] = addr;
+    }
+  }
+
+  private pushi() {
+    const imm = this.immediate();
+    const addr = this.registers[Registers.RSP];
+    this.checkMemoryBoundary(addr + 1);
+    this.memory[addr] = imm >> 8;
+    this.memory[addr + 1] = imm & 0xFF;
+    this.registers[Registers.RSP] = addr + 2;
+  }
+
+  private pushr() {
+    const reg = this.register();
+    const imm = this.registers[reg];
+    const addr = this.registers[Registers.RSP];
+    this.checkMemoryBoundary(addr + 1);
+    this.memory[addr] = imm >> 8;
+    this.memory[addr + 1] = imm & 0xFF;
+    this.registers[Registers.RSP] = addr + 2;
+  }
+
+  private pushallr() {
+    for (let r = 0; r < REGISTER_GENERAL_COUNT; ++r) {
+      const imm = this.registers[r as Registers];
+      const addr = this.registers[Registers.RSP];
+      this.checkMemoryBoundary(addr + 1);
+      this.memory[addr] = imm >> 8;
+      this.memory[addr + 1] = imm & 0xFF;
+      this.registers[Registers.RSP] = addr + 2;
+    }
+  }
+
+  private popr() {
+    this.registers[Registers.RSP] -= 2;
+    const addr = this.registers[Registers.RSP];
+    const hi = this.memory[addr];
+    const lo = this.memory[addr + 1];
+    const imm = hi << 8 | lo;
+    const reg = this.register();
+    this.registers[reg] = imm;
+  }
+
+  private popallr() {
+    for (let r = REGISTER_GENERAL_COUNT - 1; r >= 0; --r) {
+      this.registers[Registers.RSP] -= 2;
+      const addr = this.registers[Registers.RSP];
+      const hi = this.memory[addr];
+      const lo = this.memory[addr + 1];
+      const imm = hi << 8 | lo;
+      this.registers[r] = imm;
     }
   }
 }

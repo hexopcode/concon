@@ -52,6 +52,11 @@ export enum TokenType {
   JO,
   JDZ,
 
+  PUSH,
+  PUSHALL,
+  POP,
+  POPALL,
+
   EOL,
   EOF,
 }
@@ -94,6 +99,11 @@ const Keywords: Map<string, TokenType> = new Map(Object.entries({
   'jlz': TokenType.JLZ,
   'jo': TokenType.JO,
   'jdz': TokenType.JDZ,
+
+  'push': TokenType.PUSH,
+  'pushall': TokenType.PUSHALL,
+  'pop': TokenType.POP,
+  'popall': TokenType.POPALL,
 }));
 
 export type Token = {

@@ -33,6 +33,10 @@ import {
   JlzInstr,
   JoInstr,
   JdzInstr,
+  PushInstr,
+  PushAllInstr,
+  PopInstr,
+  PopAllInstr,
   Label,
 } from './ast';
 import {Registers} from '../../core';
@@ -205,6 +209,14 @@ class Parser {
       return this.joInstr();
     } else if (this.match(TokenType.JDZ)) {
       return this.jdzInstr();
+    } else if (this.match(TokenType.PUSH)) {
+      return this.pushInstr();
+    } else if (this.match(TokenType.PUSHALL)) {
+      return this.pushAllInstr();
+    } else if (this.match(TokenType.POP)) {
+      return this.popInstr();
+    } else if (this.match(TokenType.POPALL)) {
+      return this.popAllInstr();
     } else if (this.peek()?.type == TokenType.IDENTIFIER) {
       if (this.peek(1)?.type == TokenType.COLON) {
         this.advance();
@@ -567,6 +579,36 @@ class Parser {
       type: 'JdzInstr',
       line: this.line,
       op: this.immOrRegExpr(),
+    };
+  }
+
+  private pushInstr(): PushInstr {
+    return {
+      type: 'PushInstr',
+      line: this.line,
+      op: this.immOrRegExpr(),
+    };
+  }
+
+  private pushAllInstr(): PushAllInstr {
+    return {
+      type: 'PushAllInstr',
+      line: this.line,
+    };
+  }
+
+  private popInstr(): PopInstr {
+    return {
+      type: 'PopInstr',
+      line: this.line,
+      op: this.regExpr(),
+    };
+  }
+
+  private popAllInstr(): PopAllInstr {
+    return {
+      type: 'PopAllInstr',
+      line: this.line,
     };
   }
 

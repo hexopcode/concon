@@ -67,6 +67,11 @@ export type JlzInstr = AstOneOpStmt<'JlzInstr', AstImmOrRegExpr>;
 export type JoInstr = AstOneOpStmt<'JoInstr', AstImmOrRegExpr>;
 export type JdzInstr = AstOneOpStmt<'JdzInstr', AstImmOrRegExpr>;
 
+export type PushInstr = AstOneOpStmt<'PushInstr', AstImmOrRegExpr>;
+export type PushAllInstr = AstNode<'PushAllInstr'>;
+export type PopInstr = AstOneOpStmt<'PopInstr', AstRegExpr>;
+export type PopAllInstr = AstNode<'PopAllInstr'>;
+
 export type CoreInstr = NopInstr |
     EndInstr |
     VsyncInstr |
@@ -106,12 +111,18 @@ export type JumpInstr = JmpInstr |
     JoInstr |
     JdzInstr;
 
+export type CallInstr = PushInstr |
+    PushAllInstr |
+    PopInstr |
+    PopAllInstr;
+
 export type Instr = CoreInstr |
     MemoryInstr |
     ArithmeticInstr |
     LogicInstr |
     CompareInstr |
-    JumpInstr;
+    JumpInstr |
+    CallInstr;
 
 export type Label = AstNode<'Label'> & {
   label: string,

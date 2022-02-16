@@ -27,6 +27,9 @@ export enum Registers {
   RIN = 0x13,
 }
 
+export const REGISTER_COUNT = Registers.RIN + 1;
+export const REGISTER_GENERAL_COUNT = Registers.R15 + 1;
+
 export const MAX_VALUE = 0xFFFF;
 export const MIN_VALUE = 0x0000;
 
@@ -47,8 +50,6 @@ export enum Inputs {
   START_PAUSE = 0x06,
   RESET = 0x07,
 }
-
-export const REGISTER_COUNT = 20;
 
 export enum MemoryArea {
   OS,
