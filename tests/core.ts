@@ -1,4 +1,4 @@
-import {Flags, Registers, Result, System} from '../src/core';
+import {Result, System} from '../src/core';
 import {TestRunner, TestSpec} from '../src/lib';
 import {assembleAndBoot} from './helpers';
 
