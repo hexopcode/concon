@@ -1,6 +1,6 @@
 import {Registers} from '../../core';
 import {AsmErrorCollector} from '../base';
-import {Ast, Stmt} from './ast';
+import {ProgramAst, Stmt} from './ast';
 
 type SyntheticRegistersStmt = Stmt & {
   register?: Registers,
@@ -8,21 +8,21 @@ type SyntheticRegistersStmt = Stmt & {
   register2?: Registers,
 }
 
-export function check(ast: Ast, collectErrors: AsmErrorCollector): Ast {
+export function check(ast: ProgramAst, collectErrors: AsmErrorCollector): ProgramAst {
   return new Checker(ast, collectErrors).check();
 }
 
 class Checker {
-  private readonly ast: Ast;
+  private readonly ast: ProgramAst;
   private readonly collectErrors: AsmErrorCollector;
 
-  constructor(ast: Ast, collectErrors: AsmErrorCollector) {
+  constructor(ast: ProgramAst, collectErrors: AsmErrorCollector) {
     this.ast = ast;
     this.collectErrors = collectErrors;
   }
 
-  check(): Ast {
-    for (const stmt of this.ast) {
+  check(): ProgramAst {
+    for (const stmt of this.ast.main.stmts) {
       this.checkRegistersAreValid(stmt as SyntheticRegistersStmt);
     }
     return this.ast;

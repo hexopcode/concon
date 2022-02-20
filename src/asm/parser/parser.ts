@@ -1,7 +1,7 @@
 import {Token, TokenType} from './tokenizer';
 import {
-  Ast,
   AstRegExpr,
+  AstLblExpr,
   AstImmExpr,
   AstImmOrRegExpr,
   Stmt,
@@ -37,13 +37,19 @@ import {
   PushAllInstr,
   PopInstr,
   PopAllInstr,
+  CallInstr,
+  RetInstr,
+  ProgramAst,
+  ProcStmt,
+  BlockStmt,
   Label,
 } from './ast';
 import {Registers} from '../../core';
 import {unreachable} from '../../lib';
 import {AsmErrorCollector} from '../base';
+import {  } from '.';
 
-export function parse(tokens: Token[], collectError: AsmErrorCollector): Ast {
+export function parse(tokens: Token[], collectError: AsmErrorCollector): ProgramAst {
   return new Parser(tokens, collectError).parse();
 }
 
@@ -60,14 +66,20 @@ class Parser {
     this.line = 1;
   }
 
-  parse(): Ast {
-    const statements: Stmt[] = [];
+  parse(): ProgramAst {
+    const procs: ProcStmt[] = [];
+    const stmts: Stmt[] = [];
+
     while (!this.isAtEnd()) {
-      // skip non-significant EOL (e.g., empty lines)
-      while (this.match(TokenType.EOL));
+      this.whitespace();
 
       try {
-        statements.push(this.statement());
+        while (this.match(TokenType.PROC)) {
+          procs.push(this.proc());
+          this.whitespace();
+        }
+        
+        stmts.push(this.statement());
         if (!this.isAtEnd()) {
           this.consume(TokenType.EOL, 'Expected end of line');
         }
@@ -79,7 +91,19 @@ class Parser {
         this.synchronize();
       }
     }
-    return statements;
+
+    const main: BlockStmt = {
+      type: 'BlockStmt',
+      line: stmts.length > 0 ? stmts[0].line : 1,
+      stmts,
+    };
+
+    return {
+      type: 'ProgramAst',
+      line: 1,
+      procs,
+      main,
+    };
   }
 
   private isAtEnd(): boolean {
@@ -129,6 +153,50 @@ class Parser {
     while (!this.match(TokenType.EOL, TokenType.EOF)) {
       this.advance();
     }
+  }
+
+  private whitespace() {
+    // skip non-significant EOL (e.g., empty lines)
+    while (this.match(TokenType.EOL));
+  }
+
+  private proc(): ProcStmt {
+    this.line = this.peek()?.line || -1;
+    const name = this.consume(TokenType.IDENTIFIER, 'Expected identifier');
+    this.consume(TokenType.COLON, `Expected ':'`);
+    this.consume(TokenType.EOL, 'Expected end of line');
+
+    const stmts: Stmt[] = [];
+
+    do {
+      this.whitespace();
+      
+      stmts.push(this.statement());
+      if (!this.isAtEnd()) {
+        this.consume(TokenType.EOL, 'Expected end of line');
+      }
+      if (stmts.length > 0 && stmts[stmts.length - 1].type == 'RetInstr') {
+        break;
+      }
+
+    } while (!this.isAtEnd());
+
+    if (stmts.length == 0 || stmts[stmts.length - 1].type != 'RetInstr') {
+      throw new Error(`Proc '${name}' must be terminated with 'ret' instruction`);
+    }
+
+    return {
+      type: 'ProcStmt',
+      line: this.line,
+      name: name.literal!,
+      impl: {
+        type: 'BlockStmt',
+        // FIXME: compute the correct first line of the block
+        // once labels are part of an instruction
+        line: this.line,
+        stmts,
+      },
+    };
   }
 
   private statement(): Stmt {
@@ -217,6 +285,10 @@ class Parser {
       return this.popInstr();
     } else if (this.match(TokenType.POPALL)) {
       return this.popAllInstr();
+    }else if (this.match(TokenType.CALL)) {
+      return this.callInstr();
+    } else if (this.match(TokenType.RET)) {
+      return this.retInstr();
     } else if (this.peek()?.type == TokenType.IDENTIFIER) {
       if (this.peek(1)?.type == TokenType.COLON) {
         this.advance();
@@ -239,10 +311,6 @@ class Parser {
     };
   }
 
-  private imm(): Token {
-    return this.consume(TokenType.NUMBER, 'Expected immediate');
-  }
-
   private immExpr(): AstImmExpr {
     // FIXME: needs better checks for immediate expressions
     const value = this.check(TokenType.NUMBER) ?
@@ -256,18 +324,20 @@ class Parser {
     };
   }
 
+  private lblExpr(): AstLblExpr {
+    const name = this.consume(TokenType.IDENTIFIER, 'expected identifier');
+    return {
+      type: 'AstLblExpr',
+      line: this.line,
+      label: (name.literal!) as string,
+    };
+  }
+
   private immOrRegExpr(): AstImmOrRegExpr {
     if (this.check(TokenType.REGISTER)) {
       return this.regExpr();
     }
     return this.immExpr();
-  }
-
-  private addr(): Token {
-    if (this.check(TokenType.NUMBER)) {
-      return this.consume(TokenType.NUMBER, 'Expected address');
-    }
-    return this.consume(TokenType.IDENTIFIER, 'Expected label');
   }
 
   private comma() {
@@ -608,6 +678,21 @@ class Parser {
   private popAllInstr(): PopAllInstr {
     return {
       type: 'PopAllInstr',
+      line: this.line,
+    };
+  }
+
+  private callInstr(): CallInstr {
+    return {
+      type: 'CallInstr',
+      line: this.line,
+      op: this.lblExpr(),
+    };
+  }
+
+  private retInstr(): RetInstr {
+    return {
+      type: 'RetInstr',
       line: this.line,
     };
   }

@@ -56,6 +56,9 @@ export enum TokenType {
   PUSHALL,
   POP,
   POPALL,
+  CALL,
+  PROC,
+  RET,
 
   EOL,
   EOF,
@@ -104,6 +107,9 @@ const Keywords: Map<string, TokenType> = new Map(Object.entries({
   'pushall': TokenType.PUSHALL,
   'pop': TokenType.POP,
   'popall': TokenType.POPALL,
+  'call': TokenType.CALL,
+  'proc': TokenType.PROC,
+  'ret': TokenType.RET,
 }));
 
 export type Token = {

@@ -289,6 +289,12 @@ export class System {
         case Opcodes.POPALLR:
           this.popallr();
           break;
+        case Opcodes.CALL:
+          this.call();
+          break;
+        case Opcodes.RET:
+          this.ret();
+          break;
         default:
           unreachable(`Unimplemented opcode: ${opcode}`);
       }
@@ -868,5 +874,28 @@ export class System {
       const imm = hi << 8 | lo;
       this.registers[r] = imm;
     }
+  }
+
+  private call() {
+    const imm = this.immediate();
+    const ret = this.registers[Registers.RIP];
+
+    const addr = this.registers[Registers.RSP];
+    this.checkMemoryBoundary(addr + 1);
+    this.memory[addr] = ret >> 8;
+    this.memory[addr + 1] = ret & 0xFF;
+    this.registers[Registers.RSP] = addr + 2;
+
+    this.registers[Registers.RIP] = imm;
+  }
+
+  private ret() {
+    this.registers[Registers.RSP] -= 2;
+    const addr = this.registers[Registers.RSP];
+    const hi = this.memory[addr];
+    const lo = this.memory[addr + 1];
+    const imm = hi << 8 | lo;
+
+    this.registers[Registers.RIP] = imm;
   }
 }

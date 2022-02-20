@@ -16,17 +16,26 @@ export type AstRegExpr = AstNode<'AstRegExpr'> & {
   value: Registers,
 }
 
-export type AstImmOrRegExpr = AstImmExpr|AstRegExpr;
+export type AstLblExpr = AstNode<'AstLblExpr'> & {
+  label: string,
+}
 
-type AstOneOpStmt<Type extends string, OpType extends AstImmOrRegExpr> = AstNode<Type> & {
+export type AstImmOrRegExpr = AstImmExpr|AstRegExpr;
+export type AstExpr = AstImmOrRegExpr|AstLblExpr;
+
+type AstOneOpStmt<Type extends string, OpType extends AstExpr> = AstNode<Type> & {
   op: OpType,
 };
 
 type AstTwoOpStmt<Type extends string,
-                   Op1Type extends AstImmOrRegExpr,
-                   Op2Type extends AstImmOrRegExpr> = AstNode<Type> & {
+                   Op1Type extends AstExpr,
+                   Op2Type extends AstExpr> = AstNode<Type> & {
   op1: Op1Type,
   op2: Op2Type,
+};
+
+export type BlockStmt = AstNode<'BlockStmt'> & {
+  stmts: Stmt[],
 };
 
 export type NopInstr = AstNode<'NopInstr'>;
@@ -71,6 +80,8 @@ export type PushInstr = AstOneOpStmt<'PushInstr', AstImmOrRegExpr>;
 export type PushAllInstr = AstNode<'PushAllInstr'>;
 export type PopInstr = AstOneOpStmt<'PopInstr', AstRegExpr>;
 export type PopAllInstr = AstNode<'PopAllInstr'>;
+export type CallInstr = AstOneOpStmt<'CallInstr', AstLblExpr>;
+export type RetInstr = AstNode<'RetInstr'>;
 
 export type CoreInstr = NopInstr |
     EndInstr |
@@ -111,10 +122,12 @@ export type JumpInstr = JmpInstr |
     JoInstr |
     JdzInstr;
 
-export type CallInstr = PushInstr |
+export type CallInstrs = PushInstr |
     PushAllInstr |
     PopInstr |
-    PopAllInstr;
+    PopAllInstr |
+    CallInstr |
+    RetInstr;
 
 export type Instr = CoreInstr |
     MemoryInstr |
@@ -122,7 +135,7 @@ export type Instr = CoreInstr |
     LogicInstr |
     CompareInstr |
     JumpInstr |
-    CallInstr;
+    CallInstrs;
 
 export type Label = AstNode<'Label'> & {
   label: string,
@@ -130,4 +143,12 @@ export type Label = AstNode<'Label'> & {
 
 export type Stmt = Instr | Label;
 
-export type Ast = Stmt[];
+export type ProcStmt = AstNode<'ProcStmt'> & {
+  name: string,
+  impl: BlockStmt,
+};
+
+export type ProgramAst = AstNode<'ProgramAst'> & {
+  procs: ProcStmt[],
+  main: BlockStmt,
+};

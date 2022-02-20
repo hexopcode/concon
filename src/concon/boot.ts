@@ -21,6 +21,16 @@ screen.attach(document.body);
 
 const sys = new System();
 sys.loadProgram(assemble(`
+  proc ror:
+    mov r11, r10
+    shr r11, 1
+    mov r12, r10
+    and r12, 1
+    shl r12, 15
+    or r12, r11
+    mov r10, r12
+    ret
+
     mov r0, 0
     mov r10, 0b1110010011100100
 
@@ -30,13 +40,7 @@ sys.loadProgram(assemble(`
     mov r1, 0x1000
     add r1, r0
 
-    mov r11, r10
-    shr r11, 1
-    mov r12, r10
-    and r12, 1
-    shl r12, 15
-    or r12, r11
-    mov r10, r12
+    call ror
 
     sto r1, r10
     inc r0
@@ -46,13 +50,7 @@ sys.loadProgram(assemble(`
     vsync
     mov r0, 0
 
-    mov r11, r10
-    shr r11, 1
-    mov r12, r10
-    and r12, 1
-    shl r12, 15
-    or r12, r11
-    mov r10, r12
+    call ror
 
     // jmp loop
 

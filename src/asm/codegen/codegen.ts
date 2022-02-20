@@ -1,22 +1,22 @@
 import {Opcodes} from '../../core';
 import {unreachable} from '../../lib';
 import {AsmErrorCollector} from '../base';
-import {AstImmExpr, Stmt} from '../parser';
+import {AstImmExpr, AstLblExpr, BlockStmt, ProgramAst} from '../parser';
 import {Program} from './program';
 
 const FAKE_ADDR: number[] = [0xFF, 0xFF];
 
-export function codegen(ast: Stmt[], collectError: AsmErrorCollector) {
+export function codegen(ast: ProgramAst, collectError: AsmErrorCollector) {
   return new Codegen(ast, collectError).codegen();
 }
 
 class Codegen {
-  private readonly ast: Stmt[];
+  private readonly ast: ProgramAst;
   private readonly collectError: AsmErrorCollector;
   private readonly program: Program;
   private readonly bytes: number[];
 
-  constructor(ast: Stmt[], collectError: AsmErrorCollector) {
+  constructor(ast: ProgramAst, collectError: AsmErrorCollector) {
     this.ast = ast;
     this.collectError = collectError;
     this.program = {
@@ -29,14 +29,24 @@ class Codegen {
   }
 
   codegen(): Program {
-    this.emitOpcodes();
+    this.emitProcs();
+    this.program.startAddr = this.bytes.length;
 
+    this.emitOpcodes(this.ast.main);
     this.program.code = new Uint8Array(this.bytes);
+
     return this.program as Program;
   }
 
-  private emitOpcodes() {
-    for (const stmt of this.ast) {
+  private emitProcs() {
+    for (const proc of this.ast.procs) {
+      this.labelAddress(proc.name);
+      this.emitOpcodes(proc.impl);
+    }
+  }
+
+  private emitOpcodes(blk: BlockStmt) {
+    for (const stmt of blk.stmts) {
       try {
         switch (stmt.type) {
           case 'NopInstr':
@@ -355,11 +365,18 @@ class Codegen {
           case 'PopAllInstr':
             this.bytes.push(Opcodes.POPALLR);
             break;
+          case 'CallInstr':
+            this.bytes.push(Opcodes.CALL);
+            this.bytes.push(...this.lblExpr(stmt.op));
+            break;
+          case 'RetInstr':
+            this.bytes.push(Opcodes.RET);
+            break;
           case 'Label':
             this.labelAddress(stmt.label);
             break;
           default:
-            unreachable(`Unsupported statement: ${stmt}`);
+            unreachable(`Unsupported statement: ${JSON.stringify(stmt)}`);
         }
       } catch (e) {
         this.collectError({
@@ -373,6 +390,16 @@ class Codegen {
   private immExpr(expr: AstImmExpr): number[] {
     this.program.codeExprs.set(this.bytes.length, expr);
     return FAKE_ADDR;
+  }
+
+  // FIXME: this should go into a transform/optimization pass before codegen
+  private lblExpr(expr: AstLblExpr): number[] {
+    const immExpr: AstImmExpr = {
+      type: 'AstImmExpr',
+      line: expr.line,
+      value: expr.label,
+    };
+    return this.immExpr(immExpr);
   }
 
   private labelAddress(lbl: string) {

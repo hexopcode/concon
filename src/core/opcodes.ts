@@ -78,4 +78,6 @@ export enum Opcodes {
   PUSHALLR = 0x72,
   POPR = 0x73,
   POPALLR = 0x74,
+  CALL = 0x75,
+  RET = 0x76,
 }
