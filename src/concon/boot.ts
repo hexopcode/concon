@@ -17,7 +17,7 @@ if (failed.length > 0) {
 }
 
 const screen = new ConconScreen();
-screen.attach(document.body);
+screen.attach(document.querySelector('#screen')!);
 
 const sys = new System();
 sys.loadProgram(assemble(`

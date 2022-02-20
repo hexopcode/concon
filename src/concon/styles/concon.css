@@ -1,27 +1,71 @@
 :root {
   /* https://material.io/design/color/the-color-system.html#tools-for-picking-colors */
   
-  --color-1: #263238;
-  --color-2: #388E3C;
+  --color-shadow: #111111;
+  --color-0: #212121;
+  --color-1: #B71C1C;
+  --color-2: #EF9A9A;
+
+  --border-size: 20px;
+  --shadow-size: calc(var(--border-size) / 2.5);
+
+  --header-size: calc(var(--border-size) * 2);
+
+  --screen-size: 128px;
+  --screen-scale: 3;
+  --screen-padding: 6px;
+  --screen-pixels: calc(var(--screen-size) * var(--screen-scale) + (2 * var(--screen-padding)));
 }
 
-html, body {
+body {
   margin: 0;
   padding: 0;
-  width: 100%;
-  height: 100%;
+  height: 100vh;
+  overflow: hidden;
 
-  background-color: var(--color-1);
+  background-color: var(--color-0);
   color: var(--color-2);
 
   font-size: 9pt;
   font-family: monospace;
 }
 
-h1, h2, h3, h4 {
-  margin: 0;
-  padding: 0;
+#container {
+  display: grid;
+  grid-template-rows: var(--border-size) var(--header-size) var(--screen-pixels) auto var(--border-size);
+  grid-template-columns: var(--border-size) var(--screen-pixels) var(--border-size) auto var(--border-size);
+  
+  background-color: var(--color-1);
 
-  font-size: 9pt;
-  font-weight: normal;
+  margin: var(--border-size);
+  width: calc(100% - (var(--border-size) * 2));
+  height: calc(100% - (var(--border-size) * 2));
+  border-radius: var(--border-size);
+  box-shadow: var(--shadow-size) var(--shadow-size) var(--border-size) var(--color-shadow);
+}
+
+#logo {
+  grid-row: 2 / 2;
+  grid-column: 4 / 4;
+  font-size: 12pt;
+  text-align: right;
+  text-shadow: 1px 1px 2px var(--color-shadow);
+}
+
+.inset {
+  border-radius: 3px;
+  box-shadow: 3px 3px 5px var(--color-shadow) inset;
+}
+
+#screen {
+  grid-row: 3 / 4;
+  grid-column: 2 / 2;
+  padding: var(--screen-padding);
+  background-color: var(--color-0);
+}
+
+#console {
+  grid-row: 3 / 5;
+  grid-column: 4 / 4;
+  background-color: var(--color-0);
 }

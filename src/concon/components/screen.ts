@@ -34,6 +34,7 @@ export class ConconScreen {
 
   attach(root: HTMLElement) {
     root.appendChild(this.dom);
+    root.style.backgroundColor = '#9bbc0f';
   }
 
   render(framebuffer: Uint8Array) {
