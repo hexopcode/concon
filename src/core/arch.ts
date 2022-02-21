@@ -65,3 +65,15 @@ export const MEMORY_SIZE = 0xC000;
 export const MEMORY_OS_SIZE = MEMORY_FRAMEBUFFER_OFFSET - MEMORY_OS_OFFSET;
 export const MEMORY_FRAMEBUFFER_SIZE = MEMORY_PROGRAM_OFFSET - MEMORY_FRAMEBUFFER_OFFSET;
 export const MEMORY_PROGRAM_SIZE = MEMORY_SIZE - MEMORY_PROGRAM_OFFSET;
+
+export interface InputDevice {
+  in: (data: number) => void;
+  inb: (data: number) => void;
+}
+
+export interface OutputDevice {
+  out: (data: number) => void;
+  outb: (data: number) => void;
+}
+
+export type IoDevice = InputDevice | OutputDevice;

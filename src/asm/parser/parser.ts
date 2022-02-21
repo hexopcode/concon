@@ -42,12 +42,13 @@ import {
   ProgramAst,
   ProcStmt,
   BlockStmt,
+  OutInstr,
+  OutbInstr,
   Label,
 } from './ast';
 import {Registers} from '../../core';
 import {unreachable} from '../../lib';
 import {AsmErrorCollector} from '../base';
-import {  } from '.';
 
 export function parse(tokens: Token[], collectError: AsmErrorCollector): ProgramAst {
   return new Parser(tokens, collectError).parse();
@@ -289,6 +290,10 @@ class Parser {
       return this.callInstr();
     } else if (this.match(TokenType.RET)) {
       return this.retInstr();
+    } else if (this.match(TokenType.OUT)) {
+      return this.outInstr();
+    } else if (this.match(TokenType.OUTB)) {
+      return this.outbInstr();
     } else if (this.peek()?.type == TokenType.IDENTIFIER) {
       if (this.peek(1)?.type == TokenType.COLON) {
         this.advance();
@@ -694,6 +699,30 @@ class Parser {
     return {
       type: 'RetInstr',
       line: this.line,
+    };
+  }
+
+  private outInstr(): OutInstr {
+    const op1 = this.immOrRegExpr();
+    this.comma();
+    const op2 = this.immOrRegExpr();
+    return {
+      type: 'OutInstr',
+      line: this.line,
+      op1,
+      op2,
+    };
+  }
+
+  private outbInstr(): OutbInstr {
+    const op1 = this.immOrRegExpr();
+    this.comma();
+    const op2 = this.immOrRegExpr();
+    return {
+      type: 'OutbInstr',
+      line: this.line,
+      op1,
+      op2,
     };
   }
 

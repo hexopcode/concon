@@ -372,6 +372,44 @@ class Codegen {
           case 'RetInstr':
             this.bytes.push(Opcodes.RET);
             break;
+          case 'OutInstr':
+            if (stmt.op1.type == 'AstImmExpr' && stmt.op2.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.OUTII);
+              this.bytes.push(...this.immExpr(stmt.op1));
+              this.bytes.push(...this.immExpr(stmt.op2));
+            } else if (stmt.op1.type == 'AstImmExpr' && stmt.op2.type == 'AstRegExpr') {
+              this.bytes.push(Opcodes.OUTIR);
+              this.bytes.push(...this.immExpr(stmt.op1));
+              this.bytes.push(stmt.op2.value);
+            } else if (stmt.op1.type == 'AstRegExpr' && stmt.op2.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.OUTRI);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(...this.immExpr(stmt.op2));
+            } else if (stmt.op1.type == 'AstRegExpr' && stmt.op2.type == 'AstRegExpr') {
+              this.bytes.push(Opcodes.OUTRR);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(stmt.op2.value);
+            }
+            break;
+          case 'OutbInstr':
+            if (stmt.op1.type == 'AstImmExpr' && stmt.op2.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.OUTIIB);
+              this.bytes.push(...this.immExpr(stmt.op1));
+              this.bytes.push(...this.immExpr(stmt.op2));
+            } else if (stmt.op1.type == 'AstImmExpr' && stmt.op2.type == 'AstRegExpr') {
+              this.bytes.push(Opcodes.OUTIRB);
+              this.bytes.push(...this.immExpr(stmt.op1));
+              this.bytes.push(stmt.op2.value);
+            } else if (stmt.op1.type == 'AstRegExpr' && stmt.op2.type == 'AstImmExpr') {
+              this.bytes.push(Opcodes.OUTRIB);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(...this.immExpr(stmt.op2));
+            } else if (stmt.op1.type == 'AstRegExpr' && stmt.op2.type == 'AstRegExpr') {
+              this.bytes.push(Opcodes.OUTRRB);
+              this.bytes.push(stmt.op1.value);
+              this.bytes.push(stmt.op2.value);
+            }
+            break;
           case 'Label':
             this.labelAddress(stmt.label);
             break;

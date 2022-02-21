@@ -80,4 +80,14 @@ export enum Opcodes {
   POPALLR = 0x74,
   CALL = 0x75,
   RET = 0x76,
+
+  // IO
+  OUTII = 0x80,
+  OUTIR = 0x81,
+  OUTRI = 0x82,
+  OUTRR = 0x83,
+  OUTIIB = 0x84,
+  OUTIRB = 0x85,
+  OUTRIB = 0x86,
+  OUTRRB = 0x87,
 }

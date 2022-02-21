@@ -83,6 +83,9 @@ export type PopAllInstr = AstNode<'PopAllInstr'>;
 export type CallInstr = AstOneOpStmt<'CallInstr', AstLblExpr>;
 export type RetInstr = AstNode<'RetInstr'>;
 
+export type OutInstr = AstTwoOpStmt<'OutInstr', AstImmOrRegExpr, AstImmOrRegExpr>;
+export type OutbInstr = AstTwoOpStmt<'OutbInstr', AstImmOrRegExpr, AstImmOrRegExpr>;
+
 export type CoreInstr = NopInstr |
     EndInstr |
     VsyncInstr |
@@ -129,13 +132,17 @@ export type CallInstrs = PushInstr |
     CallInstr |
     RetInstr;
 
+export type IoInstrs = OutInstr |
+    OutbInstr;
+
 export type Instr = CoreInstr |
     MemoryInstr |
     ArithmeticInstr |
     LogicInstr |
     CompareInstr |
     JumpInstr |
-    CallInstrs;
+    CallInstrs |
+    IoInstrs;
 
 export type Label = AstNode<'Label'> & {
   label: string,

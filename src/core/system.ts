@@ -1,4 +1,8 @@
-import {REGISTER_GENERAL_COUNT} from './arch';
+import {
+  REGISTER_GENERAL_COUNT,
+  InputDevice,
+  OutputDevice,
+} from './arch';
 import {assert, SegFaultError, unreachable} from '../lib';
 import {create_os_image} from '../os';
 import {
@@ -31,6 +35,9 @@ export class System {
   private readonly memoryAreas: Map<MemoryArea, Uint8Array>;
   private readonly registers: Uint16Array;
 
+  private readonly inputDevices: Map<number, InputDevice>;
+  private readonly outputDevices: Map<number, OutputDevice>;
+
   constructor() {
     this.buffer = new ArrayBuffer(MEMORY_SIZE);
     this.memory = new Uint8Array(this.buffer);
@@ -40,6 +47,8 @@ export class System {
       [MemoryArea.PROGRAM, new Uint8Array(this.buffer, MEMORY_PROGRAM_OFFSET, MEMORY_PROGRAM_SIZE)],
     ]);
     this.registers = new Uint16Array(REGISTER_COUNT);
+    this.inputDevices = new Map();
+    this.outputDevices = new Map();
 
     this.reset();
   }
@@ -47,6 +56,8 @@ export class System {
   reset() {
     this.memory.fill(0x00);
     this.registers.fill(0x00);
+    this.inputDevices.clear();
+    this.outputDevices.clear();
     this.loadOperatingSystem();
   }
 
@@ -69,6 +80,14 @@ export class System {
 
   debugMem(start: number, length: number = 1): Uint8Array {
     return new Uint8Array(this.buffer, start, length);
+  }
+
+  registerInputDevice(port: number, dev: InputDevice) {
+    this.inputDevices.set(port, dev);
+  }
+
+  registerOutputDevice(port: number, dev: OutputDevice) {
+    this.outputDevices.set(port, dev);
   }
 
   boot(): Result {
@@ -294,6 +313,30 @@ export class System {
           break;
         case Opcodes.RET:
           this.ret();
+          break;
+        case Opcodes.OUTII:
+          this.outii();
+          break;
+        case Opcodes.OUTIR:
+          this.outir();
+          break;
+        case Opcodes.OUTRI:
+          this.outri();
+          break;
+        case Opcodes.OUTRR:
+          this.outrr();
+          break;
+        case Opcodes.OUTIIB:
+          this.outiib();
+          break;
+        case Opcodes.OUTIRB:
+          this.outirb();
+          break;
+        case Opcodes.OUTRIB:
+          this.outrib();
+          break;
+        case Opcodes.OUTRRB:
+          this.outrrb();
           break;
         default:
           unreachable(`Unimplemented opcode: ${opcode}`);
@@ -897,5 +940,69 @@ export class System {
     const imm = hi << 8 | lo;
 
     this.registers[Registers.RIP] = imm;
+  }
+
+  private outii() {
+    const port = this.immediate();
+    const data = this.immediate();
+    if (this.outputDevices.has(port)) {
+      this.outputDevices.get(port)!.out(data);
+    }
+  }
+
+  private outir() {
+    const port = this.immediate();
+    const data = this.registers[this.register()];
+    if (this.outputDevices.has(port)) {
+      this.outputDevices.get(port)!.out(data);
+    }
+  }
+
+  private outri() {
+    const port = this.registers[this.register()];
+    const data = this.immediate();
+    if (this.outputDevices.has(port)) {
+      this.outputDevices.get(port)!.out(data);
+    }
+  }
+
+  private outrr() {
+    const port = this.registers[this.register()];
+    const data = this.registers[this.register()];
+    if (this.outputDevices.has(port)) {
+      this.outputDevices.get(port)!.out(data);
+    }
+  }
+
+  private outiib() {
+    const port = this.immediate();
+    const data = this.immediate() & 0xFF;
+    if (this.outputDevices.has(port)) {
+      this.outputDevices.get(port)!.outb(data);
+    }
+  }
+
+  private outirb() {
+    const port = this.immediate();
+    const data = this.registers[this.register()] & 0xFF;
+    if (this.outputDevices.has(port)) {
+      this.outputDevices.get(port)!.outb(data);
+    }
+  }
+
+  private outrib() {
+    const port = this.registers[this.register()];
+    const data = this.immediate() & 0xFF;
+    if (this.outputDevices.has(port)) {
+      this.outputDevices.get(port)!.outb(data);
+    }
+  }
+
+  private outrrb() {
+    const port = this.registers[this.register()];
+    const data = this.registers[this.register()] & 0xFF;
+    if (this.outputDevices.has(port)) {
+      this.outputDevices.get(port)!.outb(data);
+    }
   }
 }

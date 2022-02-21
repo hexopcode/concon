@@ -5,6 +5,8 @@ export enum TokenType {
   // punctuation
   COMMA,
   COLON,
+  EOL,
+  EOF,
 
   // misc
   IDENTIFIER,
@@ -60,8 +62,8 @@ export enum TokenType {
   PROC,
   RET,
 
-  EOL,
-  EOF,
+  OUT,
+  OUTB,
 }
 
 const Keywords: Map<string, TokenType> = new Map(Object.entries({
@@ -110,6 +112,9 @@ const Keywords: Map<string, TokenType> = new Map(Object.entries({
   'call': TokenType.CALL,
   'proc': TokenType.PROC,
   'ret': TokenType.RET,
+
+  'out': TokenType.OUT,
+  'outb': TokenType.OUTB,
 }));
 
 export type Token = {
