@@ -20,6 +20,8 @@ const screen = new ConconScreen();
 screen.attach(document.querySelector('#screen')!);
 
 const sys = new System();
+sys.registerOutputDevice(0x00, screen);
+
 sys.loadProgram(assemble(`
   proc ror:
     mov r11, r10

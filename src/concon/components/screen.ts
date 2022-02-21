@@ -1,3 +1,5 @@
+import {OutputDevice} from '../../core';
+
 const SIZE = 128;
 const SCALE = 3;
 const PIXELS = SIZE * SCALE;
@@ -9,16 +11,10 @@ const GB_PALETTE: Uint8ClampedArray[] = [
   new Uint8ClampedArray([0x0f, 0x38, 0x0f, 0xff]),  // dark green
 ];
 
-const DEBUG_PALETTE: Uint8ClampedArray[] = [
-  new Uint8ClampedArray([0xff, 0x00, 0x00, 0xff]),  // red
-  new Uint8ClampedArray([0x00, 0xff, 0x00, 0xff]),  // green
-  new Uint8ClampedArray([0x00, 0x00, 0xff, 0xff]),  // blue
-  new Uint8ClampedArray([0xff, 0xff, 0xff, 0xff]),  // white
-];
-
-export class ConconScreen {
+export class ConconScreen implements OutputDevice {
   private readonly dom: HTMLCanvasElement;
   private readonly ctx: CanvasRenderingContext2D;
+  private readonly palette: Uint8ClampedArray[];
 
   constructor() {
     this.dom = document.createElement('canvas') as HTMLCanvasElement;
@@ -30,7 +26,23 @@ export class ConconScreen {
     this.dom.style.setProperty('height', `${PIXELS}px`);
     // FIXME: replace with webgl
     this.ctx = this.dom.getContext('2d')!;
+
+    this.palette = [
+      new Uint8ClampedArray(GB_PALETTE[0]),
+      new Uint8ClampedArray(GB_PALETTE[1]),
+      new Uint8ClampedArray(GB_PALETTE[2]),
+      new Uint8ClampedArray(GB_PALETTE[3]),
+    ];
   }
+
+  out(data: number) {
+    const index = data >> 8 & 0x0F;
+    const rgb = data >> 12 & 0x0F;
+    const value = data & 0xFF;
+    this.palette[index].set([value], rgb);
+  }
+
+  outb(data: number) {}
 
   attach(root: HTMLElement) {
     root.appendChild(this.dom);
@@ -59,10 +71,10 @@ export class ConconScreen {
 
       for (let y = 0; y < SCALE; ++y) {
         for (let x = 0; x < SCALE; ++x) {    
-          buffer.set(GB_PALETTE[p1], (bufferOffset) + (y * PIXELS * 4) + x * 4);
-          buffer.set(GB_PALETTE[p2], (bufferOffset + 4 * SCALE) + (y * PIXELS * 4) + x * 4);
-          buffer.set(GB_PALETTE[p3], (bufferOffset + 8 * SCALE) + (y * PIXELS * 4) + x * 4);
-          buffer.set(GB_PALETTE[p4], (bufferOffset + 12 * SCALE) + (y * PIXELS * 4) + x * 4);
+          buffer.set(this.palette[p1], (bufferOffset) + (y * PIXELS * 4) + x * 4);
+          buffer.set(this.palette[p2], (bufferOffset + 4 * SCALE) + (y * PIXELS * 4) + x * 4);
+          buffer.set(this.palette[p3], (bufferOffset + 8 * SCALE) + (y * PIXELS * 4) + x * 4);
+          buffer.set(this.palette[p4], (bufferOffset + 12 * SCALE) + (y * PIXELS * 4) + x * 4);
         }
       }
     }
