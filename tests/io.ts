@@ -27,7 +27,7 @@ export const IoTests: TestSpec = (t: TestRunner) => {
 
   t.test('out outs words', () => {
     const rec = new OutRecorder();
-    sys.registerOutputDevice(0x00, rec);
+    sys.registerOutputDevice(0x01, rec);
     sys.registerOutputDevice(0xff, rec);
     sys.registerOutputDevice(0x1234, rec);
 
@@ -36,7 +36,7 @@ export const IoTests: TestSpec = (t: TestRunner) => {
         mov r1, 0xcc
         mov r2, 0xaa
 
-        out 0x00, 0x12
+        out 0x01, 0x12
         out r0, 0x34
         out 0x1234, r1
         out r0, r2
@@ -48,7 +48,7 @@ export const IoTests: TestSpec = (t: TestRunner) => {
 
   t.test('out outs bytes', () => {
     const rec = new OutRecorder();
-    sys.registerOutputDevice(0x00, rec);
+    sys.registerOutputDevice(0x01, rec);
     sys.registerOutputDevice(0xff, rec);
     sys.registerOutputDevice(0x1234, rec);
 
@@ -57,7 +57,7 @@ export const IoTests: TestSpec = (t: TestRunner) => {
         mov r1, 0xcc
         mov r2, 0xaa
 
-        outb 0x00, 0x12
+        outb 0x01, 0x12
         outb r0, 0x34
         outb 0x1234, r1
         outb r0, r2

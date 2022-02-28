@@ -4,17 +4,16 @@ const SIZE = 128;
 const SCALE = 3;
 const PIXELS = SIZE * SCALE;
 
-const GB_PALETTE: Uint8ClampedArray[] = [
-  new Uint8ClampedArray([0x9b, 0xbc, 0x0f, 0xff]),  // light green
-  new Uint8ClampedArray([0x8b, 0xac, 0x0f, 0xff]),  // medium light green
-  new Uint8ClampedArray([0x30, 0x62, 0x30, 0xff]),  // medium dark green
-  new Uint8ClampedArray([0x0f, 0x38, 0x0f, 0xff]),  // dark green
-];
+const PALETTE_COLOR_COUNT = 4;
+const PALETTE_BYTES_PER_COLOR = 4;
+const PALETTE_BYTES_COUNT = PALETTE_COLOR_COUNT * PALETTE_BYTES_PER_COLOR;
 
 export class ConconScreen implements OutputDevice {
   private readonly dom: HTMLCanvasElement;
   private readonly ctx: CanvasRenderingContext2D;
+  private readonly paletteBuffer: ArrayBuffer;
   private readonly palette: Uint8ClampedArray[];
+  private paletteDirty: boolean;
 
   constructor() {
     this.dom = document.createElement('canvas') as HTMLCanvasElement;
@@ -27,12 +26,14 @@ export class ConconScreen implements OutputDevice {
     // FIXME: replace with webgl
     this.ctx = this.dom.getContext('2d')!;
 
+    this.paletteBuffer = new ArrayBuffer(PALETTE_BYTES_COUNT);
     this.palette = [
-      new Uint8ClampedArray(GB_PALETTE[0]),
-      new Uint8ClampedArray(GB_PALETTE[1]),
-      new Uint8ClampedArray(GB_PALETTE[2]),
-      new Uint8ClampedArray(GB_PALETTE[3]),
+      new Uint8ClampedArray(this.paletteBuffer, 0 * PALETTE_BYTES_PER_COLOR, PALETTE_BYTES_PER_COLOR),
+      new Uint8ClampedArray(this.paletteBuffer, 1 * PALETTE_BYTES_PER_COLOR, PALETTE_BYTES_PER_COLOR),
+      new Uint8ClampedArray(this.paletteBuffer, 2 * PALETTE_BYTES_PER_COLOR, PALETTE_BYTES_PER_COLOR),
+      new Uint8ClampedArray(this.paletteBuffer, 3 * PALETTE_BYTES_PER_COLOR, PALETTE_BYTES_PER_COLOR),
     ];
+    this.paletteDirty = true;
   }
 
   out(data: number) {
@@ -40,16 +41,25 @@ export class ConconScreen implements OutputDevice {
     const rgb = data >> 12 & 0x0F;
     const value = data & 0xFF;
     this.palette[index].set([value], rgb);
+    this.paletteDirty = true;
   }
 
   outb(data: number) {}
 
   attach(root: HTMLElement) {
     root.appendChild(this.dom);
-    root.style.backgroundColor = '#9bbc0f';
   }
 
   render(framebuffer: Uint8Array) {
+    if (this.paletteDirty) {
+      const rgba = this.palette[0];
+      const r = rgba[0];
+      const g = rgba[1];
+      const b = rgba[2];
+      const a = rgba[3] / 255;
+      this.dom.parentElement!.style.backgroundColor = `rgba(${r},${g},${b},${a})`;
+      this.paletteDirty = false;
+    }
     // FIXME: This should really be a pixel shader.
     // For now, let's keep it simple and just use the CPU,
     const imageData = this.ctx.getImageData(0, 0, PIXELS, PIXELS);
