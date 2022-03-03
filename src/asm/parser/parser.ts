@@ -4,7 +4,7 @@ import {
   AstLblExpr,
   AstImmExpr,
   AstImmOrRegExpr,
-  Stmt,
+  Instr,
   MovInstr,
   LodInstr,
   LodbInstr,
@@ -44,7 +44,6 @@ import {
   BlockStmt,
   OutInstr,
   OutbInstr,
-  Label,
 } from './ast';
 import {Registers} from '../../core';
 import {unreachable} from '../../lib';
@@ -69,7 +68,7 @@ class Parser {
 
   parse(): ProgramAst {
     const procs: ProcStmt[] = [];
-    const stmts: Stmt[] = [];
+    const instrs: Instr[] = [];
 
     while (!this.isAtEnd()) {
       this.whitespace();
@@ -80,7 +79,7 @@ class Parser {
           this.whitespace();
         }
         
-        stmts.push(this.statement());
+        instrs.push(this.instr());
         if (!this.isAtEnd()) {
           this.consume(TokenType.EOL, 'Expected end of line');
         }
@@ -95,8 +94,8 @@ class Parser {
 
     const main: BlockStmt = {
       type: 'BlockStmt',
-      line: stmts.length > 0 ? stmts[0].line : 1,
-      stmts,
+      line: instrs.length > 0 ? instrs[0].line : 1,
+      instrs,
     };
 
     return {
@@ -167,22 +166,22 @@ class Parser {
     this.consume(TokenType.COLON, `Expected ':'`);
     this.consume(TokenType.EOL, 'Expected end of line');
 
-    const stmts: Stmt[] = [];
+    const instrs: Instr[] = [];
 
     do {
       this.whitespace();
       
-      stmts.push(this.statement());
+      instrs.push(this.instr());
       if (!this.isAtEnd()) {
         this.consume(TokenType.EOL, 'Expected end of line');
       }
-      if (stmts.length > 0 && stmts[stmts.length - 1].type == 'RetInstr') {
+      if (instrs.length > 0 && instrs[instrs.length - 1].type == 'RetInstr') {
         break;
       }
 
     } while (!this.isAtEnd());
 
-    if (stmts.length == 0 || stmts[stmts.length - 1].type != 'RetInstr') {
+    if (instrs.length == 0 || instrs[instrs.length - 1].type != 'RetInstr') {
       throw new Error(`Proc '${name}' must be terminated with 'ret' instruction`);
     }
 
@@ -192,35 +191,49 @@ class Parser {
       name: name.literal!,
       impl: {
         type: 'BlockStmt',
-        // FIXME: compute the correct first line of the block
-        // once labels are part of an instruction
-        line: this.line,
-        stmts,
+        line: instrs[0].line,
+        instrs,
       },
     };
   }
 
-  private statement(): Stmt {
+  private instr(): Instr {
+    let lblExpr: AstLblExpr|undefined = undefined;
+    if (this.peek()?.type == TokenType.IDENTIFIER && this.peek(1)?.type == TokenType.COLON) {
+      const lbl = this.consume(TokenType.IDENTIFIER, 'Expected IDENTIFIER');
+      this.colon();
+      lblExpr = {
+        type: 'AstLblExpr',
+        line: this.line,
+        label: (lbl.literal!) as string,
+      }
+      this.whitespace();
+    }
+
+    const line = this.line; 
+    const instr = this.partialInstr() as Instr;
+    instr.label = lblExpr;
+    instr.line = line;
+    return instr;
+  }
+
+  private partialInstr(): Omit<Instr, 'line'> {
     this.line = this.peek()?.line || -1;
     if (this.match(TokenType.NOP)) {
       return {
         type: 'NopInstr',
-        line: this.line,
       };
     } else if (this.match(TokenType.END)) {
       return {
         type: 'EndInstr',
-        line: this.line,
       };
     } else if (this.match(TokenType.VSYNC)) {
       return {
         type: 'VsyncInstr',
-        line: this.line,
       };
     } else if (this.match(TokenType.BRK)) {
       return {
         type: 'BrkInstr',
-        line: this.line,
       };
     } else if (this.match(TokenType.MOV)) {
       return this.movInstr();
@@ -294,11 +307,6 @@ class Parser {
       return this.outInstr();
     } else if (this.match(TokenType.OUTB)) {
       return this.outbInstr();
-    } else if (this.peek()?.type == TokenType.IDENTIFIER) {
-      if (this.peek(1)?.type == TokenType.COLON) {
-        this.advance();
-        return this.label();
-      }
     }
     unreachable(`Invalid token: ${this.peek()?.lexeme}`);
   }
@@ -353,386 +361,340 @@ class Parser {
     this.consume(TokenType.COLON, `Expected ':'`);
   }
 
-  private movInstr(): MovInstr {
+  private movInstr(): Omit<MovInstr, 'line'> {
     const op1 = this.regExpr();
     this.comma();
     const op2 = this.immOrRegExpr();
     
     return {
       type: 'MovInstr',
-      line: this.line,
       op1,
       op2,
     };
   }
 
-  private stoInstr(): StoInstr {
+  private stoInstr(): Omit<StoInstr, 'line'> {
     const op1 = this.immOrRegExpr();
     this.comma();
     const op2 = this.immOrRegExpr();
 
     return {
       type: 'StoInstr',
-      line: this.line,
       op1,
       op2,
     };
   }
 
-  private stobInstr(): StobInstr {
+  private stobInstr(): Omit<StobInstr, 'line'> {
     const op1 = this.immOrRegExpr();
     this.comma();
     const op2 = this.immOrRegExpr();
 
     return {
       type: 'StobInstr',
-      line: this.line,
       op1,
       op2,
     };
   }
 
-  private lodInstr(): LodInstr {
+  private lodInstr(): Omit<LodInstr, 'line'> {
     const op1 = this.regExpr();
     this.comma();
     const op2 = this.immOrRegExpr();
 
     return {
       type: 'LodInstr',
-      line: this.line,
       op1,
       op2,
     };
   }
 
-  private lodbInstr(): LodbInstr {
+  private lodbInstr(): Omit<LodbInstr, 'line'> {
     const op1 = this.regExpr();
     this.comma();
     const op2 = this.immOrRegExpr();
 
     return {
       type: 'LodbInstr',
-      line: this.line,
       op1,
       op2,
     };
   }
 
-  private addInstr(): AddInstr {
+  private addInstr(): Omit<AddInstr, 'line'> {
     const op1 = this.regExpr();
     this.comma();
     const op2 = this.immOrRegExpr();
     
     return {
       type: 'AddInstr',
-      line: this.line,
       op1,
       op2,
     };
   }
 
-  private subInstr(): SubInstr {
+  private subInstr(): Omit<SubInstr, 'line'> {
     const op1 = this.regExpr();
     this.comma();
     const op2 = this.immOrRegExpr();
     
     return {
       type: 'SubInstr',
-      line: this.line,
       op1,
       op2,
     };
   }
 
-  private mulInstr(): MulInstr {
+  private mulInstr(): Omit<MulInstr, 'line'> {
     const op1 = this.regExpr();
     this.comma();
     const op2 = this.immOrRegExpr();
     
     return {
       type: 'MulInstr',
-      line: this.line,
       op1,
       op2,
     };
   }
 
-  private divInstr(): DivInstr {
+  private divInstr(): Omit<DivInstr, 'line'> {
     const op1 = this.regExpr();
     this.comma();
     const op2 = this.immOrRegExpr();
     
     return {
       type: 'DivInstr',
-      line: this.line,
       op1,
       op2,
     };
   }
 
-  private modInstr(): ModInstr {
+  private modInstr(): Omit<ModInstr, 'line'> {
     const op1 = this.regExpr();
     this.comma();
     const op2 = this.immOrRegExpr();
     
     return {
       type: 'ModInstr',
-      line: this.line,
       op1,
       op2,
     };
   }
 
-  private incInstr(): IncInstr {
+  private incInstr(): Omit<IncInstr, 'line'> {
     return {
       type: 'IncInstr',
-      line: this.line,
       op: this.regExpr(),
     };
   }
 
-  private decInstr(): DecInstr {
+  private decInstr(): Omit<DecInstr, 'line'> {
     return {
       type: 'DecInstr',
-      line: this.line,
       op: this.regExpr(),
     };
   }
 
-  private shlInstr(): ShlInstr {
+  private shlInstr(): Omit<ShlInstr, 'line'> {
     const op1 = this.regExpr();
     this.comma();
     const op2 = this.immOrRegExpr();
     
     return {
       type: 'ShlInstr',
-      line: this.line,
       op1,
       op2,
     };
   }
 
-  private shrInstr(): ShrInstr {
+  private shrInstr(): Omit<ShrInstr, 'line'> {
     const op1 = this.regExpr();
     this.comma();
     const op2 = this.immOrRegExpr();
     
     return {
       type: 'ShrInstr',
-      line: this.line,
       op1,
       op2,
     };
   }
 
-  private orInstr(): OrInstr {
+  private orInstr(): Omit<OrInstr, 'line'> {
     const op1 = this.regExpr();
     this.comma();
     const op2 = this.immOrRegExpr();
     
     return {
       type: 'OrInstr',
-      line: this.line,
       op1,
       op2,
     };
   }
 
-  private andInstr(): AndInstr {
+  private andInstr(): Omit<AndInstr, 'line'> {
     const op1 = this.regExpr();
     this.comma();
     const op2 = this.immOrRegExpr();
     
     return {
       type: 'AndInstr',
-      line: this.line,
       op1,
       op2,
     };
   }
 
-  private xorInstr(): XorInstr {
+  private xorInstr(): Omit<XorInstr, 'line'> {
     const op1 = this.regExpr();
     this.comma();
     const op2 = this.immOrRegExpr();
     
     return {
       type: 'XorInstr',
-      line: this.line,
       op1,
       op2,
     };
   }
 
-  private notInstr(): NotInstr {
+  private notInstr(): Omit<NotInstr, 'line'> {
     return {
       type: 'NotInstr',
-      line: this.line,
       op: this.regExpr(),
     };
   }
 
-  private cmpInstr(): CmpInstr {
+  private cmpInstr(): Omit<CmpInstr, 'line'> {
     const op1 = this.regExpr();
     this.comma();
     const op2 = this.immOrRegExpr();
     
     return {
       type: 'CmpInstr',
-      line: this.line,
       op1,
       op2,
     };
   }
 
-  private jmpInstr(): JmpInstr {
+  private jmpInstr(): Omit<JmpInstr, 'line'> {
     return {
       type: 'JmpInstr',
-      line: this.line,
       op: this.immOrRegExpr(),
     };
   }
   
-  private jzInstr(): JzInstr {
+  private jzInstr(): Omit<JzInstr, 'line'> {
     return {
       type: 'JzInstr',
-      line: this.line,
       op: this.immOrRegExpr(),
     };
   }
 
-  private jnzInstr(): JnzInstr {
+  private jnzInstr(): Omit<JnzInstr, 'line'> {
     return {
       type: 'JnzInstr',
-      line: this.line,
       op: this.immOrRegExpr(),
     };
   }
 
-  private jgInstr(): JgInstr {
+  private jgInstr(): Omit<JgInstr, 'line'> {
     return {
       type: 'JgInstr',
-      line: this.line,
       op: this.immOrRegExpr(),
     };
   }
 
-  private jgzInstr(): JgzInstr {
+  private jgzInstr(): Omit<JgzInstr, 'line'> {
     return {
       type: 'JgzInstr',
-      line: this.line,
       op: this.immOrRegExpr(),
     };
   }
 
-  private jlInstr(): JlInstr {
+  private jlInstr(): Omit<JlInstr, 'line'> {
     return {
       type: 'JlInstr',
-      line: this.line,
       op: this.immOrRegExpr(),
     };
   }
 
-  private jlzInstr(): JlzInstr {
+  private jlzInstr(): Omit<JlzInstr, 'line'> {
     return {
       type: 'JlzInstr',
-      line: this.line,
       op: this.immOrRegExpr(),
     };
   }
 
-  private joInstr(): JoInstr {
+  private joInstr(): Omit<JoInstr, 'line'> {
     return {
       type: 'JoInstr',
-      line: this.line,
       op: this.immOrRegExpr(),
     };
   }
 
-  private jdzInstr(): JdzInstr {
+  private jdzInstr(): Omit<JdzInstr, 'line'> {
     return {
       type: 'JdzInstr',
-      line: this.line,
       op: this.immOrRegExpr(),
     };
   }
 
-  private pushInstr(): PushInstr {
+  private pushInstr(): Omit<PushInstr, 'line'> {
     return {
       type: 'PushInstr',
-      line: this.line,
       op: this.immOrRegExpr(),
     };
   }
 
-  private pushAllInstr(): PushAllInstr {
+  private pushAllInstr(): Omit<PushAllInstr, 'line'> {
     return {
       type: 'PushAllInstr',
-      line: this.line,
-    };
+      };
   }
 
-  private popInstr(): PopInstr {
+  private popInstr(): Omit<PopInstr, 'line'> {
     return {
       type: 'PopInstr',
-      line: this.line,
       op: this.regExpr(),
     };
   }
 
-  private popAllInstr(): PopAllInstr {
+  private popAllInstr(): Omit<PopAllInstr, 'line'> {
     return {
       type: 'PopAllInstr',
-      line: this.line,
-    };
+      };
   }
 
-  private callInstr(): CallInstr {
+  private callInstr(): Omit<CallInstr, 'line'> {
     return {
       type: 'CallInstr',
-      line: this.line,
       op: this.lblExpr(),
     };
   }
 
-  private retInstr(): RetInstr {
+  private retInstr(): Omit<RetInstr, 'line'> {
     return {
       type: 'RetInstr',
-      line: this.line,
-    };
+      };
   }
 
-  private outInstr(): OutInstr {
+  private outInstr(): Omit<OutInstr, 'line'> {
     const op1 = this.immOrRegExpr();
     this.comma();
     const op2 = this.immOrRegExpr();
     return {
       type: 'OutInstr',
-      line: this.line,
       op1,
       op2,
     };
   }
 
-  private outbInstr(): OutbInstr {
+  private outbInstr(): Omit<OutbInstr, 'line'> {
     const op1 = this.immOrRegExpr();
     this.comma();
     const op2 = this.immOrRegExpr();
     return {
       type: 'OutbInstr',
-      line: this.line,
       op1,
       op2,
-    };
-  }
-
-  private label(): Label {
-    const lbl = this.previous();
-    this.colon();
-    return {
-      type: 'Label',
-      line: this.line,
-      label: (lbl.literal!) as string,
     };
   }
 }

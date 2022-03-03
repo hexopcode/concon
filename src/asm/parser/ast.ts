@@ -23,25 +23,29 @@ export type AstLblExpr = AstNode<'AstLblExpr'> & {
 export type AstImmOrRegExpr = AstImmExpr|AstRegExpr;
 export type AstExpr = AstImmOrRegExpr|AstLblExpr;
 
-type AstOneOpStmt<Type extends string, OpType extends AstExpr> = AstNode<Type> & {
+type AstInstrStmt<Type extends string> = AstNode<Type> & {
+  label?: AstLblExpr,
+};
+
+type AstOneOpStmt<Type extends string, OpType extends AstExpr> = AstInstrStmt<Type> & {
   op: OpType,
 };
 
 type AstTwoOpStmt<Type extends string,
                    Op1Type extends AstExpr,
-                   Op2Type extends AstExpr> = AstNode<Type> & {
+                   Op2Type extends AstExpr> = AstInstrStmt<Type> & {
   op1: Op1Type,
   op2: Op2Type,
 };
 
 export type BlockStmt = AstNode<'BlockStmt'> & {
-  stmts: Stmt[],
+  instrs: Instr[],
 };
 
-export type NopInstr = AstNode<'NopInstr'>;
-export type EndInstr = AstNode<'EndInstr'>;
-export type VsyncInstr = AstNode<'VsyncInstr'>;
-export type BrkInstr = AstNode<'BrkInstr'>;
+export type NopInstr = AstInstrStmt<'NopInstr'>;
+export type EndInstr = AstInstrStmt<'EndInstr'>;
+export type VsyncInstr = AstInstrStmt<'VsyncInstr'>;
+export type BrkInstr = AstInstrStmt<'BrkInstr'>;
 
 export type MovInstr = AstTwoOpStmt<'MovInstr', AstRegExpr, AstImmOrRegExpr>;
 export type StoInstr = AstTwoOpStmt<'StoInstr', AstImmOrRegExpr, AstImmOrRegExpr>;
@@ -77,11 +81,11 @@ export type JoInstr = AstOneOpStmt<'JoInstr', AstImmOrRegExpr>;
 export type JdzInstr = AstOneOpStmt<'JdzInstr', AstImmOrRegExpr>;
 
 export type PushInstr = AstOneOpStmt<'PushInstr', AstImmOrRegExpr>;
-export type PushAllInstr = AstNode<'PushAllInstr'>;
+export type PushAllInstr = AstInstrStmt<'PushAllInstr'>;
 export type PopInstr = AstOneOpStmt<'PopInstr', AstRegExpr>;
-export type PopAllInstr = AstNode<'PopAllInstr'>;
+export type PopAllInstr = AstInstrStmt<'PopAllInstr'>;
 export type CallInstr = AstOneOpStmt<'CallInstr', AstLblExpr>;
-export type RetInstr = AstNode<'RetInstr'>;
+export type RetInstr = AstInstrStmt<'RetInstr'>;
 
 export type OutInstr = AstTwoOpStmt<'OutInstr', AstImmOrRegExpr, AstImmOrRegExpr>;
 export type OutbInstr = AstTwoOpStmt<'OutbInstr', AstImmOrRegExpr, AstImmOrRegExpr>;
@@ -143,12 +147,6 @@ export type Instr = CoreInstr |
     JumpInstr |
     CallInstrs |
     IoInstrs;
-
-export type Label = AstNode<'Label'> & {
-  label: string,
-};
-
-export type Stmt = Instr | Label;
 
 export type ProcStmt = AstNode<'ProcStmt'> & {
   name: string,

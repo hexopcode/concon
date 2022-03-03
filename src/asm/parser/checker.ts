@@ -1,8 +1,8 @@
 import {Registers} from '../../core';
 import {AsmErrorCollector} from '../base';
-import {ProgramAst, Stmt} from './ast';
+import {ProgramAst, Instr} from './ast';
 
-type SyntheticRegistersStmt = Stmt & {
+type SyntheticRegistersInstr = Instr & {
   register?: Registers,
   register1?: Registers,
   register2?: Registers,
@@ -22,16 +22,16 @@ class Checker {
   }
 
   check(): ProgramAst {
-    for (const stmt of this.ast.main.stmts) {
-      this.checkRegistersAreValid(stmt as SyntheticRegistersStmt);
+    for (const instr of this.ast.main.instrs) {
+      this.checkRegistersAreValid(instr as SyntheticRegistersInstr);
     }
     return this.ast;
   }
 
-  private checkRegistersAreValid(synthStmt: SyntheticRegistersStmt) {
-    this.checkRegisterIsValid(synthStmt.register||null, synthStmt.line);
-    this.checkRegisterIsValid(synthStmt.register1||null, synthStmt.line);
-    this.checkRegisterIsValid(synthStmt.register2||null, synthStmt.line);
+  private checkRegistersAreValid(synthInstr: SyntheticRegistersInstr) {
+    this.checkRegisterIsValid(synthInstr.register||null, synthInstr.line);
+    this.checkRegisterIsValid(synthInstr.register1||null, synthInstr.line);
+    this.checkRegisterIsValid(synthInstr.register2||null, synthInstr.line);
   }
 
   private checkRegisterIsValid(reg: Registers|null, line: number) {
