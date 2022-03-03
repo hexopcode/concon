@@ -23,15 +23,15 @@ export type AstLblExpr = AstNode<'AstLblExpr'> & {
 export type AstImmOrRegExpr = AstImmExpr|AstRegExpr;
 export type AstExpr = AstImmOrRegExpr|AstLblExpr;
 
-type AstInstrStmt<Type extends string> = AstNode<Type> & {
+export type AstInstrStmt<Type extends string> = AstNode<Type> & {
   label?: AstLblExpr,
 };
 
-type AstOneOpStmt<Type extends string, OpType extends AstExpr> = AstInstrStmt<Type> & {
+export type AstOneOpStmt<Type extends string, OpType extends AstExpr> = AstInstrStmt<Type> & {
   op: OpType,
 };
 
-type AstTwoOpStmt<Type extends string,
+export type AstTwoOpStmt<Type extends string,
                    Op1Type extends AstExpr,
                    Op2Type extends AstExpr> = AstInstrStmt<Type> & {
   op1: Op1Type,
