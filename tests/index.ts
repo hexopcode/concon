@@ -1,14 +1,14 @@
-import {ArithmeticTests} from './arithmetic';
-import {CallTests} from './call';
-import {CommentsTests} from './comments';
-import {CompareTests} from './compare';
-import {CoreTests} from './core';
-import {DataTests} from './data';
-import {IoTests} from './io';
-import {JumpTests} from './jump';
-import {LogicTests} from './logic';
-import {MemoryTests} from './memory';
-import {ParserErrorTests} from './parser_error';
+import {ArithmeticTests} from './arithmetic.test';
+import {CallTests} from './call.test';
+import {CommentsTests} from './comments.test';
+import {CompareTests} from './compare.test';
+import {CoreTests} from './core.test';
+import {DataTests} from './data.test';
+import {IoTests} from './io.test';
+import {JumpTests} from './jump.test';
+import {LogicTests} from './logic.test';
+import {MemoryTests} from './memory.test';
+import {ParserErrorTests} from './parser_error.test';
 
 export const ALL_TESTS = [
   ArithmeticTests,
