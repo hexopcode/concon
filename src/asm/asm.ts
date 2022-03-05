@@ -1,7 +1,7 @@
 import {Opcodes} from '../core';
 import {AsmError} from './base';
 import {codegen, DEFAULT_LINKER_OPTIONS, link, LinkerOptions} from './codegen';
-import {check, parse, tokenize} from './parser';
+import {check, parse, tokenize, SourceResolver} from './parser';
 
 const END_PROGRAM = new Uint8Array([Opcodes.END]);
 
@@ -15,33 +15,43 @@ function logErrors(errors: AsmError[]) {
   }
 }
 
-export function assemble(source: string, linkerOptions: LinkerOptions = DEFAULT_LINKER_OPTIONS): Uint8Array {
-  return new Assembler(source, linkerOptions, logErrors).assemble();
+export function assemble(resolver: SourceResolver, entrypoint: string, linkerOptions: LinkerOptions = DEFAULT_LINKER_OPTIONS): Uint8Array {
+  return new Assembler(resolver, linkerOptions, logErrors).assemble(entrypoint);
 }
 
-export function assembleCheck(source: string, linkerOptions: LinkerOptions = DEFAULT_LINKER_OPTIONS): AsmError[] {
-  const asm = new Assembler(source, linkerOptions);
-  asm.assemble();
+export function assembleCheck(resolver: SourceResolver, entrypoint: string, linkerOptions: LinkerOptions = DEFAULT_LINKER_OPTIONS): AsmError[] {
+  const asm = new Assembler(resolver, linkerOptions);
+  asm.assemble(entrypoint);
   return asm.errors;
 }
 
 class Assembler {
-  private readonly source: string;
+  private readonly resolver: SourceResolver;
   private readonly linkerOptions: LinkerOptions;
   private readonly errorLogger: ErrorLogger;
   readonly errors: AsmError[];
 
-  constructor(source: string, linkerOptions: LinkerOptions, errorLogger: ErrorLogger = () => {}) {
-    this.source = source;
+  constructor(resolver: SourceResolver, linkerOptions: LinkerOptions, errorLogger: ErrorLogger = () => {}) {
+    this.resolver = resolver;
     this.linkerOptions = linkerOptions;
     this.errorLogger = errorLogger;
     this.errors = [];
   }
 
-  assemble(): Uint8Array {
+  assemble(entrypoint: string): Uint8Array {
     const collectErrors = this.errors.push.bind(this.errors);
+
+    const source = this.resolver.resolve(entrypoint);
+    if (source == undefined) {
+      this.errors.push({
+        line: -1,
+        message: `source not found: ${entrypoint}`,
+      });
+      this.errorLogger(this.errors);
+      return END_PROGRAM;
+    }
     
-    const tokens = tokenize(this.source, collectErrors);
+    const tokens = tokenize(source!, collectErrors);
     if (this.errors.length > 0) {
       this.errorLogger(this.errors);
       return END_PROGRAM;

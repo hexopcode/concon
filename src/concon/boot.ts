@@ -3,6 +3,7 @@ import {MemoryArea, Result, System} from '../core';
 import {runTests, TestResultEnum} from '../lib';
 import {ALL_TESTS} from '../../tests';
 import {ConconScreen} from './components';
+import {StaticSourceResolver} from '../asm/parser';
 
 const testResults = runTests(...ALL_TESTS);
 const testResultsCollection = [...testResults.values()];
@@ -22,42 +23,46 @@ screen.attach(document.querySelector('#screen')!);
 const sys = new System();
 sys.registerOutputDevice(0x00, screen);
 
-sys.loadProgram(assemble(`
-  proc ror:
-    mov r11, r10
-    shr r11, 1
-    mov r12, r10
-    and r12, 1
-    shl r12, 15
-    or r12, r11
-    mov r10, r12
-    ret
+const resolver = new StaticSourceResolver();
+const entrypoint = 'entrypoint.con'; 
+resolver.add(entrypoint, `
+proc ror:
+  mov r11, r10
+  shr r11, 1
+  mov r12, r10
+  and r12, 1
+  shl r12, 15
+  or r12, r11
+  mov r10, r12
+  ret
 
-    mov r0, 0
-    mov r10, 0b1110010011100100
+  mov r0, 0
+  mov r10, 0b1110010011100100
 
-  loop:
-    cmp r0, 0x1000
-    jz render
-    mov r1, 0x1000
-    add r1, r0
+loop:
+  cmp r0, 0x1000
+  jz render
+  mov r1, 0x1000
+  add r1, r0
 
-    call ror
+  call ror
 
-    sto r1, r10
-    inc r0
-    jmp loop
+  sto r1, r10
+  inc r0
+  jmp loop
 
-  render:
-    vsync
-    mov r0, 0
+render:
+  vsync
+  mov r0, 0
 
-    call ror
+  call ror
 
-    // jmp loop
+  // jmp loop
 
-    end
-`));
+  end
+`);
+
+sys.loadProgram(assemble(resolver, entrypoint));
 
 if (sys.boot() == Result.VSYNC) {
   cycle();

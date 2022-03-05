@@ -1,4 +1,4 @@
-import {assembleCheck} from '../src/asm';
+import {assembleCheck} from './helpers';
 import {System} from '../src/core';
 import {TestRunner, TestSpec} from '../src/lib';
 

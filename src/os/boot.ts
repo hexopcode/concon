@@ -1,5 +1,6 @@
 import {assemble} from '../asm';
 import {LinkerOptions} from '../asm/codegen';
+import {StaticSourceResolver} from '../asm/parser';
 import {CODE_OFFSET, HEADER_OFFSET, MEMORY_PROGRAM_OFFSET, STACK_ADDRESS_OFFSET, START_ADDRESS_OFFSET, VERSION_0_1} from '../core';
 
 const LINKER_OPTIONS: LinkerOptions = {
@@ -8,9 +9,12 @@ const LINKER_OPTIONS: LinkerOptions = {
 }
 
 export function create_boot(): Uint8Array {
+  const resolver = new StaticSourceResolver();
+  const entrypoint = 'entrypoint.con';
+
   // TODO: check for header correctness
   // FIXME: move address computation to boot code itself
-  return assemble(`
+  resolver.add(entrypoint, `
     // palette[0] = 0x9bbc0fff
     out 0x00, 0x009b
     out 0x00, 0x10bc
@@ -47,5 +51,7 @@ export function create_boot(): Uint8Array {
     add r2, r0
 
     jmp r2
-  `, LINKER_OPTIONS);
+`);
+
+  return assemble(resolver, entrypoint, LINKER_OPTIONS);
 }
