@@ -5,6 +5,8 @@ import {check, parse, tokenize} from './parser';
 
 const END_PROGRAM = new Uint8Array([Opcodes.END]);
 
+type ErrorLogger = (errors: AsmError[]) => void;
+
 function logErrors(errors: AsmError[]) {
   if (errors.length > 0) {
     errors.forEach(asmError => {
@@ -14,75 +16,61 @@ function logErrors(errors: AsmError[]) {
 }
 
 export function assemble(source: string, linkerOptions: LinkerOptions = DEFAULT_LINKER_OPTIONS): Uint8Array {
-  const errors: AsmError[] = [];
-  const collectErrors = errors.push.bind(errors);
-  
-  const tokens = tokenize(source, collectErrors);
-  if (errors.length > 0) {
-    console.error('Fatal error(s) in tokenizer');
-    logErrors(errors);
-    return END_PROGRAM;
-  }
-
-  const ast = parse(tokens, collectErrors);
-  if (errors.length > 0) {
-    console.error('Fatal error(s) in parser');
-    logErrors(errors);
-    return END_PROGRAM;
-  }
-
-  check(ast, collectErrors);
-  if (errors.length > 0) {
-    console.error('Fatal error(s) in checker');
-    logErrors(errors);
-    return END_PROGRAM;
-  }
-  
-  const program = codegen(ast, collectErrors);
-  if (errors.length > 0) {
-    console.error('Fatal error(s) in codegen');
-    logErrors(errors);
-    return END_PROGRAM;
-  }
-
-  const bytes = link(program, linkerOptions);
-  if (errors.length > 0) {
-    console.error('Fatal error(s) in linking');
-    logErrors(errors);
-    return END_PROGRAM;
-  }
-  
-  return bytes;
+  return new Assembler(source, linkerOptions, logErrors).assemble();
 }
 
 export function assembleCheck(source: string, linkerOptions: LinkerOptions = DEFAULT_LINKER_OPTIONS): AsmError[] {
-  const errors: AsmError[] = [];
-  const collectErrors = errors.push.bind(errors);
-  
-  const tokens = tokenize(source, collectErrors);
-  if (errors.length > 0) {
-    return errors;
-  }
-  
-  const ast = parse(tokens, collectErrors);
-  if (errors.length > 0) {
-    return errors;
-  }
-  
-  check(ast, collectErrors);
-  if (errors.length > 0) {
-    return errors;
+  const asm = new Assembler(source, linkerOptions);
+  asm.assemble();
+  return asm.errors;
+}
+
+class Assembler {
+  private readonly source: string;
+  private readonly linkerOptions: LinkerOptions;
+  private readonly errorLogger: ErrorLogger;
+  readonly errors: AsmError[];
+
+  constructor(source: string, linkerOptions: LinkerOptions, errorLogger: ErrorLogger = () => {}) {
+    this.source = source;
+    this.linkerOptions = linkerOptions;
+    this.errorLogger = errorLogger;
+    this.errors = [];
   }
 
-  const program = codegen(ast, collectErrors);
-  if (errors.length > 0) {
-    return errors;
-  }
+  assemble(): Uint8Array {
+    const collectErrors = this.errors.push.bind(this.errors);
+    
+    const tokens = tokenize(this.source, collectErrors);
+    if (this.errors.length > 0) {
+      this.errorLogger(this.errors);
+      return END_PROGRAM;
+    }
 
-  link(program, linkerOptions);
-  if (errors.length > 0) {
-    return errors;
-  }
+    const ast = parse(tokens, collectErrors);
+    if (this.errors.length > 0) {
+      this.errorLogger(this.errors);
+      return END_PROGRAM;
+    }
 
-  return [];
+    check(ast, collectErrors);
+    if (this.errors.length > 0) {
+      this.errorLogger(this.errors);
+      return END_PROGRAM;
+    }
+    
+    const program = codegen(ast, collectErrors);
+    if (this.errors.length > 0) {
+      this.errorLogger(this.errors);
+      return END_PROGRAM;
+    }
+
+    const bytes = link(program, this.linkerOptions);
+    if (this.errors.length > 0) {
+      this.errorLogger(this.errors);
+      return END_PROGRAM;
+    }
+    
+    return bytes;
+  }
 }
