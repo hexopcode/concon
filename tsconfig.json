@@ -21,5 +21,5 @@
     "inlineSources": true,
     "rootDir": "./"
   },
-  "include": ["**/*.ts"]
+  "include": ["**/*.ts", "tools/conplugin.js", "tools/index.js"]
 }
