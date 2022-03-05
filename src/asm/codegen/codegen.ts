@@ -3,6 +3,7 @@ import {unreachable} from '../../lib';
 import {AsmErrorCollector} from '../base';
 import {AstImmExpr, AstLblExpr, BlockStmt, ProgramAst} from '../parser';
 import {Program} from './program';
+import {word} from './utilities';
 
 const FAKE_ADDR: number[] = [0xFF, 0xFF];
 
@@ -413,6 +414,25 @@ class Codegen {
               this.bytes.push(instr.op1.value);
               this.bytes.push(instr.op2.value);
             }
+            break;
+          case 'DataByte':
+            for (const b of instr.bytes) {
+              // FIXME: validate that the expressions reference actual bytes
+              this.bytes.push(this.immExpr(b)[0]);
+            }
+            break;
+          case 'DataWord':
+            for (const w of instr.words) {
+              this.bytes.push(...this.immExpr(w));
+            }
+            break;
+          case 'DataStr':
+            const joint = instr.strs.map(s => s.str).join(''); 
+            const chars = joint.split('');
+            const codes = chars.map(c => c.charCodeAt(0) & 0xFF);  // no time for Unicode
+            const len = codes.length;
+            this.bytes.push(...word(len));
+            this.bytes.push(...codes);
             break;
           default:
             unreachable(`Unsupported instruction: ${JSON.stringify(instr)}`);

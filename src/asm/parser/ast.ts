@@ -7,18 +7,25 @@ type AstNode<Type extends string> = {
   line: number,
 };
 
+export type AstNodeType<Type extends AstNode<any>> = Omit<Type, 'line'>;
+
 export type AstImmExpr = AstNode<'AstImmExpr'> & {
   // TODO: support more complex expressions
   value: string|number,
+  isByte?: boolean,
 };
 
 export type AstRegExpr = AstNode<'AstRegExpr'> & {
   value: Registers,
-}
+};
 
 export type AstLblExpr = AstNode<'AstLblExpr'> & {
   label: string,
-}
+};
+
+export type AstStrExpr = AstNode<'AstStrExpr'> & {
+  str: string,
+};
 
 export type AstImmOrRegExpr = AstImmExpr|AstRegExpr;
 export type AstExpr = AstImmOrRegExpr|AstLblExpr;
@@ -36,10 +43,6 @@ export type AstTwoOpStmt<Type extends string,
                    Op2Type extends AstExpr> = AstInstrStmt<Type> & {
   op1: Op1Type,
   op2: Op2Type,
-};
-
-export type BlockStmt = AstNode<'BlockStmt'> & {
-  instrs: Instr[],
 };
 
 export type NopInstr = AstInstrStmt<'NopInstr'>;
@@ -90,6 +93,18 @@ export type RetInstr = AstInstrStmt<'RetInstr'>;
 export type OutInstr = AstTwoOpStmt<'OutInstr', AstImmOrRegExpr, AstImmOrRegExpr>;
 export type OutbInstr = AstTwoOpStmt<'OutbInstr', AstImmOrRegExpr, AstImmOrRegExpr>;
 
+export type DataByte = AstInstrStmt<'DataByte'> & {
+  bytes: AstImmExpr[],
+};
+
+export type DataWord = AstInstrStmt<'DataWord'> & {
+  words: AstImmExpr[],
+};
+
+export type DataStr = AstInstrStmt<'DataStr'> & {
+  strs: AstStrExpr[],
+};
+
 export type CoreInstr = NopInstr |
     EndInstr |
     VsyncInstr |
@@ -139,6 +154,10 @@ export type CallInstrs = PushInstr |
 export type IoInstrs = OutInstr |
     OutbInstr;
 
+export type DataInstrs = DataByte |
+    DataWord |
+    DataStr;
+
 export type Instr = CoreInstr |
     MemoryInstr |
     ArithmeticInstr |
@@ -146,7 +165,12 @@ export type Instr = CoreInstr |
     CompareInstr |
     JumpInstr |
     CallInstrs |
-    IoInstrs;
+    IoInstrs |
+    DataInstrs;
+
+export type BlockStmt = AstNode<'BlockStmt'> & {
+  instrs: Instr[],
+};
 
 export type ProcStmt = AstNode<'ProcStmt'> & {
   name: string,

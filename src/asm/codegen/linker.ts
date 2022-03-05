@@ -13,7 +13,7 @@ import {
 } from '../../core';
 import { AstImmExpr } from '../parser';
 import {Program} from './program';
-import {word} from './utilities';
+import {byte, word} from './utilities';
 
 export type LinkerOptions = {
   header: boolean,
@@ -57,7 +57,8 @@ class Linker {
 
   private resolveCodeExprs() {
     for (const [offset, expr] of this.program.codeExprs.entries()) {
-      this.program.code.set(word(this.resolveExpr(expr)), offset);
+      const value = this.resolveExpr(expr);
+      this.program.code.set(expr.isByte ? byte(value) : word(value), offset);
     }
   }
 

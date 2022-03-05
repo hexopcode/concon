@@ -64,6 +64,10 @@ export enum TokenType {
 
   OUT,
   OUTB,
+
+  DB,
+  DW,
+  DSTR,
 }
 
 const Keywords: Map<string, TokenType> = new Map(Object.entries({
@@ -115,6 +119,10 @@ const Keywords: Map<string, TokenType> = new Map(Object.entries({
 
   'out': TokenType.OUT,
   'outb': TokenType.OUTB,
+
+  'db': TokenType.DB,
+  'dw': TokenType.DW,
+  'dstr': TokenType.DSTR,
 }));
 
 export type Token = {

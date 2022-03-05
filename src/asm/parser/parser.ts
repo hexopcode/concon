@@ -1,7 +1,9 @@
 import {Token, TokenType} from './tokenizer';
 import {
+  AstNodeType,
   AstRegExpr,
   AstLblExpr,
+  AstStrExpr,
   AstImmExpr,
   AstImmOrRegExpr,
   AstOneOpStmt,
@@ -43,6 +45,9 @@ import {
   BlockStmt,
   OutInstr,
   OutbInstr,
+  DataByte,
+  DataWord,
+  DataStr,
 } from './ast';
 import {Registers} from '../../core';
 import {unreachable} from '../../lib';
@@ -301,6 +306,12 @@ class Parser {
       return this.immOrRegAndImmOrRegInstr<OutInstr>('OutInstr');
     } else if (this.match(TokenType.OUTB)) {
       return this.immOrRegAndImmOrRegInstr<OutbInstr>('OutbInstr');
+    } else if (this.match(TokenType.DB)) {
+      return this.dataByte();
+    } else if (this.match(TokenType.DW)) {
+      return this.dataWord();
+    } else if (this.match(TokenType.DSTR)) {
+      return this.dataStr();
     }
     unreachable(`Invalid token: ${this.peek()?.lexeme}`);
   }
@@ -318,7 +329,7 @@ class Parser {
     };
   }
 
-  private immExpr(): AstImmExpr {
+  private immExpr(isByte: boolean = false): AstImmExpr {
     // FIXME: needs better checks for immediate expressions
     const value = this.check(TokenType.NUMBER) ?
         this.consume(TokenType.NUMBER, 'Expected NUMBER') :
@@ -328,15 +339,25 @@ class Parser {
       type: 'AstImmExpr',
       line: this.line,
       value: value.literal!,
+      isByte,
     };
   }
 
   private lblExpr(): AstLblExpr {
-    const name = this.consume(TokenType.IDENTIFIER, 'expected identifier');
+    const name = this.consume(TokenType.IDENTIFIER, 'Expected identifier');
     return {
       type: 'AstLblExpr',
       line: this.line,
       label: (name.literal!) as string,
+    };
+  }
+
+  private strExpr(): AstStrExpr {
+    const str = this.consume(TokenType.STRING, 'Expected STRING');
+    return {
+      type: 'AstStrExpr',
+      line: this.line,
+      str: (str.literal!) as string,
     };
   }
 
@@ -355,7 +376,7 @@ class Parser {
     this.consume(TokenType.COLON, `Expected ':'`);
   }
 
-  private regAndImmOrRegInstr<Type extends AstTwoOpStmt<any,any,any>>(tstr: Type['type']): Omit<Type, 'line'> {
+  private regAndImmOrRegInstr<Type extends AstTwoOpStmt<any,any,any>>(tstr: Type['type']): AstNodeType<Type> {
     const op1 = this.regExpr();
     this.comma();
     const op2 = this.immOrRegExpr();
@@ -363,10 +384,10 @@ class Parser {
       type: tstr,
       op1,
       op2,
-    } as Type;
+    } as AstNodeType<Type>;
   }
 
-  private immOrRegAndImmOrRegInstr<Type extends AstTwoOpStmt<any,any,any>>(tstr: Type['type']): Omit<Type, 'line'> {
+  private immOrRegAndImmOrRegInstr<Type extends AstTwoOpStmt<any,any,any>>(tstr: Type['type']): AstNodeType<Type> {
     const op1 = this.immOrRegExpr();
     this.comma();
     const op2 = this.immOrRegExpr();
@@ -374,14 +395,14 @@ class Parser {
       type: tstr,
       op1,
       op2,
-    } as Type;
+    } as AstNodeType<Type>;
   }
 
-  private immOrRegInstr<Type extends AstOneOpStmt<any,any>>(tstr: Type['type']): Omit<Type, 'line'> {
+  private immOrRegInstr<Type extends AstOneOpStmt<any,any>>(tstr: Type['type']): AstNodeType<Type> {
     return {
       type: tstr,
       op: this.immOrRegExpr(),
-    } as Type;
+    } as AstNodeType<Type>;
   }
 
   private regInstr<Type extends AstOneOpStmt<any,any>>(tstr: Type['type']): Omit<Type, 'line'> {
@@ -389,5 +410,47 @@ class Parser {
       type: tstr,
       op: this.regExpr(),
     } as Type;
+  }
+
+  private dataByte(): AstNodeType<DataByte> {
+    const bytes: AstImmExpr[] = [this.immExpr(true)];
+    this.whitespace();
+    while (this.match(TokenType.COMMA)) {
+      this.whitespace();
+      bytes.push(this.immExpr(true));
+    }
+
+    return {
+      type: 'DataByte',
+      bytes,
+    };
+  }
+
+  private dataWord(): AstNodeType<DataWord> {
+    const words: AstImmExpr[] = [this.immExpr()];
+    this.whitespace();
+    while (this.match(TokenType.COMMA)) {
+      this.whitespace();
+      words.push(this.immExpr());
+    }
+
+    return {
+      type: 'DataWord',
+      words,
+    };
+  }
+
+  private dataStr(): AstNodeType<DataStr> {
+    const strs: AstStrExpr[] = [this.strExpr()];
+    this.whitespace();
+    while (this.match(TokenType.COMMA)) {
+      this.whitespace();
+      strs.push(this.strExpr());
+    }
+
+    return {
+      type: 'DataStr',
+      strs,
+    }
   }
 }

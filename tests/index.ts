@@ -3,6 +3,7 @@ import {CallTests} from './call';
 import {CommentsTests} from './comments';
 import {CompareTests} from './compare';
 import {CoreTests} from './core';
+import {DataTests} from './data';
 import {IoTests} from './io';
 import {JumpTests} from './jump';
 import {LogicTests} from './logic';
@@ -15,6 +16,7 @@ export const ALL_TESTS = [
   CommentsTests,
   CompareTests,
   CoreTests,
+  DataTests,
   IoTests,
   JumpTests,
   LogicTests,
