@@ -1,6 +1,6 @@
 import {assemble, assembleCheck as check} from '../src/asm';
 import {AsmError} from '../src/asm/base';
-import {StaticSourceResolver} from '../src/asm/parser';
+import {StaticSourceResolver} from '../src/lib/source';
 import {Result, System} from '../src/core';
 
 export function assembleAndBoot(sys: System, source: string): Result {

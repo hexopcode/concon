@@ -1,6 +1,6 @@
 import {assemble} from '../asm';
 import {LinkerOptions} from '../asm/codegen';
-import {StaticSourceResolver} from '../asm/parser';
+import {StaticSourceResolver} from '../lib/source';
 import {CODE_OFFSET, HEADER_OFFSET, MEMORY_PROGRAM_OFFSET, STACK_ADDRESS_OFFSET, START_ADDRESS_OFFSET, VERSION_0_1} from '../core';
 
 const LINKER_OPTIONS: LinkerOptions = {

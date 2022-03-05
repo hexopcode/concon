@@ -3,7 +3,7 @@ import {MemoryArea, Result, System} from '../core';
 import {runTests, TestResultEnum} from '../lib';
 import {ALL_TESTS} from '../../tests';
 import {ConconScreen} from './components';
-import {StaticSourceResolver} from '../asm/parser';
+import {StaticSourceResolver} from '../lib/source';
 
 const testResults = runTests(...ALL_TESTS);
 const testResultsCollection = [...testResults.values()];

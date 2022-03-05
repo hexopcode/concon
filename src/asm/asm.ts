@@ -1,7 +1,8 @@
 import {Opcodes} from '../core';
 import {AsmError} from './base';
+import {SourceResolver} from '../lib/source';
 import {codegen, DEFAULT_LINKER_OPTIONS, link, LinkerOptions} from './codegen';
-import {check, parse, tokenize, SourceResolver} from './parser';
+import {check, parse, tokenize} from './parser';
 
 const END_PROGRAM = new Uint8Array([Opcodes.END]);
 
