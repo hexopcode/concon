@@ -1,7 +1,7 @@
-import {assemble, assembleCheck as check} from '../src/asm';
-import {AsmError} from '../src/asm/base';
-import {StaticSourceResolver} from '../src/lib/source';
-import {Result, System} from '../src/core';
+import {assemble, assembleCheck as check} from '../../asm';
+import {AsmError} from '../../asm/base';
+import {StaticSourceResolver} from '../source';
+import {Result, System} from '../../core';
 
 export function assembleAndBoot(sys: System, source: string): Result {
   const resolver = new StaticSourceResolver();

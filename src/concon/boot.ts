@@ -1,6 +1,6 @@
 import {assemble} from '../asm';
 import {MemoryArea, Result, System} from '../core';
-import {runTests, TestResultEnum} from '../lib';
+import {runTests, TestResultEnum} from '../lib/testing';
 import {ALL_TESTS} from '../../tests';
 import {ConconScreen} from './components';
 import {StaticSourceResolver} from '../lib/source';

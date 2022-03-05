@@ -1,6 +1,5 @@
 import {Result, System} from '../src/core';
-import {TestRunner, TestSpec} from '../src/lib';
-import {assembleAndBoot} from './helpers';
+import {TestRunner, TestSpec, assembleAndBoot} from '../src/lib/testing';
 
 class OutRecorder {
   readonly data: number[];
