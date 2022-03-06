@@ -1,0 +1,1 @@
+export {source as stripes} from './stripes.con';

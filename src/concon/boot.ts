@@ -4,6 +4,7 @@ import {runTests, TestResultEnum} from '../lib/testing';
 import {ALL_TESTS} from '../../tests';
 import {ConconScreen} from './components';
 import {StaticSourceResolver} from '../lib/source';
+import {stripes} from './examples';
 
 const testResults = runTests(...ALL_TESTS);
 const testResultsCollection = [...testResults.values()];
@@ -24,45 +25,9 @@ const sys = new System();
 sys.registerOutputDevice(0x00, screen);
 
 const resolver = new StaticSourceResolver();
-const entrypoint = 'entrypoint.con'; 
-resolver.add(entrypoint, `
-proc ror:
-  mov r11, r10
-  shr r11, 1
-  mov r12, r10
-  and r12, 1
-  shl r12, 15
-  or r12, r11
-  mov r10, r12
-  ret
+resolver.add('stripes.con', stripes);
 
-  mov r0, 0
-  mov r10, 0b1110010011100100
-
-loop:
-  cmp r0, 0x1000
-  jz render
-  mov r1, 0x1000
-  add r1, r0
-
-  call ror
-
-  sto r1, r10
-  inc r0
-  jmp loop
-
-render:
-  vsync
-  mov r0, 0
-
-  call ror
-
-  // jmp loop
-
-  end
-`);
-
-sys.loadProgram(assemble(resolver, entrypoint));
+sys.loadProgram(assemble(resolver, 'stripes.con'));
 
 if (sys.boot() == Result.VSYNC) {
   cycle();
