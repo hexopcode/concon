@@ -8,7 +8,7 @@ const PALETTE_COLOR_COUNT = 4;
 const PALETTE_BYTES_PER_COLOR = 4;
 const PALETTE_BYTES_COUNT = PALETTE_COLOR_COUNT * PALETTE_BYTES_PER_COLOR;
 
-export class ConconScreen implements OutputDevice {
+export class ConconScreenElement extends HTMLElement implements OutputDevice {
   private readonly dom: HTMLCanvasElement;
   private readonly ctx: CanvasRenderingContext2D;
   private readonly paletteBuffer: ArrayBuffer;
@@ -16,13 +16,16 @@ export class ConconScreen implements OutputDevice {
   private paletteDirty: boolean;
 
   constructor() {
-    this.dom = document.createElement('canvas') as HTMLCanvasElement;
+    super();
 
+    this.dom = document.createElement('canvas') as HTMLCanvasElement;
     // FIXME: account devicePixelRatio
     this.dom.width = PIXELS;
     this.dom.height = PIXELS;
     this.dom.style.setProperty('width', `${PIXELS}px`);
     this.dom.style.setProperty('height', `${PIXELS}px`);
+    this.appendChild(this.dom);
+
     // FIXME: replace with webgl
     this.ctx = this.dom.getContext('2d')!;
 
@@ -34,6 +37,8 @@ export class ConconScreen implements OutputDevice {
       new Uint8ClampedArray(this.paletteBuffer, 3 * PALETTE_BYTES_PER_COLOR, PALETTE_BYTES_PER_COLOR),
     ];
     this.paletteDirty = true;
+
+    
   }
 
   out(data: number) {
@@ -45,10 +50,6 @@ export class ConconScreen implements OutputDevice {
   }
 
   outb(data: number) {}
-
-  attach(root: HTMLElement) {
-    root.appendChild(this.dom);
-  }
 
   render(framebuffer: Uint8Array) {
     if (this.paletteDirty) {

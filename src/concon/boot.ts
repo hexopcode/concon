@@ -2,7 +2,7 @@ import {assemble} from '../asm';
 import {MemoryArea, Result, System} from '../core';
 import {runTests, TestResultEnum} from '../lib/testing';
 import {ALL_TESTS} from '../../tests';
-import {ConconScreen} from './components';
+import {ConconScreenElement} from './components';
 import {StaticSourceResolver} from '../lib/source';
 import {stripes} from './examples';
 
@@ -18,8 +18,8 @@ if (failed.length > 0) {
   console.log(`%cPASSED ${total}/${total}`, 'color: green');
 }
 
-const screen = new ConconScreen();
-screen.attach(document.querySelector('#screen')!);
+customElements.define('concon-screen', ConconScreenElement);
+const screen = document.querySelector('concon-screen')! as ConconScreenElement;
 
 const sys = new System();
 sys.registerOutputDevice(0x00, screen);
