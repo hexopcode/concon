@@ -15,6 +15,10 @@ export class StaticSourceResolver implements SourceResolver {
     this.sources.set(source.path, source.code);
   }
 
+  paths(): string[] {
+    return [...this.sources.keys()];
+  }
+
   resolve(path: string): string|undefined {
     // FIXME: resolve relative paths
     if (this.sources.has(path)) {

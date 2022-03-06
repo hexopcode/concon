@@ -31,7 +31,7 @@ body {
   font-family: monospace;
 }
 
-#container {
+concon-element {
   display: grid;
   grid-template-rows: var(--border-size) var(--header-size) var(--screen-pixels) auto var(--border-size);
   grid-template-columns: var(--border-size) var(--screen-pixels) var(--border-size) auto var(--border-size);
