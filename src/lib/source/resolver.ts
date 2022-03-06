@@ -1,3 +1,5 @@
+import {Source} from './types';
+
 export interface SourceResolver {
   resolve(path: string): string|undefined;
 }
@@ -9,12 +11,12 @@ export class StaticSourceResolver implements SourceResolver {
     this.sources = new Map();
   }
 
-  add(path: string, source: string) {
-    // FIXME: resolve relative paths
-    this.sources.set(path, source);
+  add(source: Source) {
+    this.sources.set(source.path, source.code);
   }
 
   resolve(path: string): string|undefined {
+    // FIXME: resolve relative paths
     if (this.sources.has(path)) {
       return this.sources.get(path);
     }

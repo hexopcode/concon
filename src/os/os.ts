@@ -12,6 +12,6 @@ const LINKER_OPTIONS: LinkerOptions = {
 export function create_os_image(): Uint8Array {
   const resolver = new StaticSourceResolver();
   const entrypoint = 'entrypoint.con';
-  resolver.add(entrypoint, boot);
-  return assemble(resolver, entrypoint, LINKER_OPTIONS);
+  resolver.add(boot);
+  return assemble(resolver, boot.path, LINKER_OPTIONS);
 }

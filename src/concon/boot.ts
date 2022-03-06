@@ -25,9 +25,9 @@ const sys = new System();
 sys.registerOutputDevice(0x00, screen);
 
 const resolver = new StaticSourceResolver();
-resolver.add('stripes.con', stripes);
+resolver.add(stripes);
 
-sys.loadProgram(assemble(resolver, 'stripes.con'));
+sys.loadProgram(assemble(resolver, stripes.path));
 
 if (sys.boot() == Result.VSYNC) {
   cycle();

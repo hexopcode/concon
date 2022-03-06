@@ -1,8 +1,11 @@
 function conToJavaScript(source) {
-  const escaped = `\`${source.replace('`', '\\\`')}\``;
-  const body = `export const source = ${escaped};
-export default source;
-`;
+  const escaped = `\`${source.code.replace('`', '\\\`')}\``;
+  const body = `/** @generated */
+export const source = {
+  path: '${source.path}',
+  code: ${escaped},
+};
+export default source;`;
   return {body};
 }
 
@@ -11,7 +14,7 @@ export function conPlugin() {
     name: 'con',
     transform(context) {
       if (context.path.endsWith('.con')) {
-        return conToJavaScript(context.body);
+        return conToJavaScript({path: context.path, code: context.body});
       }
     },
   };
