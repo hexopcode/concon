@@ -8,7 +8,7 @@ type TestCase = {
   fn: () => void,
 };
 
-export enum TestResultEnum {
+enum TestResultEnum {
   PASSED,
   FAILED,
 }
@@ -17,7 +17,13 @@ type TestResult = {
   description: string,
   result: TestResultEnum,
   error?: Error,
-}
+};
+
+type TestResultSummary = {
+  total: number,
+  passed: TestResult[],
+  failed: TestResult[],
+};
 
 export function runTests(...specs: TestSpec[]): Set<TestResult> {
   const allResults: TestResult[] = [];
@@ -29,6 +35,15 @@ export function runTests(...specs: TestSpec[]): Set<TestResult> {
   }
 
   return new Set(allResults);
+}
+
+export function runTestsSummary(...specs: TestSpec[]): TestResultSummary {
+  const results = [...runTests(...specs)];
+  return {
+    total: results.length,
+    passed: results.filter(r => r.result == TestResultEnum.PASSED),
+    failed: results.filter(r => r.result == TestResultEnum.FAILED),
+  }
 }
 
 export class TestRunner {
