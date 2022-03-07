@@ -53,11 +53,13 @@ export class System {
     this.reset();
   }
 
-  reset() {
+  reset(resetDevices: boolean = true) {
     this.memory.fill(0x00);
     this.registers.fill(0x00);
-    this.inputDevices.clear();
-    this.outputDevices.clear();
+    if (resetDevices) {
+      this.inputDevices.clear();
+      this.outputDevices.clear();  
+    }
     this.loadOperatingSystem();
   }
 

@@ -1,28 +1,34 @@
 import {ALL_TESTS} from '../../../tests';
-import {ConconConsoleElement} from './console';
+import {ConconConsoleElement, LOAD_SOURCE} from './console';
 import {ConconScreenElement} from './screen';
 import {MemoryArea, Result, System} from '../../core';
-import {StaticSourceResolver} from '../../lib/source';
+import {SourceResolver} from '../../lib/source';
 import {assemble} from '../../asm';
 import {runTestsSummary} from '../../lib/testing';
-import {stripes} from '../examples';
+import {ConconContext} from './context';
+import {use, ContextElement} from '../../lib/dom';
 
 export class ConconElement extends HTMLElement {
   private readonly screen: ConconScreenElement;
   private readonly console: ConconConsoleElement;
+  private readonly context: ConconContext;
+  private readonly resolver: SourceResolver;
+
   private readonly system: System;
-  private readonly resolver: StaticSourceResolver;
+  private source: Source|undefined;
 
   constructor() {
     super();
     this.screen = this.querySelector('concon-screen')! as ConconScreenElement;
     this.console = this.querySelector('concon-console')! as ConconConsoleElement;
+    this.console.addEventListener(LOAD_SOURCE, this.handleLoadSource.bind(this));
+
+    this.context = use(this.closest('concon-context')! as ContextElement<ConconContext>);
+    this.resolver = this.context.resolver;
 
     this.system = new System();
     this.system.registerOutputDevice(0x00, this.screen);
-
-    this.resolver = new StaticSourceResolver();
-    this.resolver.add(stripes);
+    this.source = undefined;
 
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState == 'visible') {
@@ -33,8 +39,12 @@ export class ConconElement extends HTMLElement {
 
   boot() {
     this.tests();
+  }
 
-    this.system.loadProgram(assemble(this.resolver, this.resolver.paths()[0]));
+  private handleLoadSource(e: CustomEvent<Source>) {
+    this.source = e.detail;
+    this.system.reset(false);
+    this.system.loadProgram(assemble(this.resolver, this.source.path));
     this.cycle();
   }
 
@@ -54,7 +64,7 @@ export class ConconElement extends HTMLElement {
     if (result == Result.VSYNC) {
       requestAnimationFrame(this.cycle.bind(this));
     } else {
-      this.console.log(`PROGRAM ${stripes.path.toUpperCase()} TERMINATED: ${Result[result]}`);
+      this.console.log(`PROGRAM ${this.source?.path} TERMINATED: ${Result[result]}`);
     }
   }
 }

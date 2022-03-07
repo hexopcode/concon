@@ -6,10 +6,16 @@
   <script src="/concon/boot.ts" type="module"></script>
 </head>
 <body>
-  <concon-element>
-    <div id="logo">/// concon</div>
-    <concon-screen class="inset"></concon-screen>
-    <concon-console class="inset"></concon-console>
-  </concon-element>
+  <concon-context>
+    <concon-element>
+      <div id="logo">/// concon</div>
+      <concon-screen class="display"></concon-screen>
+      <concon-console class="display">
+        <concon-devbar>
+          <button class="devbar-button" id="load-button">load program</button>
+        </concon-devbar>
+      </concon-console>
+    </concon-element>
+  </concon-context>
 </body>
 </html>

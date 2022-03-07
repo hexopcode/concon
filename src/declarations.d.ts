@@ -1,6 +1,7 @@
 type Source = {
   path: string,
   code: string,
+  library: boolean,
 };
 
 declare module '*.con' {

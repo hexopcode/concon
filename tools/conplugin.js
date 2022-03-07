@@ -4,6 +4,7 @@ function conToJavaScript(source) {
 export const source = {
   path: '${source.path}',
   code: ${escaped},
+  library: ${source.library},
 };
 export default source;`;
   return {body};
@@ -14,7 +15,8 @@ export function conPlugin() {
     name: 'con',
     transform(context) {
       if (context.path.endsWith('.con')) {
-        return conToJavaScript({path: context.path, code: context.body});
+        const library = context.path.endsWith('.lib.con');
+        return conToJavaScript({path: context.path, code: context.body, library});
       }
     },
   };

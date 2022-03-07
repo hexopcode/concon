@@ -1,6 +1,5 @@
 :root {
   /* https://material.io/design/color/the-color-system.html#tools-for-picking-colors */
-  
   --color-shadow: #111111;
   --color-0: #212121;
   --color-00: #757575;
@@ -16,6 +15,9 @@
   --screen-scale: 3;
   --screen-padding: 6px;
   --screen-pixels: calc(var(--screen-size) * var(--screen-scale) + (2 * var(--screen-padding)));
+
+  --display-border-radius: 3px;
+  --console-padding: 5px;
 }
 
 body {
@@ -29,6 +31,12 @@ body {
 
   font-size: 9pt;
   font-family: monospace;
+}
+
+button {
+  font-size: 9pt;
+  font-family: monospace;
+  outline: none;
 }
 
 concon-element {
@@ -53,22 +61,46 @@ concon-element {
   text-shadow: 1px 1px 2px var(--color-shadow);
 }
 
-.inset {
-  border-radius: 3px;
+.display {
+  border-radius: var(--display-border-radius);
   box-shadow: 3px 3px 5px var(--color-shadow) inset;
+  background-color: var(--color-0);
 }
 
 concon-screen {
   grid-row: 3 / 4;
   grid-column: 2 / 2;
   padding: var(--screen-padding);
-  background-color: var(--color-0);
 }
 
 concon-console {
   grid-row: 3 / 5;
   grid-column: 4 / 4;
   background-color: var(--color-0);
-  padding: 5px;
+  padding: var(--console-padding);
   color: var(--color-00);
+}
+
+concon-devbar {
+  display: block;
+  position: sticky;
+  height: var(--header-size);
+
+  margin: calc(-1 * var(--console-padding));
+  padding: var(--console-padding);
+
+  border-top-left-radius: var(--display-border-radius);
+  border-top-right-radius: var(--display-border-radius);
+  
+  background-color: var(--color-0);
+}
+
+.devbar-button {
+  background-color: var(--color-0);
+  color: var(--color-00);
+  border: 1px solid transparent;
+}
+
+.devbar-button:hover {
+  border: 1px solid var(--color-00);
 }
