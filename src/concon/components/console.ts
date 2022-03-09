@@ -1,5 +1,6 @@
-import {ConconDevBarElement, LIST_SOURCES} from './devbar';
 import {ConconContext} from './context';
+import {ConconDevBarElement, LIST_SOURCES} from './devbar';
+import {ConconOutputElement} from './output';
 import {Source, SourceResolver, StaticSourceResolver} from '../../lib/source';
 import {use, ContextElement} from '../../lib/dom';
 import {stripes} from '../examples';
@@ -14,6 +15,7 @@ declare global {
 
 export class ConconConsoleElement extends HTMLElement {
   private readonly devbar: ConconDevBarElement;
+  private readonly output: ConconOutputElement;
   private readonly context: ConconContext;
   private readonly resolver: SourceResolver;
 
@@ -21,6 +23,7 @@ export class ConconConsoleElement extends HTMLElement {
     super();
     this.devbar = this.querySelector('concon-devbar')! as ConconDevBarElement;
     this.devbar.addEventListener(LIST_SOURCES, this.handleListSources.bind(this));
+    this.output = this.querySelector('concon-output')! as ConconOutputElement;
 
     this.context = use(this.closest('concon-context')! as ContextElement<ConconContext>);
     this.resolver = this.context.resolver;
@@ -37,7 +40,11 @@ export class ConconConsoleElement extends HTMLElement {
   log(text: string) {
     const child = document.createElement('div');
     child.innerHTML = text;
-    this.appendChild(child);
+    this.output.add(child);
+  }
+
+  clear() {
+    this.output.clear();
   }
 
   private loadSource(source: Source) {
@@ -45,11 +52,16 @@ export class ConconConsoleElement extends HTMLElement {
   }
 
   private handleListSources() {
+    this.clear();
+  
     for (const source of this.resolver.list()) {
       const child = document.createElement('div');
       child.innerHTML = source.path;
-      child.addEventListener('click', () => this.loadSource(source), {once: true});
-      this.appendChild(child);
+      child.addEventListener('click', () => {
+        this.loadSource(source);
+        this.clear();
+      }, {once: true});
+      this.output.add(child);
     }
   }
 }

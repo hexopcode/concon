@@ -61,7 +61,7 @@ concon-element {
   text-shadow: 1px 1px 2px var(--color-shadow);
 }
 
-.display {
+.inset {
   border-radius: var(--display-border-radius);
   box-shadow: 3px 3px 5px var(--color-shadow) inset;
   background-color: var(--color-0);
@@ -81,26 +81,36 @@ concon-console {
   color: var(--color-00);
 }
 
-concon-devbar {
+concon-output {
   display: block;
+  overflow: scroll;
+  scroll-behavior: smooth;
+
+  /* FIXME: refactor all this computation into something that makes sense. */
+  max-height: calc(100vh - (var(--border-size) * 6) - var(--header-size) - (var(--console-padding) * 5));
+  padding-top: var(--console-padding) * 2;
+}
+
+concon-devbar {
   position: sticky;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   height: var(--header-size);
-
-  margin: calc(-1 * var(--console-padding));
   padding: var(--console-padding);
-
-  border-top-left-radius: var(--display-border-radius);
-  border-top-right-radius: var(--display-border-radius);
+  margin-bottom: var(--console-padding);
   
-  background-color: var(--color-0);
+  background-color: var(--color-1);
 }
 
 .devbar-button {
-  background-color: var(--color-0);
-  color: var(--color-00);
+  background-color: var(--color-1);
+  color: var(--color-2);
   border: 1px solid transparent;
 }
 
 .devbar-button:hover {
-  border: 1px solid var(--color-00);
+  border: 1px solid var(--color-2);
 }
