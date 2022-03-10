@@ -1,6 +1,7 @@
 import {ConconContext} from './context';
 import {ConconDevBarElement, LIST_SOURCES} from './devbar';
 import {ConconOutputElement} from './output';
+import {OutputDevice} from '../../core';
 import {Source, SourceResolver, StaticSourceResolver} from '../../lib/source';
 import {use, ContextElement} from '../../lib/dom';
 import {stripes} from '../examples';
@@ -13,11 +14,14 @@ declare global {
   }
 }
 
-export class ConconConsoleElement extends HTMLElement {
+type ReadStringWith = (ptr: number) => string;
+
+export class ConconConsoleElement extends HTMLElement implements OutputDevice {
   private readonly devbar: ConconDevBarElement;
   private readonly output: ConconOutputElement;
   private readonly context: ConconContext;
   private readonly resolver: SourceResolver;
+  private readStringFromMemory: ReadStringWith;
 
   constructor() {
     super();
@@ -28,6 +32,8 @@ export class ConconConsoleElement extends HTMLElement {
     this.context = use(this.closest('concon-context')! as ContextElement<ConconContext>);
     this.resolver = this.context.resolver;
     (this.resolver as StaticSourceResolver).add(stripes);
+
+    this.readStringFromMemory = (ptr: number) => '';
   }
 
   connectedCallback() {
@@ -36,6 +42,19 @@ export class ConconConsoleElement extends HTMLElement {
       this.loadSource(source);
     }
   }
+
+  readStringWith(callback: ReadStringWith) {
+    this.readStringFromMemory = callback;
+  }
+
+  out(data: number) {
+    const str = this.readStringFromMemory(data);
+    if (str) {
+      this.log(str);
+    }
+  }
+
+  outb(data: number) {}
 
   log(text: string) {
     const child = document.createElement('div');

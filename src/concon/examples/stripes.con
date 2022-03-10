@@ -30,5 +30,8 @@ render:
   call ror
 
   // jmp loop
+  out 0x01, msg
 
   end
+
+msg: dstr "hello world"

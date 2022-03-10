@@ -80,6 +80,16 @@ export class System {
     return this.registers[query];
   }
 
+  debugStr(ptr: number): string {
+    const hi = this.memory.at(ptr)!;
+    const lo = this.memory.at(ptr + 1)!;
+    const len = hi << 8 | lo;
+    const start = ptr + 2;
+    const end = start + len;
+    const bytes = this.memory.slice(start, end);
+    return String.fromCharCode(...bytes);
+  }
+
   debugMem(start: number, length: number = 1): Uint8Array {
     return new Uint8Array(this.buffer, start, length);
   }

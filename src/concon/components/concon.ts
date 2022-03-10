@@ -28,6 +28,7 @@ export class ConconElement extends HTMLElement {
 
     this.system = new System();
     this.system.registerOutputDevice(0x00, this.screen);
+    this.system.registerOutputDevice(0x01, this.console);
     this.source = undefined;
 
     document.addEventListener('visibilitychange', () => {
@@ -35,6 +36,12 @@ export class ConconElement extends HTMLElement {
         this.screen.render(this.system.memoryArea(MemoryArea.FRAMEBUFFER));
       }
     });
+  }
+
+  async connectedCallback() {
+    // FIXME: find a better way to solve custom element registration dependencies.
+    await customElements.whenDefined('concon-console');
+    this.console.readStringWith(this.system.debugStr.bind(this.system));
   }
 
   boot() {
