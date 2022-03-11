@@ -1,0 +1,12 @@
+pub proc ror:
+  mov r11, r10
+  shr r11, 1
+  mov r12, r10
+  and r12, 1
+  shl r12, 15
+  or r12, r11
+  mov r10, r12
+  ret
+
+  mov r0, 0
+  mov r10, 0b1110010011100100

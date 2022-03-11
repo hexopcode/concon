@@ -13,8 +13,10 @@ export class StaticSourceResolver implements SourceResolver {
     this.sources = new Map();
   }
 
-  add(source: Source) {
-    this.sources.set(source.path, source);
+  add(...sources: Source[]) {
+    for (const source of sources) {
+      this.sources.set(source.path, source);
+    }
   }
 
   list(includeLibraries: boolean = false): Iterable<Source> {

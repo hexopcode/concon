@@ -4,7 +4,7 @@ import {ConconOutputElement} from './output';
 import {OutputDevice} from '../../core';
 import {Source, SourceResolver, StaticSourceResolver} from '../../lib/source';
 import {use, ContextElement} from '../../lib/dom';
-import {stripes} from '../examples';
+import {ror, stripes} from '../examples';
 
 export const LOAD_SOURCE = 'load-source';
 
@@ -31,7 +31,7 @@ export class ConconConsoleElement extends HTMLElement implements OutputDevice {
 
     this.context = use(this.closest('concon-context')! as ContextElement<ConconContext>);
     this.resolver = this.context.resolver;
-    (this.resolver as StaticSourceResolver).add(stripes);
+    (this.resolver as StaticSourceResolver).add(ror, stripes);
 
     this.readStringFromMemory = (ptr: number) => '';
   }
