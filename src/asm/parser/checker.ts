@@ -22,7 +22,7 @@ class Checker {
   }
 
   check(): ProgramAst {
-    for (const instr of this.ast.main.instrs) {
+    for (const instr of this.ast.entrypoint.main.instrs) {
       this.checkRegistersAreValid(instr as SyntheticRegistersInstr);
     }
     return this.ast;
@@ -37,6 +37,7 @@ class Checker {
   private checkRegisterIsValid(reg: Registers|null, line: number) {
     if (reg == Registers.RIP || reg == Registers.RFL || reg == Registers.RIN) {
       this.collectErrors({
+        type: 'ParserError',
         line,
         message: `Cannot set value for register ${Registers[reg]}`
       });

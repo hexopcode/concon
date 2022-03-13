@@ -1,22 +1,25 @@
-import {Opcodes} from '../core';
-import {AsmError} from './base';
+import {AsmError, ParserError} from './base';
 import {SourceResolver} from '../lib/source';
 import {codegen, DEFAULT_LINKER_OPTIONS, link, LinkerOptions} from './codegen';
-import {check, parse, tokenize} from './parser';
-
-const END_PROGRAM = new Uint8Array([Opcodes.END]);
+import {prune, parseProgram} from './parser';
+import {err, Result} from '../lib/types';
 
 type ErrorLogger = (errors: AsmError[]) => void;
 
 function logErrors(errors: AsmError[]) {
   if (errors.length > 0) {
     errors.forEach(asmError => {
-      console.error(`Error at line ${asmError.line}: ${asmError.message}`);
+      if (asmError.type == 'ParserError') {
+        const err = asmError as ParserError;
+        console.error(`Error at line ${err.line}: ${err.message}`);
+      } else {
+        console.error(`Error: ${asmError.message}`);
+      }
     });
   }
 }
 
-export function assemble(resolver: SourceResolver, entrypoint: string, linkerOptions: LinkerOptions = DEFAULT_LINKER_OPTIONS): Uint8Array {
+export function assemble(resolver: SourceResolver, entrypoint: string, linkerOptions: LinkerOptions = DEFAULT_LINKER_OPTIONS): Result<Uint8Array, AsmError> {
   return new Assembler(resolver, linkerOptions, logErrors).assemble(entrypoint);
 }
 
@@ -39,49 +42,34 @@ class Assembler {
     this.errors = [];
   }
 
-  assemble(entrypoint: string): Uint8Array {
-    const collectErrors = this.errors.push.bind(this.errors);
-
-    const source = this.resolver.resolve(entrypoint);
-    if (source == undefined) {
-      this.errors.push({
-        line: -1,
-        message: `source not found: ${entrypoint}`,
-      });
-      this.errorLogger(this.errors);
-      return END_PROGRAM;
+  assemble(entrypoint: string): Result<Uint8Array, AsmError> {
+    const collector = this.collectErrors.bind(this);
+    const ast = parseProgram(this.resolver, entrypoint, collector);
+    if (ast.isErr()) {
+      this.errorLogger([ast.failure(), ...this.errors]);
+      return err(ast);
     }
+
+    const pruned = prune(ast.unwrap());
     
-    const tokens = tokenize(source!, collectErrors);
-    if (this.errors.length > 0) {
-      this.errorLogger(this.errors);
-      return END_PROGRAM;
+    const program = codegen(pruned);
+    if (program.isErr()) {
+      this.errorLogger([program.failure(), ...this.errors]);
+      return err(program);
     }
 
-    const ast = parse(tokens, collectErrors);
-    if (this.errors.length > 0) {
-      this.errorLogger(this.errors);
-      return END_PROGRAM;
-    }
-
-    check(ast, collectErrors);
-    if (this.errors.length > 0) {
-      this.errorLogger(this.errors);
-      return END_PROGRAM;
-    }
-    
-    const program = codegen(ast, collectErrors);
-    if (this.errors.length > 0) {
-      this.errorLogger(this.errors);
-      return END_PROGRAM;
-    }
-
-    const bytes = link(program, this.linkerOptions);
-    if (this.errors.length > 0) {
-      this.errorLogger(this.errors);
-      return END_PROGRAM;
+    const bytes = link(program.unwrap(), this.linkerOptions);
+    if (bytes.isErr()) {
+      this.errorLogger
+      this.errorLogger([bytes.failure(), ...this.errors]);
+      return err(program);
     }
     
     return bytes;
+  }
+
+  private collectErrors(...errors: AsmError[]): AsmError {
+    this.errors.push(...errors);
+    return errors[0];
   }
 }

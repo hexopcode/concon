@@ -11,8 +11,10 @@ import {
   VERSION_0_1,
   VERSION_OFFSET,
 } from '../../core';
-import { AstImmExpr } from '../parser';
-import {Program} from './program';
+import {err, ok, Result} from '../../lib/types';
+import {AsmError} from '../base';
+import {AstImmExpr} from '../parser';
+import {Program} from './types';
 import {byte, word} from './utilities';
 
 export type LinkerOptions = {
@@ -25,7 +27,7 @@ export const DEFAULT_LINKER_OPTIONS: LinkerOptions = {
   version: VERSION_0_1,
 };
 
-export function link(program: Program, options: LinkerOptions = DEFAULT_LINKER_OPTIONS): Uint8Array {
+export function link(program: Program, options: LinkerOptions = DEFAULT_LINKER_OPTIONS): Result<Uint8Array, AsmError> {
   return new Linker(program, options).link();
 }
 
@@ -38,13 +40,14 @@ class Linker {
     this.options = options;
   }
 
-  link(): Uint8Array {
-    this.resolveCodeExprs();
+  link(): Result<Uint8Array, AsmError> {
+    const rres = this.resolveCodeExprs();
+    if (rres.isErr()) return err(rres);
 
     if (!this.options.header) {
       // FIXME: the assembler should guarantee that the code
       // doesn't set a custom start offset
-      return this.program.code;
+      return ok(this.program.code);
     }
 
     const hdr = this.header();
@@ -52,29 +55,36 @@ class Linker {
     const bytes = new Uint8Array(HEADER_LENGTH + this.program.code.length);
     bytes.set(hdr, HEADER_OFFSET);
     bytes.set(this.program.code, CODE_OFFSET);
-    return bytes;
+    return ok(bytes);
   }
 
-  private resolveCodeExprs() {
+  private resolveCodeExprs(): Result<void, AsmError> {
     for (const [offset, expr] of this.program.codeExprs.entries()) {
       const value = this.resolveExpr(expr);
-      this.program.code.set(expr.isByte ? byte(value) : word(value), offset);
+      if (value.isErr()) return err(value);
+      
+      this.program.code.set(expr.isByte ? byte(value.unwrap()) : word(value.unwrap()), offset);
     }
+    return ok();
   }
 
-  private resolveExpr(expr: AstImmExpr): number {
+  private resolveExpr(expr: AstImmExpr): Result<number, AsmError> {
     if (typeof expr.value == 'number') {
-      return expr.value;
+      return ok(expr.value);
     }
 
     if (!this.program.labels.has(expr.value)) {
-      throw new Error(`Cannot resolve label '${expr.value}'`);
+      // debugger
+      return err({
+        type: 'CodegenError',
+        message: `Cannot resolve label '${expr.value}'`,
+      });
     }
 
     const offset = this.program.labels.get(expr.value)!;
     const headerLength = this.options.header ? HEADER_LENGTH : 0;
     const absolute = MEMORY_PROGRAM_OFFSET + headerLength + offset;
-    return absolute;
+    return ok(absolute);
   }
 
   private header(): Uint8Array {

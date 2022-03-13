@@ -27,6 +27,7 @@ export enum Result {
   END,
   BRK,
   SEGFAULT,
+  INVALID,
 }
 
 export class System {
@@ -64,7 +65,7 @@ export class System {
   }
 
   private loadOperatingSystem() {
-    this.memory.set(create_os_image(), MEMORY_OS_OFFSET);
+    this.memory.set(create_os_image().expect('Failed creating OS image'), MEMORY_OS_OFFSET);
   }
 
   loadProgram(program: Uint8Array) {

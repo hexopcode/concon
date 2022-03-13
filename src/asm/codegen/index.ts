@@ -1,4 +1,4 @@
 export * from './codegen';
 export * from './linker';
-export * from './program';
+export * from './types';
 export * from './utilities';

@@ -174,10 +174,27 @@ export type BlockStmt = AstNode<'BlockStmt'> & {
 
 export type ProcStmt = AstNode<'ProcStmt'> & {
   name: string,
+  pub: boolean,
   impl: BlockStmt,
 };
 
-export type ProgramAst = AstNode<'ProgramAst'> & {
+export type UseStmt = AstNode<'UseStmt'> & {
+  names: string[],
+  path: string,
+};
+
+export type ModuleAst<Type extends string> = AstNode<Type> & {
+  path: string,
+  uses: UseStmt[],
   procs: ProcStmt[],
+};
+
+export type LibraryAst = ModuleAst<'LibraryAst'>;
+export type EntrypointAst = ModuleAst<'EntrypointAst'> & {
   main: BlockStmt,
+};
+
+export type ProgramAst = AstNode<'ProgramAst'> & {
+  libs: LibraryAst[],
+  entrypoint: EntrypointAst,
 };

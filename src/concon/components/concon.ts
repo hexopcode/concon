@@ -51,8 +51,14 @@ export class ConconElement extends HTMLElement {
   private handleLoadSource(e: CustomEvent<Source>) {
     this.source = e.detail;
     this.system.reset(false);
-    this.system.loadProgram(assemble(this.resolver, this.source.path));
-    this.cycle();
+
+    const bytecode = assemble(this.resolver, this.source.path);
+    if (bytecode.isErr()) {
+      this.console.log(`Error: ${bytecode.failure().message}`);
+    } else {
+      this.system.loadProgram(bytecode.unwrap());
+      this.cycle();
+    }
   }
 
   private tests() {

@@ -7,6 +7,3 @@ pub proc ror:
   or r12, r11
   mov r10, r12
   ret
-
-  mov r0, 0
-  mov r10, 0b1110010011100100

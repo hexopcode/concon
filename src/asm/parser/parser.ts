@@ -40,7 +40,10 @@ import {
   PushInstr,
   PopInstr,
   CallInstr,
-  ProgramAst,
+  UseStmt,
+  EntrypointAst,
+  LibraryAst,
+  ModuleAst,
   ProcStmt,
   BlockStmt,
   OutInstr,
@@ -51,13 +54,10 @@ import {
 } from './ast';
 import {Registers} from '../../core';
 import {unreachable} from '../../lib';
-import {AsmErrorCollector} from '../base';
+import {AsmError, AsmErrorCollector} from '../base';
+import {err, ok, Result} from '../../lib/types';
 
-export function parse(tokens: Token[], collectError: AsmErrorCollector): ProgramAst {
-  return new Parser(tokens, collectError).parse();
-}
-
-class Parser {
+export class Parser {
   private readonly tokens: Token[];
   private readonly collectError: AsmErrorCollector;
   private current: number;
@@ -70,44 +70,91 @@ class Parser {
     this.line = 1;
   }
 
-  parse(): ProgramAst {
+  parse<Type extends ModuleAst<any>>(path: string, tstr: Type['type']): Result<Type, AsmError> {
+    const uses: UseStmt[] = [];
     const procs: ProcStmt[] = [];
     const instrs: Instr[] = [];
+    let hasParsingError = false;
+
+    this.whitespace();
+    if (!this.isAtEnd()) {
+      try {
+        while (this.match(TokenType.USE)) {
+          uses.push(this.use());
+          this.whitespace();
+        }
+      } catch (e) {
+        hasParsingError = true;
+        this.collectError({
+          type: 'ParserError',
+          line: this.line,
+          message: (e as Error).message,
+        });
+      }
+    }
 
     while (!this.isAtEnd()) {
       this.whitespace();
 
       try {
+        let pub = this.match(TokenType.PUB);
         while (this.match(TokenType.PROC)) {
-          procs.push(this.proc());
+          procs.push(this.proc(pub));
           this.whitespace();
+
+          pub = this.match(TokenType.PUB);
         }
         
-        instrs.push(this.instr());
-        if (!this.isAtEnd()) {
-          this.consume(TokenType.EOL, 'Expected end of line');
+        if (tstr == 'EntrypointAst') {
+          instrs.push(this.instr());
+          if (!this.isAtEnd()) {
+            this.consume(TokenType.EOL, 'Expected end of line');
+          }
         }
       } catch (e) {
+        hasParsingError = true;
         this.collectError({
-          line: 0,
+          type: 'ParserError',
+          line: this.line,
           message: (e as Error).message,
         });
         this.synchronize();
       }
     }
 
-    const main: BlockStmt = {
-      type: 'BlockStmt',
-      line: instrs.length > 0 ? instrs[0].line : 1,
-      instrs,
-    };
+    if (hasParsingError) {
+      return err({
+        type: 'BaseError',
+        message: `Error parsing ${path}`,
+      });
+    }
 
-    return {
-      type: 'ProgramAst',
+    if (tstr == 'EntrypointAst') {
+      const main: BlockStmt = {
+        type: 'BlockStmt',
+        line: instrs.length > 0 ? instrs[0].line : 1,
+        instrs,
+      };
+
+      const entrypoint: EntrypointAst = {
+        type: 'EntrypointAst',
+        line: 1,
+        path,
+        uses,
+        procs,
+        main,
+      };
+      return ok((entrypoint as unknown) as Type);
+    }
+
+    const library: LibraryAst = {
+      type: 'LibraryAst',
       line: 1,
+      path,
+      uses,
       procs,
-      main,
     };
+    return ok((library as unknown) as Type);
   }
 
   private isAtEnd(): boolean {
@@ -164,7 +211,35 @@ class Parser {
     while (this.match(TokenType.EOL));
   }
 
-  private proc(): ProcStmt {
+  private use(): UseStmt {
+    const names: string[] = [this.identifier()!.literal];
+    while (this.match(TokenType.COMMA)) {
+      names.push(this.identifier()!.literal);
+    }
+    this.consume(TokenType.FROM, `Expected 'from'`);
+
+    let path = '';
+    while (!this.match(TokenType.EOL, TokenType.EOF)) {
+      if (this.match(TokenType.DOT)) {
+        path += '.';
+      } else if (this.match(TokenType.SLASH)) {
+        path += '/';
+      } else if (this.match(TokenType.IDENTIFIER)) {
+        path += this.previous().literal!;
+      } else {
+        throw new Error(`Invalid token in path: '${this.peek()!.lexeme}'`);
+      }
+    }
+
+    return {
+      type: 'UseStmt',
+      line: this.line,
+      names,
+      path,
+    };
+  }
+
+  private proc(pub: boolean): ProcStmt {
     this.line = this.peek()?.line || -1;
     const name = this.consume(TokenType.IDENTIFIER, 'Expected identifier');
     this.consume(TokenType.COLON, `Expected ':'`);
@@ -193,6 +268,7 @@ class Parser {
       type: 'ProcStmt',
       line: this.line,
       name: name.literal!,
+      pub,
       impl: {
         type: 'BlockStmt',
         line: instrs[0].line,
@@ -374,6 +450,10 @@ class Parser {
 
   private colon() {
     this.consume(TokenType.COLON, `Expected ':'`);
+  }
+
+  private identifier(): Token {
+    return this.consume(TokenType.IDENTIFIER, `Expected identifier`);
   }
 
   private regAndImmOrRegInstr<Type extends AstTwoOpStmt<any,any,any>>(tstr: Type['type']): AstNodeType<Type> {

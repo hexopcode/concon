@@ -1,10 +1,13 @@
 import {Registers} from '../../core';
-import {AsmErrorCollector} from '../base';
+import {err, ok, Result} from '../../lib/types';
+import {ParserError} from '../base';
 
 export enum TokenType {
   // punctuation
   COMMA,
   COLON,
+  DOT,
+  SLASH,
   EOL,
   EOF,
 
@@ -68,6 +71,10 @@ export enum TokenType {
   DB,
   DW,
   DSTR,
+
+  PUB,
+  USE,
+  FROM,
 }
 
 const Keywords: Map<string, TokenType> = new Map(Object.entries({
@@ -123,6 +130,10 @@ const Keywords: Map<string, TokenType> = new Map(Object.entries({
   'db': TokenType.DB,
   'dw': TokenType.DW,
   'dstr': TokenType.DSTR,
+
+  'pub': TokenType.PUB,
+  'use': TokenType.USE,
+  'from': TokenType.FROM,
 }));
 
 export type Token = {
@@ -136,28 +147,26 @@ export function tokenString(token: Token): string {
   return `${TokenType[token.type]} ${token.lexeme} ${token.literal}`;
 }
 
-export function tokenize(source: string, collectError: AsmErrorCollector): Token[] {
-  return new Tokenizer(source, collectError).tokenize();
+export function tokenize(source: string): Result<Token[], ParserError> {
+  return new Tokenizer(source).tokenize();
 }
 
 class Tokenizer {
   private readonly source: string;
-  private readonly collectError: AsmErrorCollector;
   private readonly tokens: Token[];
   private start: number;
   private current: number;
   private line: number;
 
-  constructor(source: string, collectError: AsmErrorCollector) {
+  constructor(source: string) {
     this.source = source;
-    this.collectError = collectError;
     this.tokens = [];
     this.start = 0;
     this.current = 0;
     this.line = 1;
   }
 
-  tokenize(): Token[] {
+  tokenize(): Result<Token[], ParserError> {
     while (!this.isAtEnd()) {
       this.start = this.current;
       this.scanToken();
@@ -169,14 +178,14 @@ class Tokenizer {
       line: this.line,
     });
 
-    return this.tokens;
+    return ok(this.tokens);
   }
 
   private isAtEnd(ahead: number = 0): boolean {
     return this.current + ahead >= this.source.length;
   }
 
-  private scanToken() {
+  private scanToken(): Result<void, ParserError> {
     const c = this.advance();
     switch (c) {
       case ',':
@@ -184,6 +193,9 @@ class Tokenizer {
         break;
       case ':':
         this.addToken(TokenType.COLON);
+        break;
+      case '.':
+        this.addToken(TokenType.DOT);
         break;
       case '/':
         if (this.match('/')) {
@@ -201,16 +213,14 @@ class Tokenizer {
           if (this.match('*') && this.peek() == '/') {
             this.advance();
           } else if (this.isAtEnd()) {
-            this.collectError({
+            return err({
+              type: 'ParserError',
               line,
               message: `Could not find closing comment section`,
-            })
+            });
           }
         } else {
-          this.collectError({
-            line: this.line,
-            message: `Unexpected character: '${c}`,
-          });
+          this.addToken(TokenType.SLASH);
         }
         break;
       case ' ':
@@ -222,7 +232,8 @@ class Tokenizer {
         this.line++;
         break;
       case '"':
-        this.string();
+        const res = this.string();
+        if (res.isErr()) return res;
         break;
       default:
         if (this.isDigit(c)) {
@@ -234,13 +245,15 @@ class Tokenizer {
             this.identifier();
           }
         } else {
-          this.collectError({
+          return err({
+            type: 'ParserError',
             line: this.line,
             message: `Unexpected character: '${c}'`,
           });
         }
         break;
     }
+    return ok();
   }
 
   private advance(): string {
@@ -276,7 +289,7 @@ class Tokenizer {
     return this.source.charAt(this.current + ahead);
   }
 
-  private string() {
+  private string(): Result<void, ParserError> {
     while (this.peek() != '"' && !this.isAtEnd()) {
       if (this.peek() == '\n') {
         this.line++;
@@ -285,7 +298,8 @@ class Tokenizer {
     }
 
     if (this.isAtEnd()) {
-      this.collectError({
+      return err({
+        type: 'ParserError',
         line: this.line,
         message: 'Unterminated string',
       });
@@ -294,6 +308,8 @@ class Tokenizer {
     this.advance();
     const value = this.source.substring(this.start + 1, this.current - 1);
     this.addToken(TokenType.STRING, value);
+
+    return ok();
   }
 
   private isDigit(c: string): boolean {

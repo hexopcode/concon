@@ -1,25 +1,24 @@
 import {Opcodes} from '../../core';
 import {unreachable} from '../../lib';
-import {AsmErrorCollector} from '../base';
-import {AstImmExpr, AstLblExpr, BlockStmt, ProgramAst} from '../parser';
-import {Program} from './program';
+import {err, ok, Result} from '../../lib/types';
+import {CodegenError} from '../base';
+import {AstImmExpr, AstLblExpr, BlockStmt, ModuleAst, ProgramAst} from '../parser';
+import {Program} from './types';
 import {word} from './utilities';
 
 const FAKE_ADDR: number[] = [0xFF, 0xFF];
 
-export function codegen(ast: ProgramAst, collectError: AsmErrorCollector) {
-  return new Codegen(ast, collectError).codegen();
+export function codegen(ast: ProgramAst) {
+  return new Codegen(ast).codegen();
 }
 
 class Codegen {
   private readonly ast: ProgramAst;
-  private readonly collectError: AsmErrorCollector;
   private readonly program: Program;
   private readonly bytes: number[];
 
-  constructor(ast: ProgramAst, collectError: AsmErrorCollector) {
+  constructor(ast: ProgramAst) {
     this.ast = ast;
-    this.collectError = collectError;
     this.program = {
       startAddr: 0,
       labels: new Map(),
@@ -29,27 +28,41 @@ class Codegen {
     this.bytes = [];
   }
 
-  codegen(): Program {
-    this.emitProcs();
+  codegen(): Result<Program, CodegenError> {
+    for (const lib of this.ast.libs) {
+      const rprocs = this.emitProcs(lib);
+      if (rprocs.isErr()) return err(rprocs);
+    }
+
+    const rprocs = this.emitProcs(this.ast.entrypoint);
+    if (rprocs.isErr()) return err(rprocs);
+
     this.program.startAddr = this.bytes.length;
 
-    this.emitOpcodes(this.ast.main);
+    const rop = this.emitOpcodes(this.ast.entrypoint.main);
+    if (rop.isErr()) return err(rop);
+
     this.program.code = new Uint8Array(this.bytes);
 
-    return this.program as Program;
+    return ok(this.program);
   }
 
-  private emitProcs() {
-    for (const proc of this.ast.procs) {
-      this.labelAddress(proc.name);
-      this.emitOpcodes(proc.impl);
+  private emitProcs(mod: ModuleAst<any>): Result<void, CodegenError> {
+    for (const proc of mod.procs) {
+      const lbl = this.labelAddress(proc.name);
+      if (lbl.isErr()) return lbl;
+
+      const ret = this.emitOpcodes(proc.impl);
+      if (ret.isErr()) return ret;
     }
+    return ok();
   }
 
-  private emitOpcodes(blk: BlockStmt) {
+  private emitOpcodes(blk: BlockStmt): Result<void, CodegenError> {
     for (const instr of blk.instrs) {
       if (instr.label) {
-        this.labelAddress(instr.label!.label);
+        const result = this.labelAddress(instr.label!.label);
+        if (result.isErr()) return result;
       }
 
       try {
@@ -438,12 +451,13 @@ class Codegen {
             unreachable(`Unsupported instruction: ${JSON.stringify(instr)}`);
         }
       } catch (e) {
-        this.collectError({
-          line: instr.line,
+        return err({
+          type: 'CodegenError',
           message: (e as Error).message,
         });
       }
     }
+    return ok();
   }
 
   private immExpr(expr: AstImmExpr): number[] {
@@ -461,12 +475,16 @@ class Codegen {
     return this.immExpr(immExpr);
   }
 
-  private labelAddress(lbl: string) {
+  private labelAddress(lbl: string): Result<void, CodegenError> {
     // FIXME: this check should go in the checker instead
     if (this.program.labels.has(lbl)) {
-      throw new Error(`Label '${lbl}' already declared earlier`);
+      return err({
+        type: 'CodegenError',
+        message: `Label '${lbl}' already declared earlier`,
+      });
     }
 
     this.program.labels.set(lbl, this.bytes.length);
+    return ok();
   }
 }
