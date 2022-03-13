@@ -8,7 +8,7 @@ import {ParserError, AsmErrorCollector, AsmError} from '../base';
 import {Graph, hasCycles} from '../../lib/algorithm';
 import {Parser} from './parser';
 import {err, ok, Result} from '../../lib/types';
-import {SourceResolver} from '../../lib/source';
+import {SourceError, SourceResolver} from '../../lib/source';
 import {tokenize} from './tokenizer';
 
 export function parseProgram(
@@ -70,26 +70,26 @@ parse(entrypointPath: string): Result<ProgramAst, AsmError> {
 
 private tokenizeAndParse<Type extends ModuleAst<any>>(path: string, tstr: Type['type']): Result<Type, AsmError> {
   const source = this.resolver.source(path);
-  if (source == undefined) {
+  if (source.isErr()) {
     return err({
       type: 'BaseError',
-      message: `source not found: ${path}`,
+      message: source.failure().message,
     });
   }
-  if (source!.library && tstr == 'EntrypointAst') {
+  if (source.unwrap().library && tstr == 'EntrypointAst') {
     return err({
       type: 'BaseError',
       message: `entrypoint cannot be library: ${path}`,
     });
   }
-  if (!source!.library && tstr == 'LibraryAst') {
+  if (!source.unwrap().library && tstr == 'LibraryAst') {
     return err({
       type: 'BaseError',
       message: `library cannot be entrypoint: ${path}`,
     });
   }
 
-  const tokens = tokenize(source!.code);
+  const tokens = tokenize(source.unwrap().code);
   if (tokens.isErr()) return err(tokens);
 
   return new Parser(tokens.unwrap(), this.collectError).parse<Type>(path, tstr);

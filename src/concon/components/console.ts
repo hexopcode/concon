@@ -38,8 +38,8 @@ export class ConconConsoleElement extends HTMLElement implements OutputDevice {
 
   connectedCallback() {
     const source = this.resolver.source('/concon/examples/stripes.con');
-    if (source) {
-      this.loadSource(source);
+    if (source.isOk()) {
+      this.loadSource(source.unwrap());
     }
   }
 

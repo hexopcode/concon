@@ -3,3 +3,8 @@ export type Source = {
   code: string,
   library: boolean,
 };
+
+export type SourceError = {
+  path: string,
+  message: string,
+};

@@ -1,9 +1,10 @@
-import {Source} from './types';
+import {err, ok, Result} from '../types';
+import {Source, SourceError} from './types';
 
 export interface SourceResolver {
   list(includeLibraries?: boolean): Iterable<Source>;
-  resolve(path: string): string|undefined;
-  source(path: string): Source|undefined;
+  resolve(path: string): Result<string, SourceError>;
+  source(path: string): Result<Source, SourceError>;
 }
 
 export class StaticSourceResolver implements SourceResolver {
@@ -24,18 +25,20 @@ export class StaticSourceResolver implements SourceResolver {
     return sources.filter(s => !s.library || includeLibraries);
   }
 
-  resolve(path: string): string|undefined {
-    // FIXME: resolve relative paths
-    if (this.sources.has(path)) {
-      return this.source(path)!.code;
-    }
-    return undefined;
+  resolve(path: string): Result<string, SourceError> {
+    const source = this.source(path);
+    if (source.isErr()) return err(source);
+
+    return ok(source.unwrap().code);
   }
 
-  source(path: string): Source|undefined {
+  source(path: string): Result<Source, SourceError> {
     if (this.sources.has(path)) {
-      return this.sources.get(path)!;
+      return ok(this.sources.get(path)!);
     }
-    return undefined;
+    return err({
+      path,
+      message: `Source not found: ${path}`,
+    });
   }
 }
