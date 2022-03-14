@@ -37,7 +37,7 @@ mov rsp, r1
 
 // FIXME: use macros
 // prepare to jump to start address
-// MEMORY_PROGRAM_OFFSET + HEADER_OFFSET + START_ADDRESS_OFFSET
+// MEMORY_PROGRAM_OFFSET + HEADER_OFFSET + ENTRYPOINT_ADDRESS_OFFSET
 // 0x2000 + 0x0000 + 0x0006
 lod r2, 0x2006
 add r2, r0

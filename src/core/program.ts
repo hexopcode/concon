@@ -1,7 +1,7 @@
 export const MAGIC_OFFSET = 0;
 export const VERSION_OFFSET = 2;
 export const STACK_ADDRESS_OFFSET = 4;
-export const START_ADDRESS_OFFSET = 6;
+export const ENTRYPOINT_ADDRESS_OFFSET = 6;
 export const CODE_SIZE_OFFSET = 8;
 
 export const HEADER_LENGTH = 10;

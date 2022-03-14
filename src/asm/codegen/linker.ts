@@ -1,13 +1,13 @@
 import {
   CODE_OFFSET,
   CODE_SIZE_OFFSET,
+  ENTRYPOINT_ADDRESS_OFFSET,
   HEADER_LENGTH,
   HEADER_OFFSET,
   MAGIC_OFFSET,
   MAGIC_SIGNATURE,
   MEMORY_PROGRAM_OFFSET,
   STACK_ADDRESS_OFFSET,
-  START_ADDRESS_OFFSET,
   VERSION_0_1,
   VERSION_OFFSET,
 } from '../../core';
@@ -91,8 +91,8 @@ class Linker {
     const bytes = new Uint8Array(HEADER_LENGTH);
     bytes.set(MAGIC_SIGNATURE, MAGIC_OFFSET);
     bytes.set(this.options.version, VERSION_OFFSET);
-    bytes.set(word(this.program.startAddr + this.program.code.length), STACK_ADDRESS_OFFSET);
-    bytes.set(word(this.program.startAddr), START_ADDRESS_OFFSET);
+    bytes.set(word(this.program.entrypointAddr + this.program.code.length), STACK_ADDRESS_OFFSET);
+    bytes.set(word(this.program.entrypointAddr), ENTRYPOINT_ADDRESS_OFFSET);
     bytes.set(word(this.program.code.length), CODE_SIZE_OFFSET);
     return bytes;
   }

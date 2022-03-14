@@ -20,7 +20,7 @@ class Codegen {
   constructor(ast: ProgramAst) {
     this.ast = ast;
     this.program = {
-      startAddr: 0,
+      entrypointAddr: 0,
       labels: new Map(),
       codeExprs: new Map(),
       code: new Uint8Array(),
@@ -37,7 +37,7 @@ class Codegen {
     const rprocs = this.emitProcs(this.ast.entrypoint);
     if (rprocs.isErr()) return err(rprocs);
 
-    this.program.startAddr = this.bytes.length;
+    this.program.entrypointAddr = this.bytes.length;
 
     const rop = this.emitOpcodes(this.ast.entrypoint.main);
     if (rop.isErr()) return err(rop);
