@@ -1,6 +1,7 @@
 import {AsmError, ParserError} from './base';
 import {SourceResolver} from '../lib/source';
-import {codegen, DEFAULT_LINKER_OPTIONS, link, LinkerOptions} from './codegen';
+import {codegen} from './codegen';
+import {DEFAULT_LINKER_OPTIONS, link, LinkerOptions} from './linker';
 import {prune, parseProgram} from './parser';
 import {err, Result} from '../lib/types';
 

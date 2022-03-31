@@ -14,8 +14,8 @@ import {
 import {err, ok, Result} from '../../lib/types';
 import {AsmError} from '../base';
 import {AstImmExpr} from '../parser';
-import {Module, Program} from './types';
-import {byte, word} from './utilities';
+import {Module, Program} from '../codegen/types';
+import {byte, word} from '../codegen/utilities';
 
 export type LinkerOptions = {
   header: boolean,

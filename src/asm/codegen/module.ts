@@ -2,41 +2,13 @@ import {Opcodes} from '../../core';
 import {unreachable} from '../../lib';
 import {err, ok, Result} from '../../lib/types';
 import {CodegenError} from '../base';
-import {AstImmExpr, AstLblExpr, BlockStmt, AnyModuleAst, ProgramAst} from '../parser';
-import {Module, EntrypointModule, Program} from './types';
+import {AstImmExpr, AstLblExpr, BlockStmt, AnyModuleAst} from '../parser';
+import {Module, EntrypointModule} from './types';
 import {word} from './utilities';
 
 const FAKE_ADDR: number[] = [0xFF, 0xFF];
 
-export function codegen(ast: ProgramAst) {
-  return new CodegenProgram(ast).codegen();
-}
-
-class CodegenProgram {
-  private readonly ast: ProgramAst;
-
-  constructor(ast: ProgramAst) {
-    this.ast = ast;
-  }
-
-  codegen(): Result<Program, CodegenError> {
-    const libs: Map<string, Module> = new Map();
-
-    for (const ast of this.ast.libs) {
-      const code = new CodegenModule(ast).codegen();
-      if (code.isErr()) return err(code);
-
-      libs.set(ast.path, code.unwrap());
-    }
-
-    const entrypoint = new CodegenModule(this.ast.entrypoint).codegen() as Result<EntrypointModule, CodegenError>;
-    if (entrypoint.isErr()) return err(entrypoint);
-
-    return ok({libs, entrypoint: entrypoint.unwrap()});
-  }
-}
-
-class CodegenModule {
+export class CodegenModule {
   private readonly ast: AnyModuleAst;
   private readonly mod: Module;
   private readonly bytes: number[];
