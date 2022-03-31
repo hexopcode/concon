@@ -194,6 +194,8 @@ export type EntrypointAst = ModuleAst<'EntrypointAst'> & {
   main: BlockStmt,
 };
 
+export type AnyModuleAst = LibraryAst | EntrypointAst;
+
 export type ProgramAst = AstNode<'ProgramAst'> & {
   libs: LibraryAst[],
   entrypoint: EntrypointAst,

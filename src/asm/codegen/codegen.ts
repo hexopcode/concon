@@ -2,25 +2,50 @@ import {Opcodes} from '../../core';
 import {unreachable} from '../../lib';
 import {err, ok, Result} from '../../lib/types';
 import {CodegenError} from '../base';
-import {AstImmExpr, AstLblExpr, BlockStmt, ModuleAst, ProgramAst} from '../parser';
-import {Program} from './types';
+import {AstImmExpr, AstLblExpr, BlockStmt, AnyModuleAst, ProgramAst} from '../parser';
+import {Module, EntrypointModule, Program} from './types';
 import {word} from './utilities';
 
 const FAKE_ADDR: number[] = [0xFF, 0xFF];
 
 export function codegen(ast: ProgramAst) {
-  return new Codegen(ast).codegen();
+  return new CodegenProgram(ast).codegen();
 }
 
-class Codegen {
+class CodegenProgram {
   private readonly ast: ProgramAst;
-  private readonly program: Program;
-  private readonly bytes: number[];
 
   constructor(ast: ProgramAst) {
     this.ast = ast;
-    this.program = {
-      entrypointAddr: 0,
+  }
+
+  codegen(): Result<Program, CodegenError> {
+    const libs: Map<string, Module> = new Map();
+
+    for (const ast of this.ast.libs) {
+      const code = new CodegenModule(ast).codegen();
+      if (code.isErr()) return err(code);
+
+      libs.set(ast.path, code.unwrap());
+    }
+
+    const entrypoint = new CodegenModule(this.ast.entrypoint).codegen() as Result<EntrypointModule, CodegenError>;
+    if (entrypoint.isErr()) return err(entrypoint);
+
+    return ok({libs, entrypoint: entrypoint.unwrap()});
+  }
+}
+
+class CodegenModule {
+  private readonly ast: AnyModuleAst;
+  private readonly mod: Module;
+  private readonly bytes: number[];
+
+  constructor(ast: AnyModuleAst) {
+    this.ast = ast;
+    this.mod = {
+      path: ast.path,
+      uses: new Map(),
       labels: new Map(),
       codeExprs: new Map(),
       code: new Uint8Array(),
@@ -28,34 +53,30 @@ class Codegen {
     this.bytes = [];
   }
 
-  codegen(): Result<Program, CodegenError> {
-    for (const lib of this.ast.libs) {
-      const rprocs = this.emitProcs(lib);
-      if (rprocs.isErr()) return err(rprocs);
+  codegen(): Result<Module|EntrypointModule, CodegenError> {
+    for (const use of this.ast.uses) {
+      for (const name of use.names) {
+        this.mod.uses.set(name, use.path);
+      }
     }
 
-    const rprocs = this.emitProcs(this.ast.entrypoint);
-    if (rprocs.isErr()) return err(rprocs);
-
-    this.program.entrypointAddr = this.bytes.length;
-
-    const rop = this.emitOpcodes(this.ast.entrypoint.main);
-    if (rop.isErr()) return err(rop);
-
-    this.program.code = new Uint8Array(this.bytes);
-
-    return ok(this.program);
-  }
-
-  private emitProcs(mod: ModuleAst<any>): Result<void, CodegenError> {
-    for (const proc of mod.procs) {
+    for (const proc of this.ast.procs) {
       const lbl = this.labelAddress(proc.name);
-      if (lbl.isErr()) return lbl;
+      if (lbl.isErr()) return err(lbl);
 
       const ret = this.emitOpcodes(proc.impl);
-      if (ret.isErr()) return ret;
+      if (ret.isErr()) return err(ret);
     }
-    return ok();
+
+    if (this.ast.type == 'EntrypointAst') {
+      (this.mod as EntrypointModule).mainOffset = this.bytes.length;
+
+      const ret = this.emitOpcodes(this.ast.main);
+      if (ret.isErr()) return err(ret);
+    }
+
+    this.mod.code = new Uint8Array(this.bytes);
+    return ok(this.mod);
   }
 
   private emitOpcodes(blk: BlockStmt): Result<void, CodegenError> {
@@ -461,7 +482,7 @@ class Codegen {
   }
 
   private immExpr(expr: AstImmExpr): number[] {
-    this.program.codeExprs.set(this.bytes.length, expr);
+    this.mod.codeExprs.set(this.bytes.length, expr);
     return FAKE_ADDR;
   }
 
@@ -477,14 +498,14 @@ class Codegen {
 
   private labelAddress(lbl: string): Result<void, CodegenError> {
     // FIXME: this check should go in the checker instead
-    if (this.program.labels.has(lbl)) {
+    if (this.mod.labels.has(lbl)) {
       return err({
         type: 'CodegenError',
         message: `Label '${lbl}' already declared earlier`,
       });
     }
 
-    this.program.labels.set(lbl, this.bytes.length);
+    this.mod.labels.set(lbl, this.bytes.length);
     return ok();
   }
 }
