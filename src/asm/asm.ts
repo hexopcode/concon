@@ -2,7 +2,8 @@ import {AsmError, ParserError} from './base';
 import {SourceResolver} from '../lib/source';
 import {codegen} from './codegen';
 import {DEFAULT_LINKER_OPTIONS, link, LinkerOptions} from './linker';
-import {prune, parseProgram} from './parser';
+import {parseProgram} from './parser';
+import {prune} from './transforms';
 import {err, Result} from '../lib/types';
 
 type ErrorLogger = (errors: AsmError[]) => void;
