@@ -1,3 +1,5 @@
+// FIXME: use macros with expressions
+
 // palette[0] = 0x9bbc0fff
 out 0x00, 0x009b
 out 0x00, 0x10bc
@@ -22,24 +24,23 @@ out 0x00, 0x1338
 out 0x00, 0x230f
 out 0x00, 0x33ff
 
-// FIXME: use macros
 // MEMORY_PROGRAM_OFFSET + HEADER_OFFSET + CODE_OFFSET
 // 0x2000 + 0x0000 + 0x000A
-mov r0, 0x200A
+imm16 CODE_ADDRESS_OFFSET: 0x200A
 
-// FIXME: use macros
-// prepare stack
 // MEMORY_PROGRAM_OFFSET + HEADER_OFFSET + STACK_ADDRESS_OFFSET
 // 0x2000 + 0x0000 + 0x0004
-lod r1, 0x2004
-add r1, r0
-mov rsp, r1
+imm16 STACK_ADDRESS_OFFSET: 0x2004
 
-// FIXME: use macros
-// prepare to jump to start address
 // MEMORY_PROGRAM_OFFSET + HEADER_OFFSET + ENTRYPOINT_ADDRESS_OFFSET
 // 0x2000 + 0x0000 + 0x0006
-lod r2, 0x2006
+imm16 ENTRYPOINT_ADDRESS_OFFSET: 0x2006
+
+mov r0, CODE_ADDRESS_OFFSET
+lod r1, STACK_ADDRESS_OFFSET
+add r1, r0
+mov rsp, r1
+lod r2, ENTRYPOINT_ADDRESS_OFFSET
 add r2, r0
 
 jmp r2
