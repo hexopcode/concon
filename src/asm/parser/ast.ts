@@ -183,10 +183,29 @@ export type UseStmt = AstNode<'UseStmt'> & {
   path: string,
 };
 
+export enum MacroType {
+  IMM16,
+  IMM8,
+  REG,
+}
+
+export type MacroArg = AstNode<'MacroArg'> & {
+  name: string,
+  type: MacroType,
+};
+
+export type ImmMacroStmt = AstNode<'ImmMacroStmt'> & {
+  name: string,
+  ret: MacroType,
+  args: MacroArg[],
+  expr: AstImmExpr,
+};
+
 export type ModuleAst<Type extends string> = AstNode<Type> & {
   path: string,
   uses: UseStmt[],
   procs: ProcStmt[],
+  imms: ImmMacroStmt[],
 };
 
 export type LibraryAst = ModuleAst<'LibraryAst'>;

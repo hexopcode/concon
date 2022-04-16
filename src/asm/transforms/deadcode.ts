@@ -1,5 +1,4 @@
-import { ModuleAst } from '../parser';
-import {ProgramAst} from '../parser/ast';
+import {ModuleAst, ProgramAst} from '../parser';
 
 export function prune(ast: ProgramAst): ProgramAst {
   new Prunner(ast).prune();

@@ -51,11 +51,14 @@ import {
   DataByte,
   DataWord,
   DataStr,
+  ImmMacroStmt,
+  MacroType,
 } from './ast';
 import {Registers} from '../../core';
 import {unreachable} from '../../lib';
 import {AsmError, AsmErrorCollector} from '../base';
 import {err, ok, Result} from '../../lib/types';
+import { MacroArg } from '.';
 
 export class Parser {
   private readonly tokens: Token[];
@@ -73,6 +76,7 @@ export class Parser {
   parse<Type extends ModuleAst<any>>(path: string, tstr: Type['type']): Result<Type, AsmError> {
     const uses: UseStmt[] = [];
     const procs: ProcStmt[] = [];
+    const imms: ImmMacroStmt[] = [];
     const instrs: Instr[] = [];
     let hasParsingError = false;
 
@@ -100,6 +104,13 @@ export class Parser {
         let pub = this.match(TokenType.PUB);
         while (this.match(TokenType.PROC)) {
           procs.push(this.proc(pub));
+          this.whitespace();
+
+          pub = this.match(TokenType.PUB);
+        }
+
+        while (this.match(TokenType.IMM16, TokenType.IMM8)) {
+          imms.push(this.immMacro(this.previous().type, pub));
           this.whitespace();
 
           pub = this.match(TokenType.PUB);
@@ -142,6 +153,7 @@ export class Parser {
         path,
         uses,
         procs,
+        imms,
         main,
       };
       return ok((entrypoint as unknown) as Type);
@@ -153,6 +165,7 @@ export class Parser {
       path,
       uses,
       procs,
+      imms,
     };
     return ok((library as unknown) as Type);
   }
@@ -275,6 +288,35 @@ export class Parser {
         instrs,
       },
     };
+  }
+
+  private immMacro(retType: TokenType, pub: boolean): ImmMacroStmt {
+    this.line = this.peek()?.line || -1;
+    const name = this.consume(TokenType.IDENTIFIER, 'Expected identifier');
+    // TODO: Implement args
+    const args: MacroArg[] = [];
+    this.consume(TokenType.COLON, `Expected ':'`);
+    const expr = this.immExpr();
+    
+    return {
+      type: 'ImmMacroStmt',
+      line: this.line,
+      name: name.literal!,
+      ret: this.macroType(retType),
+      args,
+      expr,
+    };
+  }
+
+  private macroType(retType: TokenType): MacroType {
+    switch (retType) {
+      case TokenType.IMM8:
+        return MacroType.IMM8;
+      case TokenType.IMM16:
+        return MacroType.IMM16;
+      default:
+        unreachable(`Unimplemented macro type ${retType}`);
+    }
   }
 
   private instr(): Instr {

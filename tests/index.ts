@@ -8,6 +8,7 @@ import {IoTests} from './io.test';
 import {JumpTests} from './jump.test';
 import {LibsTests} from './libs.test';
 import {LogicTests} from './logic.test';
+import {MacrosTests} from './macros.test';
 import {MemoryTests} from './memory.test';
 import {ParserErrorTests} from './parser_error.test';
 
@@ -23,5 +24,6 @@ export const ALL_TESTS = [
   LibsTests,
   LogicTests,
   MemoryTests,
+  MacrosTests,
   ParserErrorTests,
 ];

@@ -1,4 +1,4 @@
-abstract class Optional<T> {
+export abstract class Optional<T> {
   private readonly valueOrEmpty: T|undefined;
   
   protected constructor(valueOrEmpty: T|undefined = undefined) {
@@ -6,11 +6,11 @@ abstract class Optional<T> {
   }
 
   isSome() {
-    return this.valueOrEmpty instanceof SomeOptional;
+    return this instanceof SomeOptional;
   }
 
   isEmpty() {
-    return this.valueOrEmpty instanceof EmptyOptional;
+    return this instanceof EmptyOptional;
   }
 
   expect(message: string): T|never {

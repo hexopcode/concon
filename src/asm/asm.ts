@@ -3,7 +3,7 @@ import {SourceResolver} from '../lib/source';
 import {codegen} from './codegen';
 import {DEFAULT_LINKER_OPTIONS, link, LinkerOptions} from './linker';
 import {parseProgram} from './parser';
-import {prune} from './transforms';
+import {expand, prune} from './transforms';
 import {err, Result} from '../lib/types';
 
 type ErrorLogger = (errors: AsmError[]) => void;
@@ -52,7 +52,10 @@ class Assembler {
       return err(ast);
     }
 
-    const pruned = prune(ast.unwrap());
+    const expanded = expand(ast.unwrap());
+    if (expanded.isErr()) return err(expanded);
+
+    const pruned = prune(expanded.unwrap());
     
     const program = codegen(pruned);
     if (program.isErr()) {

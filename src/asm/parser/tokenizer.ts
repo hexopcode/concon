@@ -8,6 +8,8 @@ export enum TokenType {
   COLON,
   DOT,
   SLASH,
+  LPAREN,
+  RPAREN,
   EOL,
   EOF,
 
@@ -75,6 +77,9 @@ export enum TokenType {
   PUB,
   USE,
   FROM,
+
+  IMM8,
+  IMM16,
 }
 
 const Keywords: Map<string, TokenType> = new Map(Object.entries({
@@ -134,6 +139,9 @@ const Keywords: Map<string, TokenType> = new Map(Object.entries({
   'pub': TokenType.PUB,
   'use': TokenType.USE,
   'from': TokenType.FROM,
+
+  'imm8': TokenType.IMM8,
+  'imm16': TokenType.IMM16,
 }));
 
 export type Token = {
@@ -196,6 +204,12 @@ class Tokenizer {
         break;
       case '.':
         this.addToken(TokenType.DOT);
+        break;
+      case '(':
+        this.addToken(TokenType.LPAREN);
+        break;
+      case ')':
+        this.addToken(TokenType.RPAREN);
         break;
       case '/':
         if (this.match('/')) {
