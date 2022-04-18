@@ -39,4 +39,19 @@ export const CommentsTests: TestSpec = (t: TestRunner) => {
     
     t.assertThat(sys.debug(Registers.R0)).is(0x1234);
   });
+
+  t.test('Multi-line comment variant', () => {
+    t.assertThat(assembleAndBoot(sys, `
+      /**
+       * this is a comment
+       */
+
+      /**** another ** comment */
+
+      mov r0, 0x1234
+      end
+    `)).is(Result.END);
+
+    t.assertThat(sys.debug(Registers.R0)).is(0x1234);
+  });
 };

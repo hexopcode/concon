@@ -218,7 +218,11 @@ class Tokenizer {
           }
         } else if (this.match('*')) {
           const line = this.line;
-          while (this.peek() != '*' && this.peek(1) != '/' && !this.isAtEnd()) {
+          while (this.peek() != '*' || (this.peek() == '*' && this.peek(1) != '/')) {
+            if (this.isAtEnd()) {
+              break;
+            }
+
             const cc = this.advance();
             if (cc == '\n') {
               this.line++;
