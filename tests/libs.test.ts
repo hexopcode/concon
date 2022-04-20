@@ -3,7 +3,7 @@ import {Source} from '../src/lib/source';
 import {TestRunner, TestSpec, assembleMultiple} from '../src/lib/testing';
 
 export const LibsTests: TestSpec = (t: TestRunner) => {
-  const sys = new System();
+  const sys = new System(true);
 
   t.before(() => {
     sys.reset();

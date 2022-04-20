@@ -2,7 +2,7 @@ import {Flags, MAX_VALUE, Registers, Result, System} from '../src/core';
 import {TestRunner, TestSpec, assembleAndBoot} from '../src/lib/testing';
 
 export const LogicTests: TestSpec = (t: TestRunner) => {
-  const sys = new System();
+  const sys = new System(true);
 
   t.before(() => {
     sys.reset();

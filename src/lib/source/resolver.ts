@@ -7,11 +7,13 @@ export interface SourceResolver {
   source(path: string): Result<Source, SourceError>;
 }
 
+const TEST_PATH_PREFIX = '/__wds-outside-root__/1/src';
+
 export class StaticSourceResolver implements SourceResolver {
   private readonly sources: Map<string, Source>;
 
-  constructor() {
-    this.sources = new Map();
+  constructor(sources: Map<string, Source> = new Map()) {
+    this.sources = sources;
   }
 
   add(...sources: Source[]) {
@@ -40,5 +42,23 @@ export class StaticSourceResolver implements SourceResolver {
       path,
       message: `Source not found: ${path}`,
     });
+  }
+
+  static normalize(path: string): string {
+    return path.replace(TEST_PATH_PREFIX, '');
+  }
+
+  forTestEnv(): StaticSourceResolver {
+    const testSources: Map<string, Source> = new Map();
+    for (const [path, source] of this.sources) {
+      const testPath = StaticSourceResolver.normalize(path);
+      const testSource: Source = {
+        path: testPath,
+        code: source.code,
+        library: source.library,
+      };
+      testSources.set(testPath, testSource);
+    }
+    return new StaticSourceResolver(testSources);
   }
 }

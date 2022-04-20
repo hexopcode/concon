@@ -2,7 +2,7 @@ import {Result, System} from '../src/core';
 import {TestRunner, TestSpec, assembleAndBoot} from '../src/lib/testing';
 
 export const CoreTests: TestSpec = (t: TestRunner) => {
-  const sys = new System();
+  const sys = new System(true);
 
   t.before(() => {
     sys.reset();

@@ -39,7 +39,9 @@ export class System {
   private readonly inputDevices: Map<number, InputDevice>;
   private readonly outputDevices: Map<number, OutputDevice>;
 
-  constructor() {
+  private readonly isTestEnv: boolean;
+
+  constructor(isTestEnv: boolean = false) {
     this.buffer = new ArrayBuffer(MEMORY_SIZE);
     this.memory = new Uint8Array(this.buffer);
     this.memoryAreas = new Map([
@@ -50,8 +52,7 @@ export class System {
     this.registers = new Uint16Array(REGISTER_COUNT);
     this.inputDevices = new Map();
     this.outputDevices = new Map();
-
-    this.reset();
+    this.isTestEnv = isTestEnv;
   }
 
   reset(resetDevices: boolean = true) {
@@ -65,7 +66,7 @@ export class System {
   }
 
   private loadOperatingSystem() {
-    this.memory.set(create_os_image().expect('Failed creating OS image'), MEMORY_OS_OFFSET);
+    this.memory.set(create_os_image(this.isTestEnv).expect('Failed creating OS image'), MEMORY_OS_OFFSET);
   }
 
   loadProgram(program: Uint8Array) {

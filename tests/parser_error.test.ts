@@ -2,7 +2,7 @@ import {System} from '../src/core';
 import {TestRunner, TestSpec, assembleCheck} from '../src/lib/testing';
 
 export const ParserErrorTests: TestSpec = (t: TestRunner) => {
-  const sys = new System();
+  const sys = new System(true);
 
   t.before(() => {
     sys.reset();

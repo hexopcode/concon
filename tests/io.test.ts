@@ -18,7 +18,7 @@ class OutRecorder {
 };
 
 export const IoTests: TestSpec = (t: TestRunner) => {
-  const sys = new System();
+  const sys = new System(true);
 
   t.before(() => {
     sys.reset();
