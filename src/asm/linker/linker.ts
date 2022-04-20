@@ -43,7 +43,7 @@ class Linker {
   }
 
   link(): Result<Uint8Array, AsmError> {
-    this.resolveOffsets();
+    const len = this.resolveOffsets();
 
     for (const lib of this.program.libs.values()) {
       const rres = this.resolveCodeExprs(lib);
@@ -53,7 +53,7 @@ class Linker {
     const rres = this.resolveCodeExprs(this.program.entrypoint);
     if (rres.isErr()) return err(rres);
     
-    const binary = this.generateBinary();
+    const binary = this.generateBinary(len);
     if (!this.options.header) {
       return ok(binary);
     }
@@ -65,20 +65,23 @@ class Linker {
     return ok(bytes);
   }
 
-  private resolveOffsets() {
+  private resolveOffsets(): number {
     let offset = 0;
+    this.offsets.set(this.program.entrypoint.path, offset);
+    offset += this.program.entrypoint.code.length;
+
     for (const [path, lib] of this.program.libs.entries()) {
       this.offsets.set(path, offset);
       offset += lib.code.length;
     }
 
-    this.offsets.set(this.program.entrypoint.path, offset);
+    return offset;
   }
 
-  private generateBinary(): Uint8Array {
+  private generateBinary(len: number): Uint8Array {
     const ep = this.program.entrypoint;
     const epOffset = this.offsets.get(ep.path)!;
-    const binary = new Uint8Array(epOffset + ep.code.length);
+    const binary = new Uint8Array(len);
     binary.set(ep.code, epOffset);
 
     for (const [path, lib] of this.program.libs.entries()) {

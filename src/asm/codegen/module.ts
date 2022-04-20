@@ -32,18 +32,18 @@ export class CodegenModule {
       }
     }
 
+    if (this.ast.type == 'EntrypointAst') {
+      (this.mod as EntrypointModule).mainOffset = this.bytes.length;
+
+      const ret = this.emitOpcodes(this.ast.main);
+      if (ret.isErr()) return err(ret);
+    }
+
     for (const proc of this.ast.procs) {
       const lbl = this.labelAddress(proc.name);
       if (lbl.isErr()) return err(lbl);
 
       const ret = this.emitOpcodes(proc.impl);
-      if (ret.isErr()) return err(ret);
-    }
-
-    if (this.ast.type == 'EntrypointAst') {
-      (this.mod as EntrypointModule).mainOffset = this.bytes.length;
-
-      const ret = this.emitOpcodes(this.ast.main);
       if (ret.isErr()) return err(ret);
     }
 
