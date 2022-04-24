@@ -19,11 +19,13 @@ import {byte, word} from '../codegen/utilities';
 
 export type LinkerOptions = {
   header: boolean,
+  baseAddress: number,
   version: Uint8Array,
 };
 
 export const DEFAULT_LINKER_OPTIONS: LinkerOptions = {
   header: true,
+  baseAddress: MEMORY_PROGRAM_OFFSET,
   version: VERSION_0_1,
 };
 
@@ -45,18 +47,21 @@ class Linker {
   link(): Result<Uint8Array, AsmError> {
     const len = this.resolveOffsets();
 
+    const rres = this.resolveCodeExprs(this.program.entrypoint);
+    if (rres.isErr()) return err(rres);
+
     for (const lib of this.program.libs.values()) {
       const rres = this.resolveCodeExprs(lib);
       if (rres.isErr()) return err(rres);
     }
-
-    const rres = this.resolveCodeExprs(this.program.entrypoint);
-    if (rres.isErr()) return err(rres);
     
     const binary = this.generateBinary(len);
     if (!this.options.header) {
+      // console.log('no header')
       return ok(binary);
     }
+
+    // console.log('header')
 
     const hdr = this.header(binary.length);
     const bytes = new Uint8Array(HEADER_LENGTH + binary.length);
@@ -66,9 +71,8 @@ class Linker {
   }
 
   private resolveOffsets(): number {
-    let offset = 0;
-    this.offsets.set(this.program.entrypoint.path, offset);
-    offset += this.program.entrypoint.code.length;
+    this.offsets.set(this.program.entrypoint.path, 0);
+    let offset = this.program.entrypoint.code.length;
 
     for (const [path, lib] of this.program.libs.entries()) {
       this.offsets.set(path, offset);
@@ -107,16 +111,17 @@ class Linker {
       return ok(expr.value);
     }
 
-    const resolved = this.findModForExpr(expr.value, mod);
+    const resolved = this.resolveModForExpr(expr.value, mod);
     if (resolved.isErr()) return err(resolved);
 
     const offset = this.offsets.get(resolved.unwrap().path)! + resolved.unwrap().labels.get(expr.value)!;
     const headerLength = this.options.header ? HEADER_LENGTH : 0;
-    const absolute = MEMORY_PROGRAM_OFFSET + headerLength + offset;
+    const absolute = this.options.baseAddress + headerLength + offset;
+
     return ok(absolute);
   }
 
-  private findModForExpr(expr: string, mod: Module): Result<Module, AsmError> {
+  private resolveModForExpr(expr: string, mod: Module): Result<Module, AsmError> {
     if (mod.labels.has(expr)) {
       return ok(mod);
     }

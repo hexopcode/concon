@@ -1,7 +1,7 @@
 import {assemble} from '../asm';
 import {LinkerOptions} from '../asm/linker';
 import {StaticSourceResolver} from '../lib/source';
-import {VERSION_0_1} from '../core';
+import {MEMORY_OS_OFFSET, VERSION_0_1} from '../core';
 import {source as boot} from './boot.con';
 import {palette} from '../lib/con';
 import {Result} from '../lib/types';
@@ -9,6 +9,7 @@ import {AsmError} from '../asm/base';
 
 const LINKER_OPTIONS: LinkerOptions = {
   header: false,
+  baseAddress: MEMORY_OS_OFFSET,
   version: VERSION_0_1,
 };
 
