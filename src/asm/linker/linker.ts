@@ -57,11 +57,8 @@ class Linker {
     
     const binary = this.generateBinary(len);
     if (!this.options.header) {
-      // console.log('no header')
       return ok(binary);
     }
-
-    // console.log('header')
 
     const hdr = this.header(binary.length);
     const bytes = new Uint8Array(HEADER_LENGTH + binary.length);
