@@ -1,0 +1,40 @@
+imm16 VIDEO_PORT: 0x00
+
+imm16 RED:   0x0000
+imm16 GREEN: 0x1000
+imm16 BLUE:  0x2000
+imm16 ALPHA: 0x30ff
+
+/**
+ * FIXME: change to macro when avaiable
+ *
+ * r0: index
+ * r1: rg
+ * r2: ba
+ */
+pub proc palette:
+  shl r0, 8
+
+  mov r3, r1
+  shr r3, 8
+  or  r3, r0
+  or  r3, RED
+  out VIDEO_PORT, r3
+
+  mov r3, r1
+  and r3, 0xff
+  or  r3, r0
+  or  r3, GREEN
+  out VIDEO_PORT, r3
+
+  mov r3, r2
+  shr r3, 8
+  or  r3, r0
+  or  r3, BLUE
+  out VIDEO_PORT, r3
+
+  mov r3, r0
+  or  r3, ALPHA
+  out VIDEO_PORT, r3
+
+  ret
